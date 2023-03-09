@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiMimikakiApp.MainPage"
+             xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
+             BackgroundColor="LightPink">
+
+    <ContentPage.Resources>
+        <ResourceDictionary x:Name="PathDictionary" Source="DetectableRegionDictionary.xaml"/>
+    </ContentPage.Resources>
+
+    <FlexLayout Direction="Column" JustifyContent="SpaceBetween">
+
+        <FlexLayout.Resources>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+        </FlexLayout.Resources>
+
+        <Label x:Name="HeaderLabel" 
+               Text="Mimikaki"/>
+
+        <Grid x:Name="MimiGrid" HeightRequest="550"
+              BackgroundColor="LightYellow"
+              VerticalOptions="Center"
+              Scale="1">
+
+            <custom:TrackableView x:Name="MimiTrackableView"/>
+
+        </Grid>
+
+        <Label x:Name="FooterLabel" 
+               Text="Mimikaki"/>
+
+    </FlexLayout>
+
+</ContentPage>
