@@ -9,7 +9,7 @@ public partial class MainPage : ContentPage
 {
 	PositionTracker _tracker;
 
-	double _alignmentLeft = 0;
+	//double _alignmentLeft = 0;
 
 	public MainPage()
 	{

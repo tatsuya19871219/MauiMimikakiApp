@@ -1,0 +1,84 @@
+@startuml MimikakiClassDiagram
+' Models
+class MimiModel
+{
+    - height : int
+    - width : int
+    - topRegion : PathInternalRegion
+    - centerRegion : PathInternalRegion
+    - bottomRegion : PathInternalRegion
+}
+
+class PathInternalRegion
+{
+    - dict : Dictionary<string, bool[,]>
+    + this[string] : bool[,]
+    + IsInner : bool[,]
+    + IsBoundary : bool[,]
+    + LenX : int
+    + LenY : int
+    + Dx : int
+    + Dy : int
+    + Xs : int
+    + Ys : int
+    + Xe : int
+    + Ye : int
+    + PathInternalRegion(pathF : PathF, dx : int, dy : int)
+    - FillBoundaryPoints(pathF : PathF) : void
+    - FillInternalRegion() : void
+    - ConvertToRegionIndex(x : double, y : double) : (int, int)
+    + ContainsInRegion(point : Point) : bool
+    + ContainsInRegion(x: double, y : double) : bool
+}
+
+' Views
+class TrackableView
+{
+    - targetView : ViewModels
+    - targetHeightRequest : double
+    - displayRatio : double
+    + TrackableView()
+    + SetTargetView(targetView : View, targetHeightRequest : double) : Task
+    - InitializeTrackableView() : Task
+    + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
+}
+
+class DetectableRegionView
+{
+    - regionDots : Shape[,]
+    + DetectableRegionView(...)
+    + ShowFlaggedRegion(region : PathInternalRegion, flags : bool[,], color : Color) : void
+}
+
+' ViewModels
+class TrackableMimiViewModel
+{
+    - tracker : PositionTracker
+    - trackableMimi : TrackableView
+    + OnMoveOnMimi : Action
+    + BindTrackableMimi(trackableMimi: TrackableView) : void
+    - RunTrackerProcess()
+}
+
+' Page
+class MainPage
+{
+    + InitializeTrackableMimi()
+}
+
+' Library
+package TakeMauiEasy
+{
+    class PositionTracker
+}
+
+' 
+MimiModel o-- "3" PathInternalRegion
+TrackableView *-- DetectableRegionView
+TrackableMimiViewModel -right-> TrackableView
+TrackableMimiViewModel -left-> MimiModel
+MainPage --> TrackableMimiViewModel
+
+TrackableMimiViewModel --> PositionTracker
+
+@enduml
