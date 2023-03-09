@@ -23,6 +23,11 @@ public partial class MainPage : ContentPage
 	async void InitializeTrackableMimi()
 	{
 		// Start loading indicator
+		//LoadingLabel.IsVisible = true;
+		var tokenSource = new CancellationTokenSource();
+		var token = tokenSource.Token;
+
+		StartLoadingAnimation(token);
 
 		Image mimi = new Image {Source = "mimi.png"}; // without HeightRequest/WidthRequest
 
@@ -49,7 +54,32 @@ public partial class MainPage : ContentPage
 		RunTrackerProcess();
 
 		// End loading indicator
+		tokenSource.Cancel();
+		//LoadingLabel.IsVisible = false;
 		
+	}
+
+	async Task StartLoadingAnimation(CancellationToken token)
+	{
+		string loadingMessage = "耳を構築しています";
+		LoadingLabel.Text = loadingMessage;
+		LoadingLabel.IsVisible = true;
+
+		int k = 0;
+		while (true) 
+		{
+			if (token.IsCancellationRequested) 
+			{
+				LoadingLabel.IsVisible = false;
+				token.ThrowIfCancellationRequested();
+			}
+			LoadingLabel.Text = loadingMessage + new string('.', k);
+			await Task.Delay(250);
+			k++;
+			if(k > 3) k = 0;
+		}
+
+		//LoadingLabel.IsVisible = false;
 	}
 
 

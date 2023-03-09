@@ -21,6 +21,12 @@
         <Label x:Name="HeaderLabel" 
                Text="Mimikaki"/>
 
+
+        <Label x:Name="LoadingLabel" Text="Now Loading..."
+                    FontSize="32"
+                    BackgroundColor="White"
+                    IsVisible="False"/>
+
         <Grid x:Name="MimiGrid" HeightRequest="550"
               BackgroundColor="LightYellow"
               VerticalOptions="Center"
@@ -28,8 +34,10 @@
 
             <custom:TrackableView x:Name="MimiTrackableView"/>
 
+
         </Grid>
 
+        
         <Label x:Name="FooterLabel" 
                Text="Mimikaki"/>
 
