@@ -5,7 +5,7 @@ namespace MauiMimikakiApp.CustomViews;
 
 public partial class TrackableView : ContentView
 {
-    PositionTracker _tracker = null;
+    //PositionTracker _tracker = null;
     View _targetView = null;
 
     //double _targetWidthRequest;
@@ -31,9 +31,9 @@ public partial class TrackableView : ContentView
 
         await InitializeTrackableView();
 
-        _tracker = new PositionTracker(this);
+        //_tracker = new PositionTracker(this);
 
-        RunSampleTracker();
+        //RunSampleTracker();
     }
 
     async Task InitializeTrackableView()
@@ -57,39 +57,52 @@ public partial class TrackableView : ContentView
     }
 
     
-    public void RegistDetectableRegion(Geometry geometry)
+    // public void RegistDetectableRegion(Geometry geometry)
+    // {
+    //     if (_displayRatio < 0) throw new Exception("Initialization is not finished or failed.");
+
+    //     var detectableRegion = new DetectableRegionView(geometry);
+
+    //     detectableRegion.AnchorX = 0;
+    //     detectableRegion.AnchorY = 0;
+    //     detectableRegion.Scale = _displayRatio;
+
+    //     DetectableRegions.Add(detectableRegion);
+    // }
+
+    public async Task AddDetectableRegionView(DetectableRegionView detectableRegionView)
     {
         if (_displayRatio < 0) throw new Exception("Initialization is not finished or failed.");
 
-        var detectableRegion = new DetectableRegionView(geometry);
+        detectableRegionView.AnchorX = 0;
+        detectableRegionView.AnchorY = 0;
+        detectableRegionView.Scale = _displayRatio;
 
-        detectableRegion.AnchorX = 0;
-        detectableRegion.AnchorY = 0;
-        detectableRegion.Scale = _displayRatio;
+        DetectableRegions.Add(detectableRegionView);
 
-        DetectableRegions.Add(detectableRegion);
+        await Task.Yield();
     }
 
-    async void RunSampleTracker()
-    {
-        while(true)
-        {
-            var current = _tracker.CurrentState;
-            var pointInDisplay = current.Position;
-            var point = new Point(pointInDisplay.X/_displayRatio, pointInDisplay.Y/_displayRatio);
+    // async void RunSampleTracker()
+    // {
+    //     while(true)
+    //     {
+    //         var current = _tracker.CurrentState;
+    //         var pointInDisplay = current.Position;
+    //         var point = new Point(pointInDisplay.X/_displayRatio, pointInDisplay.Y/_displayRatio);
 
-            foreach (DetectableRegionView detectableRegion in DetectableRegions)
-            {
-                bool isContains = detectableRegion.InternalRegion.ContainsInRegion(point);
+    //         foreach (DetectableRegionView detectableRegion in DetectableRegions)
+    //         {
+    //             bool isContains = detectableRegion.InternalRegion.ContainsInRegion(point);
 
-                if (isContains) detectableRegion.BackgroundColor = Colors.Red;
-                else detectableRegion.BackgroundColor = Colors.Transparent;
-            }            
+    //             if (isContains) detectableRegion.BackgroundColor = Colors.Red;
+    //             else detectableRegion.BackgroundColor = Colors.Transparent;
+    //         }            
 
-            await Task.Delay(100);
-        }
-    }
+    //         await Task.Delay(100);
+    //     }
+    // }
 
-    public PositionTracker GetPositionTracker() => _tracker;
+    // public PositionTracker GetPositionTracker() => _tracker;
 
 }

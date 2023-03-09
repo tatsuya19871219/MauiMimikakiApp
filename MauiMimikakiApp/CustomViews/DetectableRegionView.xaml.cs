@@ -4,69 +4,91 @@ namespace MauiMimikakiApp.CustomViews;
 
 public partial class DetectableRegionView : ContentView
 {
+    readonly Microsoft.Maui.Controls.Shapes.Path _regionPath;
+    
+    readonly bool _isVisible;
 
-    internal readonly PathInternalRegion InternalRegion;
-    readonly Shape[,] _regionDots;
+    Shape[,] _regionDots;
 
-    public DetectableRegionView(Geometry geometry)
+    PathInternalRegion _internalRegion;
+
+    public DetectableRegionView(Geometry geometry, bool isVisible = true)
     {
         InitializeComponent();
 
-        var regionPath = new Microsoft.Maui.Controls.Shapes.Path(geometry);
+        _regionPath = new(geometry);
         
-        regionPath.Stroke = Colors.Red;
-        regionPath.StrokeThickness = 2;
-        regionPath.Fill = Colors.White;
+        _regionPath.Stroke = Colors.Red;
+        _regionPath.StrokeThickness = 2;
+        _regionPath.Fill = Colors.White;
 
-        RegionPathGrid.Add(regionPath);
+        _regionPath.IsVisible = _isVisible = isVisible;
 
-        PathInternalRegion pathRegion = new PathInternalRegion(regionPath.GetPath());
-
-        InternalRegion = pathRegion;
-
-        _regionDots = new Shape[pathRegion.LenX, pathRegion.LenY];
-
-
-        ShowFlaggedRegion(pathRegion, pathRegion.IsBoundary, Colors.Purple);
-
-        ShowFlaggedRegion(pathRegion, pathRegion.IsInner, Colors.LightGray);
-
-
+        RegionPathGrid.Add(_regionPath);
+        
     }
 
+    internal PathInternalRegion GenerateInternalRegion(int dx = 5, int dy = 5)
+    {
+        if (_internalRegion is not null) throw new Exception("Internal region is already initialized.");
 
-    void ShowFlaggedRegion(PathInternalRegion region, bool[,] flags, Color color)
-	{
+        _internalRegion = new(_regionPath.GetPath(), dx, dy);
+
+        _regionDots = new Shape[_internalRegion.LenX, _internalRegion.LenY];
+
+        return _internalRegion;
+    }
+
+    internal async Task VisualizeRegion(string key, Color color)
+    {
+        if (_internalRegion is null) throw new Exception("Internal region is not generated.");
+        if (!_isVisible) throw new Exception("IsVisible is set as false.");
+
+        //List<Task> tasks = new();
+
+        bool[,] flags = _internalRegion[key];
+
         int totalLength = flags.Length;
         int dimensions = flags.Rank;
 
         int lenX = flags.GetUpperBound(0) + 1;
         int lenY = flags.GetUpperBound(1) + 1;
 
-        if (lenX != region.LenX || lenY != region.LenY) throw new ArgumentException("Size of flags does not match with the region instance.");
+        if (lenX != _internalRegion.LenX || lenY != _internalRegion.LenY) throw new ArgumentException("Size of flags does not match with the region instance.");
 
-        for (int i = 0; i < region.LenX; i++)
+        for (int i = 0; i < _internalRegion.LenX; i++)
         {
-            for (int j = 0; j < region.LenY; j++)
+            for (int j = 0; j < _internalRegion.LenY; j++)
             {
                 if (!flags[i, j]) continue;
 
-                int x = region.Xs + i * region.Dx;
-                int y = region.Ys + j * region.Dy;
+                //tasks.Add(Task.Run(() => AddDotMark(i, j, color)));
 
-                Ellipse dotMark = new Ellipse { WidthRequest = 5, HeightRequest = 5, Fill = color };
-
-                dotMark.HorizontalOptions = LayoutOptions.Start;
-                dotMark.VerticalOptions = LayoutOptions.Start;
-
-                dotMark.TranslationX = x - dotMark.WidthRequest / 2;
-                dotMark.TranslationY = y - dotMark.HeightRequest / 2;
-
-                RegionPathGrid.Add(dotMark);
-
-                _regionDots[i,j] = dotMark;
+                await AddDotMark(i, j, color);
             }
         }
+
+        //Task.WaitAll(tasks.ToArray());
+    }
+
+    async Task AddDotMark(int i, int j, Color color)
+    {
+        int x = _internalRegion.Xs + i * _internalRegion.Dx;
+        int y = _internalRegion.Ys + j * _internalRegion.Dy;
+
+        Ellipse dotMark = new Ellipse { WidthRequest = 5, HeightRequest = 5, Fill = color };
+
+        dotMark.HorizontalOptions = LayoutOptions.Start;
+        dotMark.VerticalOptions = LayoutOptions.Start;
+
+        dotMark.TranslationX = x - dotMark.WidthRequest / 2;
+        dotMark.TranslationY = y - dotMark.HeightRequest / 2;
+
+        RegionPathGrid.Add(dotMark);
+
+        _regionDots[i,j] = dotMark;
+
+        await Task.Yield();
     }
 
 }

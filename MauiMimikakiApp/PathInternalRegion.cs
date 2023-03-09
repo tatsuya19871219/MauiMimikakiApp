@@ -22,7 +22,7 @@ internal class PathInternalRegion
     public int LenX => _lenX;
     public int LenY => _lenY;
 
-
+    readonly Dictionary<string, bool[,]> _dict = new();
     readonly bool[,] _isInner;
     readonly bool[,] _isBoundary;
 
@@ -40,6 +40,15 @@ internal class PathInternalRegion
     readonly Point _topLeft;
     readonly Point _bottomRight;
 
+    // Indexer
+    public bool[,] this[string key]
+    {
+        get
+        {
+            if (!_dict.ContainsKey(key)) throw new ArgumentException("Key should be 'inner' or 'boundary'.");
+            return _dict[key];
+        }
+    }
 
     public PathInternalRegion(PathF pathF, int dx = 5, int dy = 5)
     {
@@ -62,6 +71,9 @@ internal class PathInternalRegion
 
         _isInner = new bool[_lenX, _lenY];
         _isBoundary = new bool[_lenX, _lenY];
+
+        _dict.Add("inner", _isInner);
+        _dict.Add("boundary", _isBoundary);
 
         FillBoundaryPoints(pathF);
 

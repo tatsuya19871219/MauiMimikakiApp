@@ -1,4 +1,5 @@
 ﻿using MauiMimikakiApp.CustomViews;
+using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 
 using TakeMauiEasy;
@@ -7,13 +8,16 @@ namespace MauiMimikakiApp;
 
 public partial class MainPage : ContentPage
 {
+	readonly TrackableMimiViewModel _vm;
 	PositionTracker _tracker;
 
 	//double _alignmentLeft = 0;
 
-	public MainPage()
+	public MainPage(TrackableMimiViewModel vm)
 	{
 		InitializeComponent();
+
+		_vm = vm;
 
 		InitializeTrackableMimi();
 		
@@ -24,10 +28,11 @@ public partial class MainPage : ContentPage
 	{
 		// Start loading indicator
 		//LoadingLabel.IsVisible = true;
-		var tokenSource = new CancellationTokenSource();
-		var token = tokenSource.Token;
+		// var tokenSource = new CancellationTokenSource();
+		// var token = tokenSource.Token;
 
-		StartLoadingAnimation(token);
+		// StartLoadingAnimation(token);
+		LoadingMessage.Show();
 
 		Image mimi = new Image {Source = "mimi.png"}; // without HeightRequest/WidthRequest
 
@@ -40,47 +45,56 @@ public partial class MainPage : ContentPage
 			await Task.Delay(100);
 		}
 
+		_vm.BindTrackableMimi(MimiTrackableView);
+
         var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
         var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
         var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
-        MimiTrackableView.RegistDetectableRegion(mimiTopGeometry);
-        MimiTrackableView.RegistDetectableRegion(mimiCenterGeometry);
-        MimiTrackableView.RegistDetectableRegion(mimiBottomGeometry);
+		await _vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);	
+
+		//_vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
+
+		//await Task.Delay(10000);
+
+        // These should be awaitable
+		// MimiTrackableView.RegistDetectableRegion(mimiTopGeometry);
+        // MimiTrackableView.RegistDetectableRegion(mimiCenterGeometry);
+        // MimiTrackableView.RegistDetectableRegion(mimiBottomGeometry);
 
 
-        _tracker = MimiTrackableView.GetPositionTracker();
+        // _tracker = MimiTrackableView.GetPositionTracker();
 
-		RunTrackerProcess();
+		// RunTrackerProcess();
 
 		// End loading indicator
-		tokenSource.Cancel();
+		//tokenSource.Cancel();
 		//LoadingLabel.IsVisible = false;
-		
+		LoadingMessage.Hide();
 	}
 
-	async Task StartLoadingAnimation(CancellationToken token)
-	{
-		string loadingMessage = "耳を構築しています";
-		LoadingLabel.Text = loadingMessage;
-		LoadingLabel.IsVisible = true;
+	// async Task StartLoadingAnimation(CancellationToken token)
+	// {
+	// 	string loadingMessage = "耳を構築しています";
+	// 	LoadingLabel.Text = loadingMessage;
+	// 	LoadingLabel.IsVisible = true;
 
-		int k = 0;
-		while (true) 
-		{
-			if (token.IsCancellationRequested) 
-			{
-				LoadingLabel.IsVisible = false;
-				token.ThrowIfCancellationRequested();
-			}
-			LoadingLabel.Text = loadingMessage + new string('.', k);
-			await Task.Delay(250);
-			k++;
-			if(k > 3) k = 0;
-		}
+	// 	int k = 0;
+	// 	while (true) 
+	// 	{
+	// 		if (token.IsCancellationRequested) 
+	// 		{
+	// 			LoadingLabel.IsVisible = false;
+	// 			token.ThrowIfCancellationRequested();
+	// 		}
+	// 		LoadingLabel.Text = loadingMessage + new string('.', k);
+	// 		await Task.Delay(250);
+	// 		k++;
+	// 		if(k > 3) k = 0;
+	// 	}
 
-		//LoadingLabel.IsVisible = false;
-	}
+	// 	//LoadingLabel.IsVisible = false;
+	// }
 
 
 	Geometry GetGeometryFromString(string pathString)

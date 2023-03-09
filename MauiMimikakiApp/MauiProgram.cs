@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MauiMimikakiApp.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace MauiMimikakiApp;
 
@@ -14,6 +15,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
+
+		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<TrackableMimiViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

@@ -27,6 +27,8 @@
                     BackgroundColor="White"
                     IsVisible="False"/>
 
+        <custom:LoadingMessageView x:Name="LoadingMessage"/>
+
         <Grid x:Name="MimiGrid" HeightRequest="550"
               BackgroundColor="LightYellow"
               VerticalOptions="Center"
