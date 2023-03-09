@@ -21,11 +21,11 @@
         <Label x:Name="HeaderLabel" 
                Text="Mimikaki"/>
 
-
+<!-- 
         <Label x:Name="LoadingLabel" Text="Now Loading..."
                     FontSize="32"
                     BackgroundColor="White"
-                    IsVisible="False"/>
+                    IsVisible="False"/> -->
 
         <custom:LoadingMessageView x:Name="LoadingMessage"/>
 

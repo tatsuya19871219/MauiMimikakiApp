@@ -21,6 +21,8 @@ public class TrackableMimiViewModel
     internal void BindTrackableMimi(TrackableView trackableMimi)
     {
         _trackableMimi = trackableMimi;
+
+        _tracker = new PositionTracker(_trackableMimi);
     }
 
     async internal Task InitializeDetectableGeometries(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
@@ -44,20 +46,26 @@ public class TrackableMimiViewModel
         var bottomInternalRegion = bottomRegionView.GenerateInternalRegion();
 
         //// Add to the trackableMimi
-        await _trackableMimi.AddDetectableRegionView(topRegionView);
-        await _trackableMimi.AddDetectableRegionView(centerRegionView);
-        await _trackableMimi.AddDetectableRegionView(bottomRegionView);
+        _trackableMimi.AddDetectableRegionView(topRegionView);
+        _trackableMimi.AddDetectableRegionView(centerRegionView);
+        _trackableMimi.AddDetectableRegionView(bottomRegionView);
         
-        ////
-        await topRegionView.VisualizeRegion("boundary", Colors.Purple);
-        await topRegionView.VisualizeRegion("inner", Colors.Gray);
-        await centerRegionView.VisualizeRegion("boundary", Colors.Purple);
-        await centerRegionView.VisualizeRegion("inner", Colors.Gray);
-        await bottomRegionView.VisualizeRegion("boundary", Colors.Purple);
-        await bottomRegionView.VisualizeRegion("inner", Colors.Gray);
+        List<Task> tasks = new();
 
+        int stepsVisualization = 2;
 
-        //await Task.Delay(5000);
+        tasks.Add( topRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        tasks.Add( topRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+        tasks.Add( centerRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        tasks.Add( centerRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+        tasks.Add( bottomRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        tasks.Add( bottomRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+
+        await Task.WhenAll(tasks);
+    }
+
+    internal void InvokeTrackerProcess()
+    {
 
     }
 

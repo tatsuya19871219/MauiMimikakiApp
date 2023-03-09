@@ -39,12 +39,10 @@ public partial class DetectableRegionView : ContentView
         return _internalRegion;
     }
 
-    internal async Task VisualizeRegion(string key, Color color)
+    internal async Task VisualizeRegion(string key, Color color, int steps = 1)
     {
         if (_internalRegion is null) throw new Exception("Internal region is not generated.");
         if (!_isVisible) throw new Exception("IsVisible is set as false.");
-
-        //List<Task> tasks = new();
 
         bool[,] flags = _internalRegion[key];
 
@@ -56,19 +54,16 @@ public partial class DetectableRegionView : ContentView
 
         if (lenX != _internalRegion.LenX || lenY != _internalRegion.LenY) throw new ArgumentException("Size of flags does not match with the region instance.");
 
-        for (int i = 0; i < _internalRegion.LenX; i++)
+        for (int i = 0; i < _internalRegion.LenX; i+=steps)
         {
-            for (int j = 0; j < _internalRegion.LenY; j++)
+            for (int j = 0; j < _internalRegion.LenY; j+=steps)
             {
                 if (!flags[i, j]) continue;
-
-                //tasks.Add(Task.Run(() => AddDotMark(i, j, color)));
 
                 await AddDotMark(i, j, color);
             }
         }
 
-        //Task.WaitAll(tasks.ToArray());
     }
 
     async Task AddDotMark(int i, int j, Color color)
@@ -88,7 +83,7 @@ public partial class DetectableRegionView : ContentView
 
         _regionDots[i,j] = dotMark;
 
-        await Task.Yield();
+        await Task.Delay(1);
     }
 
 }

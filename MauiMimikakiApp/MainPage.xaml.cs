@@ -67,6 +67,8 @@ public partial class MainPage : ContentPage
 
 		// RunTrackerProcess();
 
+		_vm.InvokeTrackerProcess();
+
 		// End loading indicator
 		//tokenSource.Cancel();
 		//LoadingLabel.IsVisible = false;

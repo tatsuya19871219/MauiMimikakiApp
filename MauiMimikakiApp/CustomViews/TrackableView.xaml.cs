@@ -70,7 +70,7 @@ public partial class TrackableView : ContentView
     //     DetectableRegions.Add(detectableRegion);
     // }
 
-    public async Task AddDetectableRegionView(DetectableRegionView detectableRegionView)
+    public void AddDetectableRegionView(DetectableRegionView detectableRegionView)
     {
         if (_displayRatio < 0) throw new Exception("Initialization is not finished or failed.");
 
@@ -80,7 +80,6 @@ public partial class TrackableView : ContentView
 
         DetectableRegions.Add(detectableRegionView);
 
-        await Task.Yield();
     }
 
     // async void RunSampleTracker()
