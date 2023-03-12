@@ -58,6 +58,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="CustomViews\TrackableImageView.xaml.cs">
+	    <DependentUpon>TrackableImageView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="DetectableRegionDictionary.xaml.cs">
 	    <DependentUpon>DetectableRegionDictionary.xaml</DependentUpon>
 	  </Compile>
@@ -67,7 +70,7 @@
 	  <MauiXaml Update="CustomViews\DetectableRegionView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomViews\TrackableView.xaml">
+	  <MauiXaml Update="CustomViews\TrackableImageView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="DetectableRegionDictionary.xaml">

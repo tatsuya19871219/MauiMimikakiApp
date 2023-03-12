@@ -7,18 +7,18 @@ namespace MauiMimikakiApp.ViewModels;
 public class TrackableMimiViewModel
 {
     PositionTracker _tracker;
-    TrackableView _trackableMimi;
+    TrackableImageView _trackableMimi;
 
     Dictionary<string, Geometry> _geometryDict;
 
-    Action OnMoveOnMimi;
+    public Action<PositionTrackerState> OnMoveOnMimi;
 
     public TrackableMimiViewModel()
     {
 
     }
 
-    internal void BindTrackableMimi(TrackableView trackableMimi)
+    internal void BindTrackableMimi(TrackableImageView trackableMimi)
     {
         _trackableMimi = trackableMimi;
 
@@ -64,14 +64,23 @@ public class TrackableMimiViewModel
         //await Task.WhenAll(tasks);
     }
 
-    internal void InvokeTrackerProcess()
+    internal void InvokeTrackerProcess(int updateInterval = 100)
     {
+        if (updateInterval < 0) throw new Exception("Invalid update interval is given. The value should be positive.");
 
+        RunTrackerProcess(updateInterval);
     }
 
-    void RunTrackerProcess()
+    async void RunTrackerProcess(int updateInterval)
     {
+        while (true)
+        {
+            OnMoveOnMimi?.Invoke(_tracker.CurrentState);
 
+            // OnMoveOnMimiTop
+
+            await Task.Delay(updateInterval);
+        }
     }
 }
 

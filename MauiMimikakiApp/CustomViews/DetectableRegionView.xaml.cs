@@ -142,13 +142,13 @@ public partial class DetectableRegionView : ContentView
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            // canvas.FillColor = Colors.Purple;
-            // canvas.Alpha = 0.3f;
-            // canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
+            canvas.FillColor = Colors.Purple;
+            canvas.Alpha = 0.3f;
+            canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
 
-            // canvas.StrokeColor = Colors.Red;
-            // canvas.StrokeSize = 2;
-            // canvas.DrawCircle(_padding, _padding, 4);
+            canvas.StrokeColor = Colors.Red;
+            canvas.StrokeSize = 2;
+            canvas.DrawCircle(_padding, _padding, 4);
 
             canvas.FillColor = Colors.Blue;
             VisualizeRegion(canvas, "boundary", Colors.Red);
