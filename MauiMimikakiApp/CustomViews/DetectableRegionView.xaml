@@ -13,5 +13,9 @@
 
         <!--<Label x:Name="RegionPathStringRaw" 
                Text="{Binding RegionPathString}"/>-->
+
+        <GraphicsView x:Name="RegionDrawable" 
+                      HorizontalOptions="Start" VerticalOptions="Start"/>
+
     </Grid>
 </ContentView>

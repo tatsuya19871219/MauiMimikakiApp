@@ -50,18 +50,18 @@ public class TrackableMimiViewModel
         _trackableMimi.AddDetectableRegionView(centerRegionView);
         _trackableMimi.AddDetectableRegionView(bottomRegionView);
         
-        List<Task> tasks = new();
+        //List<Task> tasks = new();
 
-        int stepsVisualization = 2;
+        //int stepsVisualization = 1;
 
-        tasks.Add( topRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        tasks.Add( topRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
-        tasks.Add( centerRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        tasks.Add( centerRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
-        tasks.Add( bottomRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        tasks.Add( bottomRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+        //tasks.Add( topRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        //tasks.Add( topRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+        //tasks.Add( centerRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        //tasks.Add( centerRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
+        //tasks.Add( bottomRegionView.VisualizeRegion("boundary", Colors.Purple) );
+        //tasks.Add( bottomRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
 
-        await Task.WhenAll(tasks);
+        //await Task.WhenAll(tasks);
     }
 
     internal void InvokeTrackerProcess()
