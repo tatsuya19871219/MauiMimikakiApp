@@ -2,7 +2,7 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace MauiMimikakiApp.CustomViews;
 
-public partial class DetectableRegionView : ContentView
+public partial class MimiRegionView : ContentView
 {
     readonly Microsoft.Maui.Controls.Shapes.Path _regionPath;
     
@@ -14,7 +14,7 @@ public partial class DetectableRegionView : ContentView
 
     PathInternalRegion _internalRegion;
 
-    public DetectableRegionView(Geometry geometry, bool isVisible = true)
+    public MimiRegionView(Geometry geometry, bool isVisible = true)
     {
         InitializeComponent();
 

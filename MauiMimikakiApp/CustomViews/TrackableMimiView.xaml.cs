@@ -3,10 +3,10 @@ using TakeMauiEasy;
 
 namespace MauiMimikakiApp.CustomViews;
 
-public partial class TrackableImageView : ContentView
+public partial class TrackableMimiView : ContentView
 {
     // Image Source
-    public static BindableProperty TargetImageSourceProperty = BindableProperty.Create("TargetImageSource", typeof(ImageSource), typeof(TrackableImageView), null);
+    public static BindableProperty TargetImageSourceProperty = BindableProperty.Create("TargetImageSource", typeof(ImageSource), typeof(TrackableMimiView), null);
 
     public ImageSource TargetImageSource
     {
@@ -22,7 +22,7 @@ public partial class TrackableImageView : ContentView
 
     double _displayRatio;
 
-    public TrackableImageView()
+    public TrackableMimiView()
     {
         InitializeComponent();
 
@@ -76,7 +76,7 @@ public partial class TrackableImageView : ContentView
         // TargetImage.AnchorY = 0;
         // TargetImage.Scale = _displayRatio;
 
-        this.Scale = _displayRatio;
+        //this.Scale = _displayRatio;
 
     }
 

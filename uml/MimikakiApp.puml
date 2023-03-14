@@ -4,9 +4,36 @@ class MimiModel
 {
     - height : int
     - width : int
-    - topRegion : PathInternalRegion
-    - centerRegion : PathInternalRegion
-    - bottomRegion : PathInternalRegion
+    - topRegion : MimiRegion
+    - centerRegion : MimiRegion
+    - bottomRegion : MimiRegion
+}
+
+class MimiRegion
+{
+    - region : PathInternalRegion
+    - hairList : List<MimiHair>
+    - dirtList : List<MimiDirt>
+    + OnTouch : Action
+    + OnDirtRemoving : Action
+    + OnDirtRemoved : Action
+}
+
+class MimiHair
+{
+    - origin : Point
+    - movement : Point
+    - springConst : double
+    + MimiHair(position : Point)
+    + GetPosition() : Point
+    + UpdatePosition(force : Point) : void
+}
+
+class MimiDirt
+{
+    - position : Point
+    - hardness : double
+    + MimiDirt(position : Point, hardness : double)
 }
 
 class PathInternalRegion
@@ -32,7 +59,7 @@ class PathInternalRegion
 }
 
 ' Views
-class TrackableView
+class TrackableMimiView
 {
     - targetView : ViewModels
     - targetHeightRequest : double
@@ -43,7 +70,7 @@ class TrackableView
     + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
 }
 
-class DetectableRegionView
+class MimiRegionView
 {
     - regionDots : Shape[,]
     + DetectableRegionView(...)
@@ -60,6 +87,17 @@ class TrackableMimiViewModel
     - RunTrackerProcess()
 }
 
+class MimiRegionViewModel
+{
+
+}
+
+' Drawable
+class MimiRegionDrawable
+{
+
+}
+
 ' Page
 class MainPage
 {
@@ -73,12 +111,20 @@ package TakeMauiEasy
 }
 
 ' 
-MimiModel o-- "3" PathInternalRegion
-TrackableView *-- DetectableRegionView
-TrackableMimiViewModel -right-> TrackableView
+MimiModel o-- "3" MimiRegion
+MimiRegion --> PathInternalRegion
+MimiRegion *-- MimiHair
+MimiRegion *-- MimiDirt
+TrackableMimiView *-- MimiRegionView
+TrackableMimiViewModel -right-> TrackableMimiView
 TrackableMimiViewModel -left-> MimiModel
 MainPage --> TrackableMimiViewModel
 
 TrackableMimiViewModel --> PositionTracker
+
+TrackableMimiViewModel o-- "3" MimiRegionViewModel
+MimiRegionViewModel --> MimiRegionView
+MimiRegionView --> MimiRegionDrawable
+MimiRegionDrawable --|> IDrawable
 
 @enduml
