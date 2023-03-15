@@ -45,7 +45,7 @@ class InternalRegion
     + MaxWidth : float
     + MaxHeight : float
     + TopLeft : Point
-    
+    + Center : Point
     + LenX : int
     + LenY : int
     + Dx : int

@@ -16,6 +16,8 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
+		//MimiGrid.IsVisible = false;
+
 		MimiView.BindingContext = _vm = InstantiateMimiViewModel();
 
 		//InitializeTrackableMimi();
@@ -23,6 +25,8 @@ public partial class MainPage : ContentPage
         _tracker = new PositionTracker(MimiView);
 
 		// Initialize Tracker
+
+		//MimiGrid.IsVisible = true;
 	}
 
 

@@ -6,23 +6,32 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp;
 
-public class PathInternalRegion
+public class InternalRegion
 {
-    public bool[,] IsInner => _isInner;
-    public bool[,] IsBoundary => _isBoundary;
+    //public bool[,] IsInner => _isInner;
+    //public bool[,] IsBoundary => _isBoundary;
 
-    public int Xs => _xs;
-    public int Ys => _ys;
-    public int Xe => _xe;
-    public int Ye => _ye;
+    public double MaxWidth => _bottomRight.X - _topLeft.X;
+    public double MaxHeight => _bottomRight.Y - _topLeft.Y;
+    public Point TopLeft => _topLeft;
+    public Point BottomRight => _bottomRight;
+    public Point Center => TopLeft.Offset(MaxWidth/2, MaxHeight/2);
 
-    public int Dx => _dx;
-    public int Dy => _dy;
+    readonly Point _topLeft;
+    readonly Point _bottomRight;
 
-    public int LenX => _lenX;
-    public int LenY => _lenY;
+    // public int Xs => _xs;
+    // public int Ys => _ys;
+    // public int Xe => _xe;
+    // public int Ye => _ye;
 
-    readonly Dictionary<string, bool[,]> _dict = new();
+    // public int Dx => _dx;
+    // public int Dy => _dy;
+
+    // public int LenX => _lenX;
+    // public int LenY => _lenY;
+
+    // readonly Dictionary<string, bool[,]> _dict = new();
     readonly bool[,] _isInner;
     readonly bool[,] _isBoundary;
 
@@ -37,20 +46,18 @@ public class PathInternalRegion
     readonly int _lenX;
     readonly int _lenY;
 
-    readonly Point _topLeft;
-    readonly Point _bottomRight;
 
     // Indexer
-    public bool[,] this[string key]
-    {
-        get
-        {
-            if (!_dict.ContainsKey(key)) throw new ArgumentException("Key should be 'inner' or 'boundary'.");
-            return _dict[key];
-        }
-    }
+    // public bool[,] this[string key]
+    // {
+    //     get
+    //     {
+    //         if (!_dict.ContainsKey(key)) throw new ArgumentException("Key should be 'inner' or 'boundary'.");
+    //         return _dict[key];
+    //     }
+    // }
 
-    public PathInternalRegion(PathF pathF, int dx = 5, int dy = 5)
+    public InternalRegion(PathF pathF, int dx = 5, int dy = 5)
     {
         if (!pathF.Closed) throw new ArgumentException("Given path is not closed.");
 
@@ -72,8 +79,8 @@ public class PathInternalRegion
         _isInner = new bool[_lenX, _lenY];
         _isBoundary = new bool[_lenX, _lenY];
 
-        _dict.Add("inner", _isInner);
-        _dict.Add("boundary", _isBoundary);
+        // _dict.Add("inner", _isInner);
+        // _dict.Add("boundary", _isBoundary);
 
         FillBoundaryPoints(pathF);
 
@@ -190,15 +197,69 @@ public class PathInternalRegion
         }
     }
 
+    bool IsOutOfBoundBox(double x, double y)
+    {
+        if (x < _topLeft.X || x > _bottomRight.X) return true;
+        if (y < _topLeft.Y || y > _bottomRight.Y) return true;
 
-    public bool ContainsInRegion(Point point) => ContainsInRegion(point.X, point.Y);
+        return false;
+    }
+
+
+    //public bool ContainsInRegion(Point point) => ContainsInRegion(point.X, point.Y);
     public bool ContainsInRegion(double x, double y)
     {
-        if (x < _xs || x > _xe) return false;
-        if (y < _ys || y > _ye) return false;
+        // if (x < _xs || x > _xe) return false;
+        // if (y < _ys || y > _ye) return false;
+
+        if (IsOutOfBoundBox(x, y)) return false;
 
         var (idx_x, idx_y) = ConvertToRegionIndex(x, y);
 
-        return _isInner[idx_x, idx_y] || _isBoundary[idx_x, idx_y];
+        return _isInner[idx_x, idx_y];
+    }
+
+    //public bool IsBoundary(Point point) => IsBoundary(point.X, point.Y);
+    public bool IsBoundary(double x, double y)
+    {
+        // if (x < _xs || x > _xe) return false;
+        // if (y < _ys || y > _ye) return false;
+
+        if (IsOutOfBoundBox(x, y)) return false;
+
+        var (idx_x, idx_y) = ConvertToRegionIndex(x, y);
+
+        return _isBoundary[idx_x, idx_y];
+    }
+
+    public double? DistanceFromBoundary(double x, double y)
+    {
+
+        //if (IsOutOfBoundBox(x, y)) return null;
+        if (!ContainsInRegion(x, y)) return null;
+        if (IsBoundary(x, y)) return 0;
+
+        var (idx_x, idx_y) = ConvertToRegionIndex(x, y);
+
+        int idxFromBoundX = Math.Min(idx_x, _lenX-idx_x-1);
+        int idxFromBoundY = Math.Min(idx_y, _lenY-idx_y-1);    
+
+        double minDistance = double.PositiveInfinity;
+
+        for (int i = -idxFromBoundX; i < idxFromBoundX; i++)
+        {
+            for (int j = -idxFromBoundY; j < idxFromBoundY; j++)
+            {
+                if (_isBoundary[idx_x+i, idx_y+j])
+                {
+                    Point point = new Point(_dx*i, _dy*j);
+                    double distance = point.Distance(Point.Zero);
+
+                    if (minDistance > distance) minDistance = distance;
+                }
+            }
+        }
+
+        return minDistance;
     }
 }

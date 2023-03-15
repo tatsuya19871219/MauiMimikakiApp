@@ -15,27 +15,26 @@ public class MimiRegionDrawable : IDrawable
     public double OffsetX => _offsetX;
     public double OffsetY => _offsetY;
 
-    readonly MimiRegion _region;
-    //readonly PathInternalRegion _region;
-
-    InternalRegion _internal => _region.Internal;
+    readonly MimiRegion _mimiRegion;
+    InternalRegion _internal => _mimiRegion.Internal;
 
     readonly float _padding;
     readonly double _offsetX;
     readonly double _offsetY;
 
-    //public MimiRegionDrawable(PathInternalRegion region, double padding = 20) : base()
-    public MimiRegionDrawable(MimiRegion region, double padding = 20) : base()
+    public MimiRegionDrawable(MimiRegion mimiRegion, double padding = 0) : base()
     {
-        _region = region;
+        _mimiRegion = mimiRegion;
 
         _padding = (float)padding;
 
-        _offsetX = _internal.Xs - _padding;
-        _offsetY = _internal.Ys - _padding;
+        var topleft = _internal.TopLeft;
 
-        WidthRequest = _internal.Xe - _internal.Xs + 2*_padding;
-        HeightRequest = _internal.Ye - _internal.Ys + 2*_padding;
+        _offsetX = topleft.X - _padding;
+        _offsetY = topleft.Y - _padding;
+
+        WidthRequest = _internal.MaxWidth + 2*_padding;
+        HeightRequest = _internal.MaxHeight + 2*_padding;
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
@@ -48,11 +47,33 @@ public class MimiRegionDrawable : IDrawable
         // canvas.StrokeSize = 2;
         // canvas.DrawCircle(_padding, _padding, 4);
 
+        VisualizeHair(canvas, Colors.LightGray, 2.0f);
+
         // canvas.FillColor = Colors.Blue;
         // VisualizeRegion(canvas, "boundary", Colors.Red);
 
         // canvas.FillColor = Colors.Pink;
         // VisualizeRegion(canvas, "inner", Colors.Pink);
+    }
+
+    void VisualizeHair(ICanvas canvas, Color color, float thinness)
+    {   
+        foreach (var hair in _mimiRegion.Hairs)
+        {
+            var origin = hair.Origin;
+            var position = hair.Position;
+
+            var x = position.X - _offsetX;
+            var y = position.Y - _offsetY;
+            var x0 = origin.X - _offsetX;
+            var y0 = origin.Y - _offsetY;
+
+            canvas.FillColor = color;
+            canvas.FillCircle( (float)x0, (float)y0, thinness);
+
+            canvas.FillColor = Colors.Black;
+            canvas.FillCircle( (float)x, (float)y, thinness*0.5f);
+        }
     }
 
     // void VisualizeRegion(ICanvas canvas, string key, Color color, int steps = 1)

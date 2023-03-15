@@ -8,7 +8,7 @@ using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace MauiMimikakiApp.ViewModels;
 
-public partial class TrackableMimiViewModel : ObservableObject
+internal partial class TrackableMimiViewModel : ObservableObject
 {
 
     [ObservableProperty] MimiRegionDrawable topRegionDrawable;
@@ -17,22 +17,22 @@ public partial class TrackableMimiViewModel : ObservableObject
 
     //Dictionary<string, Geometry> _geometryDict;
 
-    // static int dx = 5;
-    // static int dy = 5;
+    static int dx = 2;
+    static int dy = 2;
 
     readonly MimiModel _mimi;
 
-    public Action<PositionTrackerState> OnMoveOnMimi;
+    internal Action<PositionTrackerState> OnMoveOnMimi;
 
-    public TrackableMimiViewModel(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
+    internal TrackableMimiViewModel(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
     {
         var topRegionPath = new Path(mimiTop);
         var centerRegionPath = new Path(mimiCenter);
         var bottomRegionPath = new Path(mimiBottom);
 
-        var topInternalRegion = new InternalRegion(topRegionPath.GetPath());
-        var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath());
-        var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath());
+        var topInternalRegion = new InternalRegion(topRegionPath.GetPath(), dx, dy);
+        var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath(), dx, dy);
+        var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath(), dx, dy);
         
         _mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
 
@@ -40,7 +40,23 @@ public partial class TrackableMimiViewModel : ObservableObject
         CenterRegionDrawable = new MimiRegionDrawable(_mimi.Center);
         BottomRegionDrawable = new MimiRegionDrawable(_mimi.Bottom);
     
+        //DoSomething();
     }
+
+    // async void DoSomething()
+    // {
+    //     while(true)
+    //     {
+    //         foreach(var hair in _mimi.Top.Hairs)
+    //         {
+    //             hair.Displace(new Point(5, 5));
+    //             await Task.Delay(100);
+
+    //             //TopRegion.Invalidate();
+    //         }
+
+    //     }
+    // }
 
     
     internal void InvokeTrackerProcess(int updateInterval = 100)

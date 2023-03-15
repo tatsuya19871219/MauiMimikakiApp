@@ -30,6 +30,10 @@ public partial class TrackableMimiView : ContentView
         InitializeComponent();
 
         TargetImage.BindingContext = this;
+
+        // Register DrawMessages
+        
+        //RunInvalidateProcess();
     }
 
     private async void TargetImage_SizeChanged(object sender, EventArgs e)
@@ -54,6 +58,15 @@ public partial class TrackableMimiView : ContentView
         FrontLayer.AnchorY = 0;
         FrontLayer.Scale = displayRatio;
     }
+
+    // async void RunInvalidateProcess()
+    // {
+    //     while(true)
+    //     {
+    //         TopRegion.Invalidate();
+    //         await Task.Delay(100);
+    //     }
+    // }
 
     // async void RunSampleTracker()
     // {
