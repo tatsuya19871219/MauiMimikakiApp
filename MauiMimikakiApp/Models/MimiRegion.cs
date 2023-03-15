@@ -8,16 +8,16 @@ namespace MauiMimikakiApp.Models;
 
 public class MimiRegion
 {
-    public PathInternalRegion Internal => _internalRegion;
+    public InternalRegion Internal => _internalRegion;
     public IEnumerable<MimiHair> Hairs => _hairs;
     public IEnumerable<MimiDust> Dusts => _dusts;
     
-    readonly PathInternalRegion _internalRegion;
+    readonly InternalRegion _internalRegion;
     List<MimiHair> _hairs;
     List<MimiDust> _dusts;
 
 
-    public MimiRegion(PathInternalRegion internalRegion)
+    public MimiRegion(InternalRegion internalRegion)
     {
         _internalRegion = internalRegion;
 

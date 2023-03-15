@@ -30,9 +30,9 @@ public partial class TrackableMimiViewModel : ObservableObject
         var centerRegionPath = new Path(mimiCenter);
         var bottomRegionPath = new Path(mimiBottom);
 
-        var topInternalRegion = new PathInternalRegion(topRegionPath.GetPath());
-        var centerInternalRegion = new PathInternalRegion(centerRegionPath.GetPath());
-        var bottomInternalRegion = new PathInternalRegion(bottomRegionPath.GetPath());
+        var topInternalRegion = new InternalRegion(topRegionPath.GetPath());
+        var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath());
+        var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath());
         
         _mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
 

@@ -18,7 +18,7 @@ public class MimiRegionDrawable : IDrawable
     readonly MimiRegion _region;
     //readonly PathInternalRegion _region;
 
-    PathInternalRegion _internal => _region.Internal;
+    InternalRegion _internal => _region.Internal;
 
     readonly float _padding;
     readonly double _offsetX;

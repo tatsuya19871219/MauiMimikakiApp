@@ -22,7 +22,7 @@ internal class MimiModel
     //     _bottomRegion = bottom;
     // }
 
-    public MimiModel(PathInternalRegion top, PathInternalRegion center, PathInternalRegion bottom)
+    public MimiModel(InternalRegion top, InternalRegion center, InternalRegion bottom)
     {
         _topRegion = new(top);
         _centerRegion = new(center);
