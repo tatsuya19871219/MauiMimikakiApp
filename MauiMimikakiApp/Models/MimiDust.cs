@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp.Models;
 
-internal class MimiDust
+public class MimiDust
 {
     readonly public Point Position;
     //readonly double hardness;

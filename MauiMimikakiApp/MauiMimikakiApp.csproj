@@ -50,11 +50,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\TakeMauiEasyLib\TakeMauiEasyLib.PositionTracker\TakeMauiEasyLib.PositionTracker.csproj" />
+		<ProjectReference Include="..\..\TakeMauiEasyLib\TakeMauiEasyLib\TakeMauiEasyLib.csproj" />
+		<ProjectReference Include="..\..\TakeMauiEasyLib\TakeMauiEasyLib.PositionTracker\TakeMauiEasyLib.PositionTracker.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

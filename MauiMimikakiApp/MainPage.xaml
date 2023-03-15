@@ -26,8 +26,9 @@
               VerticalOptions="Center"
               Scale="1">
 
-            <custom:TrackableImageView x:Name="MimiTrackableView" TargetImageSource="mimi.png">
-            </custom:TrackableImageView>
+            <custom:TrackableMimiView x:Name="MimiView" 
+                            TargetImageSource="mimi.png"
+                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}"/>
 
         </Grid>
         

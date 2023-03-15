@@ -6,10 +6,21 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp.Models;
 
-internal class MimiRegion
+public class MimiRegion
 {
-    PathInternalRegion _region;
+    public PathInternalRegion Internal => _internalRegion;
+    public IEnumerable<MimiHair> Hairs => _hairs;
+    public IEnumerable<MimiDust> Dusts => _dusts;
+    
+    readonly PathInternalRegion _internalRegion;
     List<MimiHair> _hairs;
     List<MimiDust> _dusts;
 
+
+    public MimiRegion(PathInternalRegion internalRegion)
+    {
+        _internalRegion = internalRegion;
+
+        // make mimi hairs
+    }
 }

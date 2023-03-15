@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp;
 
-internal class PathInternalRegion
+public class PathInternalRegion
 {
     public bool[,] IsInner => _isInner;
     public bool[,] IsBoundary => _isBoundary;

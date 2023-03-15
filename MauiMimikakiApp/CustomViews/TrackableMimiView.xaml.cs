@@ -1,3 +1,4 @@
+using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 using TakeMauiEasy;
 
@@ -14,116 +15,44 @@ public partial class TrackableMimiView : ContentView
         set => SetValue(TargetImageSourceProperty, value);
     }
 
+    public double TargetImageOriginalHeight { get; init; }
+
     //PositionTracker _tracker = null;
     //View _targetView = null;
 
     //double _targetWidthRequest;
     //double _targetHeightRequest;
 
-    double _displayRatio;
+    //double _displayRatio;
 
-    public TrackableMimiView()
+    public TrackableMimiView() //(TrackableMimiViewModel vm)
     {
         InitializeComponent();
 
-        BindingContext = this;
+        TargetImage.BindingContext = this;
     }
 
-    // public async Task SetTargetView(View targetView, double targetHeightRequest)
-    // {
-    //     if (_targetView is not null) throw new ArgumentException("Target view is already set.");
-    //     if (targetView is null) throw new ArgumentNullException("Given target view is null.");
-        
-    //     if (targetHeightRequest < 0) throw new ArgumentException("HeightRequest of target view should be a positive value");
-
-    //     _targetView = targetView;
-    //     //_targetWidthRequest = targetView.WidthRequest;
-    //     _targetHeightRequest = targetHeightRequest;
-
-    //     await InitializeTrackableView();
-
-    //     //_tracker = new PositionTracker(this);
-
-    //     //RunSampleTracker();
-    // }
-
-    public async Task RequestTargetHeight(double targetHeightRequest)
+    private async void TargetImage_SizeChanged(object sender, EventArgs e)
     {
-        if (TargetImage is null) throw new ArgumentNullException("Image source is null.");
-        if (TargetImage.HeightRequest > 0) throw new Exception("Target height is already requested.");
-        if (targetHeightRequest < 0) throw new ArgumentException("HeightRequest of target view should be a positive value");
+        if (TargetImageSource is null) throw new ArgumentNullException("Image source is null.");
+        if (TargetImageOriginalHeight < 0) throw new Exception("Invalid TargetImageOriginalHeight is set.");
 
-        //_targetHeightRequest = targetHeightRequest;
-        //TargetImage.HeightRequest = targetHeightRequest;
-        
-        while (true)
-        {
-            if (this.DesiredSize.Width > 0) break;
-            await Task.Delay(100);
-        }
+        //while (true)
+        //{
+        //    if (TargetImage.DesiredSize.Width > 0) break;
+        //    await Task.Delay(100);
+        //}
+
+        await EasyTasks.WaitFor(() => TargetImage.DesiredSize.Width > 0);
 
         this.WidthRequest = TargetImage.DesiredSize.Width;
         this.HeightRequest = TargetImage.DesiredSize.Height;
+        
+        var displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
 
-        // _displayRatio = TargetImage.DesiredSize.Height / targetHeightRequest;
-
-        //this.WidthRequest = this.DesiredSize.Width;
-        //this.HeightRequest = this.DesiredSize.Height;
-
-        _displayRatio = this.DesiredSize.Height / targetHeightRequest;
-
-        // TargetImage.AnchorX = 0;
-        // TargetImage.AnchorY = 0;
-        // TargetImage.Scale = _displayRatio;
-
-        //this.Scale = _displayRatio;
-
-    }
-
-    // async Task InitializeTrackableView()
-    // {
-    //     _targetView.ZIndex = -1;
-
-    //     TrackableContent.Add(_targetView);
-
-    //     while (true)
-    //     {
-    //         if (_targetView.DesiredSize.Width > 0) break;
-    //         await Task.Delay(100);
-    //     }
-
-    //     this.WidthRequest = _targetView.DesiredSize.Width;
-    //     this.HeightRequest = _targetView.DesiredSize.Height;
-
-    //     // 
-    //     _displayRatio = _targetView.DesiredSize.Height / _targetHeightRequest;
-
-    // }
-
-    
-    // public void RegistDetectableRegion(Geometry geometry)
-    // {
-    //     if (_displayRatio < 0) throw new Exception("Initialization is not finished or failed.");
-
-    //     var detectableRegion = new DetectableRegionView(geometry);
-
-    //     detectableRegion.AnchorX = 0;
-    //     detectableRegion.AnchorY = 0;
-    //     detectableRegion.Scale = _displayRatio;
-
-    //     DetectableRegions.Add(detectableRegion);
-    // }
-
-    public void AddDetectableRegionView(DetectableRegionView detectableRegionView)
-    {
-        if (_displayRatio < 0) throw new Exception("Initialization is not finished or failed.");
-
-        detectableRegionView.AnchorX = 0;
-        detectableRegionView.AnchorY = 0;
-        detectableRegionView.Scale = _displayRatio;
-
-        DetectableRegions.Add(detectableRegionView);
-
+        FrontLayer.AnchorX = 0;
+        FrontLayer.AnchorY = 0;
+        FrontLayer.Scale = displayRatio;
     }
 
     // async void RunSampleTracker()
@@ -147,5 +76,15 @@ public partial class TrackableMimiView : ContentView
     // }
 
     // public PositionTracker GetPositionTracker() => _tracker;
+
+    //protected override void OnBindingContextChanged()
+    //{
+    //    base.OnBindingContextChanged();
+    //}
+
+    //protected override void OnSizeAllocated(double width, double height)
+    //{
+    //    base.OnSizeAllocated(width, height);
+    //}
 
 }

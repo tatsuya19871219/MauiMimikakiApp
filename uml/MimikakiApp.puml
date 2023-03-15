@@ -36,12 +36,16 @@ class MimiDirt
     + MimiDirt(position : Point, hardness : double)
 }
 
-class PathInternalRegion
+class InternalRegion
 {
-    - dict : Dictionary<string, bool[,]>
-    + this[string] : bool[,]
-    + IsInner : bool[,]
-    + IsBoundary : bool[,]
+    '- dict : Dictionary<string, bool[,]>
+    '+ this[string] : bool[,]
+    - isInner : bool[,]
+    - isBoundary : bool[,]
+    + MaxWidth : float
+    + MaxHeight : float
+    + TopLeft : Point
+    
     + LenX : int
     + LenY : int
     + Dx : int
@@ -50,7 +54,7 @@ class PathInternalRegion
     + Ys : int
     + Xe : int
     + Ye : int
-    + PathInternalRegion(pathF : PathF, dx : int, dy : int)
+    + InternalRegion(pathF : PathF, dx : int, dy : int)
     - FillBoundaryPoints(pathF : PathF) : void
     - FillInternalRegion() : void
     - ConvertToRegionIndex(x : double, y : double) : (int, int)
@@ -70,27 +74,30 @@ class TrackableMimiView
     + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
 }
 
-class MimiRegionView
-{
-    - regionDots : Shape[,]
-    + DetectableRegionView(...)
-    + ShowFlaggedRegion(region : PathInternalRegion, flags : bool[,], color : Color) : void
-}
+' class MimiRegionView
+' {
+'     - regionDots : Shape[,]
+'     + DetectableRegionView(...)
+'     + ShowFlaggedRegion(region : PathInternalRegion, flags : bool[,], color : Color) : void
+' }
 
 ' ViewModels
 class TrackableMimiViewModel
 {
     - tracker : PositionTracker
-    - trackableMimi : TrackableView
+    - trackableMimiView : TrackableMimiView
+    - mimi : MimiModel
     + OnMoveOnMimi : Action
-    + BindTrackableMimi(trackableMimi: TrackableView) : void
+    + BindTrackableMimi(trackableMimiView : TrackableMimiView) : void
     - RunTrackerProcess()
 }
 
-class MimiRegionViewModel
-{
-
-}
+' class MimiRegionViewModel
+' {
+'     - regionView : MimiRegionView
+'     - region : MimiRegion
+'     + MimiRegionViewModel(geometry : Geometry)
+' }
 
 ' Drawable
 class MimiRegionDrawable
@@ -115,16 +122,16 @@ MimiModel o-- "3" MimiRegion
 MimiRegion --> PathInternalRegion
 MimiRegion *-- MimiHair
 MimiRegion *-- MimiDirt
-TrackableMimiView *-- MimiRegionView
-TrackableMimiViewModel -right-> TrackableMimiView
+'TrackableMimiView *-- MimiRegionView
+'TrackableMimiViewModel -right-> TrackableMimiView
 TrackableMimiViewModel -left-> MimiModel
 MainPage --> TrackableMimiViewModel
 
-TrackableMimiViewModel --> PositionTracker
+'TrackableMimiViewModel --> PositionTracker
 
-TrackableMimiViewModel o-- "3" MimiRegionViewModel
-MimiRegionViewModel --> MimiRegionView
-MimiRegionView --> MimiRegionDrawable
+'TrackableMimiViewModel o-- "3" MimiRegionViewModel
+'MimiRegionViewModel --> MimiRegionView
+'MimiRegionView --> MimiRegionDrawable
 MimiRegionDrawable --|> IDrawable
 
 @enduml

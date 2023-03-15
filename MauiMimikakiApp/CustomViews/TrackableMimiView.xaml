@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiMimikakiApp.CustomViews.TrackableMimiView">
+             x:Class="MauiMimikakiApp.CustomViews.TrackableMimiView"
+             xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews">
     
     <Grid x:Name="TrackableContent">
 
-        <Image x:Name="TargetImage" Source="{Binding TargetImageSource}"/>
+        <Image x:Name="TargetImage" Source="{Binding TargetImageSource}" SizeChanged="TargetImage_SizeChanged"/>
 
-        <Grid x:Name="RegionsLayer"/>
+        <Grid x:Name="FrontLayer">
 
-        <Grid x:Name="FloatingObjectsLayer"/>
+            <!-- <custom:MimiRegionView x:Name="TopRegion" 
+                                    BindingContext="{Binding TopRegionViewModel}"/>
+            <custom:MimiRegionView x:Name="CenterRegion"
+                                    BindingContext="{Binding CenterRegionViewModel}"/>
+            <custom:MimiRegionView x:Name="BottomRegion"
+                                    BindingContext="{Binding BottomRegionViewModel}"/> -->
+
+            <Grid x:Name="DetectableRegions">
+                <Grid.Resources>
+                    <Style TargetType="GraphicsView">
+                        <Setter Property="Drawable" Value="{Binding}"/>
+                        <Setter Property="WidthRequest" Value="{Binding WidthRequest}"/>
+                        <Setter Property="HeightRequest" Value="{Binding HeightRequest}"/>
+                        <Setter Property="TranslationX" Value="{Binding OffsetX}"/>
+                        <Setter Property="TranslationY" Value="{Binding OffsetY}"/>
+                        <Setter Property="HorizontalOptions" Value="Start"/>
+                        <Setter Property="VerticalOptions" Value="Start"/>
+                    </Style>
+                </Grid.Resources>
+
+                <GraphicsView x:Name="TopRegion" BindingContext="{Binding TopRegionDrawable}"/>
+                <GraphicsView x:Name="CenterRegion" BindingContext="{Binding CenterRegionDrawable}"/>
+                <GraphicsView x:Name="BottomRegion" BindingContext="{Binding BottomRegionDrawable}"/>
+
+            </Grid>
+
+            <Grid x:Name="FloatingObjectsLayer"/>
+
+        </Grid>
 
     </Grid>
 

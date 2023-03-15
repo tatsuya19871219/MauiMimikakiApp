@@ -9,56 +9,47 @@ namespace MauiMimikakiApp;
 public partial class MainPage : ContentPage
 {
 	readonly TrackableMimiViewModel _vm;
-	//PositionTracker _tracker;
+	readonly PositionTracker _tracker;
 
 
-	public MainPage(TrackableMimiViewModel vm)
+	public MainPage() //(TrackableMimiViewModel vm)
 	{
 		InitializeComponent();
 
-		_vm = vm;
+		MimiView.BindingContext = _vm = InstantiateMimiViewModel();
 
-		InitializeTrackableMimi();
+		//InitializeTrackableMimi();
+
+        _tracker = new PositionTracker(MimiView);
+
+		// Initialize Tracker
 	}
 
 
-	async void InitializeTrackableMimi()
+	//void InitializeTrackableMimi()
+	TrackableMimiViewModel InstantiateMimiViewModel()	
 	{
 
-		await MimiTrackableView.RequestTargetHeight((double)PathDictionary["MimiExpectedHeight"]);
-
-		// // not needed
-		// while (true)
-		// {
-		// 	if (MimiTrackableView.Width > 0) break;
-		// 	await Task.Delay(100);
-		// }
-
-		_vm.BindTrackableMimi(MimiTrackableView);
-
-        var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
+		var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
         var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
         var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
-		await _vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);	
+		return new(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
+		
+		//_vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);	
 
-		//_vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
+		
+		// _vm.OnMoveOnMimi += (state) =>
+		// {
+		// 	Point position = state.Position;
 
-        // _tracker = MimiTrackableView.GetPositionTracker();
+		// 	double velocity = state.Velocity.Distance(Point.Zero);
 
-		// RunTrackerProcess();
+		// 	FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
 
-		_vm.OnMoveOnMimi += (state) =>
-		{
-			Point position = state.Position;
+		// };
 
-			double velocity = state.Velocity.Distance(Point.Zero);
-
-			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
-
-		};
-
-		_vm.InvokeTrackerProcess(100);
+		// _vm.InvokeTrackerProcess(100);
 
 	}
 

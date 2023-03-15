@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp.Models;
 
-internal class MimiHair
+public class MimiHair
 {
+    Point _position;
+    public MimiHair(Point position)
+    {
+        _position = position;
+    }
 }

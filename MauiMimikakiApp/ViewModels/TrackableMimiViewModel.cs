@@ -1,69 +1,48 @@
-﻿using Microsoft.Maui.Controls.Shapes;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.Controls.Shapes;
 using MauiMimikakiApp.CustomViews;
 using TakeMauiEasy;
+using MauiMimikakiApp.Models;
+using MauiMimikakiApp.Drawables;
+using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace MauiMimikakiApp.ViewModels;
 
-public class TrackableMimiViewModel
+public partial class TrackableMimiViewModel : ObservableObject
 {
-    PositionTracker _tracker;
-    TrackableImageView _trackableMimi;
 
-    Dictionary<string, Geometry> _geometryDict;
+    [ObservableProperty] MimiRegionDrawable topRegionDrawable;
+    [ObservableProperty] MimiRegionDrawable centerRegionDrawable;
+    [ObservableProperty] MimiRegionDrawable bottomRegionDrawable;
+
+    //Dictionary<string, Geometry> _geometryDict;
+
+    // static int dx = 5;
+    // static int dy = 5;
+
+    readonly MimiModel _mimi;
 
     public Action<PositionTrackerState> OnMoveOnMimi;
 
-    public TrackableMimiViewModel()
+    public TrackableMimiViewModel(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
     {
+        var topRegionPath = new Path(mimiTop);
+        var centerRegionPath = new Path(mimiCenter);
+        var bottomRegionPath = new Path(mimiBottom);
 
-    }
-
-    internal void BindTrackableMimi(TrackableImageView trackableMimi)
-    {
-        _trackableMimi = trackableMimi;
-
-        _tracker = new PositionTracker(_trackableMimi);
-    }
-
-    async internal Task InitializeDetectableGeometries(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
-    {
-        if (_geometryDict is not null) throw new Exception("Detectable geometries are already set.");
-
-        _geometryDict = new();
-
-        _geometryDict.Add("top", mimiTop);
-        _geometryDict.Add("center", mimiCenter);
-        _geometryDict.Add("bottom", mimiBottom);
+        var topInternalRegion = new PathInternalRegion(topRegionPath.GetPath());
+        var centerInternalRegion = new PathInternalRegion(centerRegionPath.GetPath());
+        var bottomInternalRegion = new PathInternalRegion(bottomRegionPath.GetPath());
         
-        // Make DetectableRegionViews
-        var topRegionView = new DetectableRegionView(mimiTop);
-        var centerRegionView = new DetectableRegionView(mimiCenter);
-        var bottomRegionView = new DetectableRegionView(mimiBottom);
+        _mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
 
-        // Get inctances of PathInternalRegion
-        var topInternalRegion = topRegionView.GenerateInternalRegion();
-        var centerInternalRegion = centerRegionView.GenerateInternalRegion();
-        var bottomInternalRegion = bottomRegionView.GenerateInternalRegion();
-
-        //// Add to the trackableMimi
-        _trackableMimi.AddDetectableRegionView(topRegionView);
-        _trackableMimi.AddDetectableRegionView(centerRegionView);
-        _trackableMimi.AddDetectableRegionView(bottomRegionView);
-        
-        //List<Task> tasks = new();
-
-        //int stepsVisualization = 1;
-
-        //tasks.Add( topRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        //tasks.Add( topRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
-        //tasks.Add( centerRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        //tasks.Add( centerRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
-        //tasks.Add( bottomRegionView.VisualizeRegion("boundary", Colors.Purple) );
-        //tasks.Add( bottomRegionView.VisualizeRegion("inner", Colors.Gray, stepsVisualization) );
-
-        //await Task.WhenAll(tasks);
+        TopRegionDrawable = new MimiRegionDrawable(_mimi.Top);
+        CenterRegionDrawable = new MimiRegionDrawable(_mimi.Center);
+        BottomRegionDrawable = new MimiRegionDrawable(_mimi.Bottom);
+    
     }
 
+    
     internal void InvokeTrackerProcess(int updateInterval = 100)
     {
         if (updateInterval < 0) throw new Exception("Invalid update interval is given. The value should be positive.");
@@ -75,7 +54,7 @@ public class TrackableMimiViewModel
     {
         while (true)
         {
-            OnMoveOnMimi?.Invoke(_tracker.CurrentState);
+            //OnMoveOnMimi?.Invoke(_tracker.CurrentState);
 
             // OnMoveOnMimiTop
 
