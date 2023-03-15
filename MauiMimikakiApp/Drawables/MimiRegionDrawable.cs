@@ -16,7 +16,7 @@ public class MimiRegionDrawable : IDrawable
     public double OffsetY => _offsetY;
 
     readonly MimiRegion _mimiRegion;
-    InternalRegion _internal => _mimiRegion.Internal;
+    //InternalRegion _internal => _mimiRegion.Internal;
 
     readonly float _padding;
     readonly double _offsetX;
@@ -28,13 +28,13 @@ public class MimiRegionDrawable : IDrawable
 
         _padding = (float)padding;
 
-        var topleft = _internal.TopLeft;
+        var bounds = _mimiRegion.Bounds;
 
-        _offsetX = topleft.X - _padding;
-        _offsetY = topleft.Y - _padding;
+        _offsetX = bounds.Left - _padding;
+        _offsetY = bounds.Top - _padding;
 
-        WidthRequest = _internal.MaxWidth + 2*_padding;
-        HeightRequest = _internal.MaxHeight + 2*_padding;
+        WidthRequest = bounds.Width + 2*_padding;
+        HeightRequest = bounds.Height + 2*_padding;
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)

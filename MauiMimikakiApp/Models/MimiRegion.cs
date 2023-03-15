@@ -8,7 +8,8 @@ namespace MauiMimikakiApp.Models;
 
 public class MimiRegion
 {
-    public InternalRegion Internal => _internalRegion;
+    //public InternalRegion Internal => _internalRegion;
+    readonly public Rect Bounds;
     public IEnumerable<MimiHair> Hairs => _hairs;
     public IEnumerable<MimiDust> Dusts => _dusts;
     
@@ -20,6 +21,11 @@ public class MimiRegion
     public MimiRegion(InternalRegion internalRegion)
     {
         _internalRegion = internalRegion;
+
+        var topleft = _internalRegion.TopLeft;
+        var size = new Size(_internalRegion.MaxWidth, _internalRegion.MaxHeight);
+
+        Bounds = new Rect(topleft, size);
 
         // initialize mimi hairs
         InitializeMimiHair(0.5);

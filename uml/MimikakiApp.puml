@@ -65,13 +65,14 @@ class InternalRegion
 ' Views
 class TrackableMimiView
 {
-    - targetView : ViewModels
-    - targetHeightRequest : double
-    - displayRatio : double
+    ' - targetView : ViewModels
+    + TargetImageSource : ImageSource
+    + TargetImageOriginalHeight : double
+    ' - displayRatio : double
     + TrackableView()
-    + SetTargetView(targetView : View, targetHeightRequest : double) : Task
-    - InitializeTrackableView() : Task
-    + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
+    ' + SetTargetView(targetView : View, targetHeightRequest : double) : Task
+    ' - InitializeTrackableView() : Task
+    ' + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
 }
 
 ' class MimiRegionView
@@ -102,13 +103,32 @@ class TrackableMimiViewModel
 ' Drawable
 class MimiRegionDrawable
 {
+    + WidthRequest : double
+    + HeightRequest : double
+    + OffsetX : double
+    + OffsetY : double
+    - mimiRegion : MimiRegion
+    - internal : InternalRegion
+    - padding : float
+    - offsetX : double
+    - offsetY : double
+    + MimiRegionDrawable(mimiRegion : MimiRegion, padding : double)
+    + Draw(canvas : ICanvas, dirtyRect : RectF) : void
+    - VisualizeHair(canvas : ICanvas, color : Color, thinness : float) : void
+}
 
+' Message
+class DrawMessage
+{
+    
 }
 
 ' Page
 class MainPage
 {
-    + InitializeTrackableMimi()
+    + MainPage()
+    - InstantiateMimiViewModel(tracker : PositionTracker) : TrackableMimiViewModel
+    - GetGeometryFromString(pathString : string) : Geometry
 }
 
 ' Library
@@ -119,19 +139,19 @@ package TakeMauiEasy
 
 ' 
 MimiModel o-- "3" MimiRegion
-MimiRegion --> PathInternalRegion
+MimiRegion --> InternalRegion
 MimiRegion *-- MimiHair
 MimiRegion *-- MimiDirt
-'TrackableMimiView *-- MimiRegionView
-'TrackableMimiViewModel -right-> TrackableMimiView
-TrackableMimiViewModel -left-> MimiModel
+'
+TrackableMimiViewModel --> PositionTracker
+TrackableMimiViewModel --> MimiModel
+TrackableMimiViewModel o-- "3" MimiRegionDrawable
+
 MainPage --> TrackableMimiViewModel
+MainPage ..> PositionTracker
+MainPage --> TrackableMimiView
 
-'TrackableMimiViewModel --> PositionTracker
-
-'TrackableMimiViewModel o-- "3" MimiRegionViewModel
-'MimiRegionViewModel --> MimiRegionView
-'MimiRegionView --> MimiRegionDrawable
 MimiRegionDrawable --|> IDrawable
+MimiRegionDrawable --> MimiRegion
 
 @enduml

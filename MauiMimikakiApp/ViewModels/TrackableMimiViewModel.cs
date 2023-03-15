@@ -16,17 +16,18 @@ internal partial class TrackableMimiViewModel : ObservableObject
     [ObservableProperty] MimiRegionDrawable centerRegionDrawable;
     [ObservableProperty] MimiRegionDrawable bottomRegionDrawable;
 
-    //Dictionary<string, Geometry> _geometryDict;
-
     static int dx = 2;
     static int dy = 2;
 
+    readonly PositionTracker _tracker;
     readonly MimiModel _mimi;
 
     internal Action<PositionTrackerState> OnMoveOnMimi;
 
-    internal TrackableMimiViewModel(Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
+    internal TrackableMimiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
     {
+        _tracker = tracker;
+
         var topRegionPath = new Path(mimiTop);
         var centerRegionPath = new Path(mimiCenter);
         var bottomRegionPath = new Path(mimiBottom);
@@ -41,23 +42,24 @@ internal partial class TrackableMimiViewModel : ObservableObject
         CenterRegionDrawable = new MimiRegionDrawable(_mimi.Center);
         BottomRegionDrawable = new MimiRegionDrawable(_mimi.Bottom);
     
-        DoSomething();
+        //InvokeTrackerProcess();
+        //DoSomething();
     }
 
-    async void DoSomething()
-    {
-        while (true)
-        {
-            foreach (var hair in _mimi.Top.Hairs)
-            {
-                hair.Displace(new Point(5, 5));
-                await Task.Delay(100);
+    // async void DoSomething()
+    // {
+    //     while (true)
+    //     {
+    //         foreach (var hair in _mimi.Top.Hairs)
+    //         {
+    //             hair.Displace(new Point(5, 5));
+    //             await Task.Delay(100);
 
-                StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
-            }
+    //             StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
 
     internal void InvokeTrackerProcess(int updateInterval = 100)
@@ -71,7 +73,7 @@ internal partial class TrackableMimiViewModel : ObservableObject
     {
         while (true)
         {
-            //OnMoveOnMimi?.Invoke(_tracker.CurrentState);
+            OnMoveOnMimi?.Invoke(_tracker.CurrentState);
 
             // OnMoveOnMimiTop
 

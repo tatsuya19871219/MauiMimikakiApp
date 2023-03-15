@@ -9,7 +9,7 @@ namespace MauiMimikakiApp;
 public partial class MainPage : ContentPage
 {
 	readonly TrackableMimiViewModel _vm;
-	readonly PositionTracker _tracker;
+	//readonly PositionTracker _tracker;
 
 
 	public MainPage() //(TrackableMimiViewModel vm)
@@ -18,11 +18,24 @@ public partial class MainPage : ContentPage
 
 		//MimiGrid.IsVisible = false;
 
-		MimiView.BindingContext = _vm = InstantiateMimiViewModel();
+        var tracker = new PositionTracker(MimiView);
+
+		MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker);
 
 		//InitializeTrackableMimi();
 
-        _tracker = new PositionTracker(MimiView);
+		// Set Sample loop logic
+		_vm.OnMoveOnMimi += (state) =>
+		{
+			Point position = state.Position;
+
+			double velocity = state.Velocity.Distance(Point.Zero);
+
+			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
+
+		};
+
+		_vm.InvokeTrackerProcess(100);
 
 		// Initialize Tracker
 
@@ -31,14 +44,14 @@ public partial class MainPage : ContentPage
 
 
 	//void InitializeTrackableMimi()
-	TrackableMimiViewModel InstantiateMimiViewModel()	
+	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker)	
 	{
 
 		var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
         var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
         var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
-		return new(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
+		return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
 		
 		//_vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);	
 

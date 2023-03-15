@@ -2,9 +2,7 @@
 
 internal class MimiModel
 {
-    //readonly int _height;
-    //readonly int _width;
-
+    
     public MimiRegion Top => _topRegion;
     public MimiRegion Center => _centerRegion;
     public MimiRegion Bottom => _bottomRegion;
@@ -12,15 +10,6 @@ internal class MimiModel
     readonly MimiRegion _topRegion;
     readonly MimiRegion _centerRegion;
     readonly MimiRegion _bottomRegion;
-
-
-    // public MimiModel(int height, MimiRegion top, MimiRegion center, MimiRegion bottom)
-    // {
-    //     //_height = height;
-    //     _topRegion = top;
-    //     _centerRegion = center;
-    //     _bottomRegion = bottom;
-    // }
 
     public MimiModel(InternalRegion top, InternalRegion center, InternalRegion bottom)
     {
