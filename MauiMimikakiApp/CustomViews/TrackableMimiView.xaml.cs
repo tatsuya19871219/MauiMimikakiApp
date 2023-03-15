@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 using TakeMauiEasy;
@@ -32,6 +33,15 @@ public partial class TrackableMimiView : ContentView
         TargetImage.BindingContext = this;
 
         // Register DrawMessages
+        StrongReferenceMessenger.Default.Register<DrawMessage>(this, (s, e) =>
+        {
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                TopRegion.Invalidate();
+                CenterRegion.Invalidate();
+                BottomRegion.Invalidate();
+            });
+        });
         
         //RunInvalidateProcess();
     }

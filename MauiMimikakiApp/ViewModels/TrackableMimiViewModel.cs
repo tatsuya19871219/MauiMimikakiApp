@@ -5,6 +5,7 @@ using TakeMauiEasy;
 using MauiMimikakiApp.Models;
 using MauiMimikakiApp.Drawables;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace MauiMimikakiApp.ViewModels;
 
@@ -40,25 +41,25 @@ internal partial class TrackableMimiViewModel : ObservableObject
         CenterRegionDrawable = new MimiRegionDrawable(_mimi.Center);
         BottomRegionDrawable = new MimiRegionDrawable(_mimi.Bottom);
     
-        //DoSomething();
+        DoSomething();
     }
 
-    // async void DoSomething()
-    // {
-    //     while(true)
-    //     {
-    //         foreach(var hair in _mimi.Top.Hairs)
-    //         {
-    //             hair.Displace(new Point(5, 5));
-    //             await Task.Delay(100);
+    async void DoSomething()
+    {
+        while (true)
+        {
+            foreach (var hair in _mimi.Top.Hairs)
+            {
+                hair.Displace(new Point(5, 5));
+                await Task.Delay(100);
 
-    //             //TopRegion.Invalidate();
-    //         }
+                StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
+            }
 
-    //     }
-    // }
+        }
+    }
 
-    
+
     internal void InvokeTrackerProcess(int updateInterval = 100)
     {
         if (updateInterval < 0) throw new Exception("Invalid update interval is given. The value should be positive.");
