@@ -9,7 +9,7 @@ namespace MauiMimikakiApp.Models;
 public class MimiRegion
 {
     //public InternalRegion Internal => _internalRegion;
-    readonly public Rect Bounds;
+    public Rect Bounds => _internalRegion.Bounds;
     public IEnumerable<MimiHair> Hairs => _hairs;
     public IEnumerable<MimiDust> Dusts => _dusts;
     
@@ -22,13 +22,13 @@ public class MimiRegion
     {
         _internalRegion = internalRegion;
 
-        var topleft = _internalRegion.TopLeft;
-        var size = new Size(_internalRegion.MaxWidth, _internalRegion.MaxHeight);
+        // var topleft = _internalRegion.TopLeft;
+        // var size = new Size(_internalRegion.MaxWidth, _internalRegion.MaxHeight);
 
-        Bounds = new Rect(topleft, size);
+        // Bounds = new Rect(topleft, size);
 
         // initialize mimi hairs
-        InitializeMimiHair(0.5);
+        InitializeMimiHair(0.2);
 
     }
 
@@ -39,12 +39,17 @@ public class MimiRegion
 
         double hairMargin = 0;
 
-        var topleft = _internalRegion.TopLeft;
-        var bottomright = _internalRegion.BottomRight;
-        var center = _internalRegion.Center;
+        // var topleft = _internalRegion.TopLeft;
+        // var bottomright = _internalRegion.BottomRight;
+        // var center = _internalRegion.Center;
 
-        var MaxWidth = _internalRegion.MaxWidth;
-        var MaxHeight = _internalRegion.MaxHeight;
+        // var maxWidth = _internalRegion.MaxWidth;
+        // var maxHeight = _internalRegion.MaxHeight;
+
+        Point center = Bounds.Center;
+
+        var maxWidth = Bounds.Width;
+        var maxHeight = Bounds.Height;
 
         // for (double x = topleft.X + hairMargin; x <= bottomright.X - hairMargin; x+=dx)
         // {
@@ -56,9 +61,9 @@ public class MimiRegion
         //     }
         // }
 
-        for (double x = center.X - MaxWidth/2; x <= center.X + MaxWidth/2; x+=dx)
+        for (double x = center.X - maxWidth/2; x <= center.X + maxWidth/2; x+=dx)
         {
-            for (double y = center.Y - MaxHeight/2; y <= center.Y + MaxHeight/2; y+=dy)
+            for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
             {
                 if (_internalRegion.ContainsInRegion(x,y)
                     && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)

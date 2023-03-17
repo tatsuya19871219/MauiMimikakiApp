@@ -20,13 +20,20 @@ internal partial class TrackableMimiViewModel : ObservableObject
     static int dy = 2;
 
     readonly PositionTracker _tracker;
-    readonly MimiModel _mimi;
+    //readonly MimiModel _mimi;
+
+    readonly MimiRegion _topRegion;
+    readonly MimiRegion _centerRegion;
+    readonly MimiRegion _bottomRegion;
+
+    readonly double _displayRatio;
 
     internal Action<PositionTrackerState> OnMoveOnMimi;
 
-    internal TrackableMimiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom)
+    internal TrackableMimiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
     {
         _tracker = tracker;
+        _displayRatio = displayRatio;
 
         var topRegionPath = new Path(mimiTop);
         var centerRegionPath = new Path(mimiCenter);
@@ -36,11 +43,15 @@ internal partial class TrackableMimiViewModel : ObservableObject
         var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath(), dx, dy);
         var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath(), dx, dy);
         
-        _mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
+        //_mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
 
-        TopRegionDrawable = new MimiRegionDrawable(_mimi.Top);
-        CenterRegionDrawable = new MimiRegionDrawable(_mimi.Center);
-        BottomRegionDrawable = new MimiRegionDrawable(_mimi.Bottom);
+        _topRegion = new(topInternalRegion);
+        _centerRegion = new(centerInternalRegion);
+        _bottomRegion = new(bottomInternalRegion);
+
+        TopRegionDrawable = new MimiRegionDrawable(_topRegion);
+        CenterRegionDrawable = new MimiRegionDrawable(_centerRegion);
+        BottomRegionDrawable = new MimiRegionDrawable(_bottomRegion);
     
         //InvokeTrackerProcess();
         //DoSomething();
@@ -71,14 +82,31 @@ internal partial class TrackableMimiViewModel : ObservableObject
 
     async void RunTrackerProcess(int updateInterval)
     {
+        IEnumerable<ITrackerListener> listeners = 
+            new[] { _topRegion.Hairs, _centerRegion.Hairs, _bottomRegion.Hairs }
+            .SelectMany(listener => listener);
+
         while (true)
         {
-            OnMoveOnMimi?.Invoke(_tracker.CurrentState);
+            var current  = _tracker.CurrentState;
+            var position = ScaleForDisplayRatio(current.Position);
+            var velocity = ScaleForDisplayRatio(current.Velocity);
+            double dt = (double)updateInterval/1000;
 
-            // OnMoveOnMimiTop
+            OnMoveOnMimi?.Invoke(current);
+
+            foreach (var listener in listeners)
+                listener.OnMove(position, velocity, dt);
+
+            StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
 
             await Task.Delay(updateInterval);
         }
+    }
+
+    Point ScaleForDisplayRatio(Point point)
+    {
+        return new Point(point.X/_displayRatio, point.Y/_displayRatio);
     }
 }
 

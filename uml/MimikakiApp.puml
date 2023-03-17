@@ -1,19 +1,24 @@
 @startuml MimikakiClassDiagram
 ' Models
-class MimiModel
-{
-    - height : int
-    - width : int
-    - topRegion : MimiRegion
-    - centerRegion : MimiRegion
-    - bottomRegion : MimiRegion
-}
+' class MimiModel
+' {
+'     - height : int
+'     - width : int
+'     - topRegion : MimiRegion
+'     - centerRegion : MimiRegion
+'     - bottomRegion : MimiRegion
+' }
 
 class MimiRegion
 {
-    - region : PathInternalRegion
+    + Bounds : Rect
+    + Hairs : IEnumerable<MimiHair>
+    + Dirts : IEnumerable<MimiDirt>
+    - internalRegion : InternalRegion
     - hairList : List<MimiHair>
     - dirtList : List<MimiDirt>
+    + MimiRegion(internalRegion : InternalRegion)
+    - InitializeMimiHair(density : double)
     + OnTouch : Action
     + OnDirtRemoving : Action
     + OnDirtRemoved : Action
@@ -86,11 +91,21 @@ class TrackableMimiView
 class TrackableMimiViewModel
 {
     - tracker : PositionTracker
-    - trackableMimiView : TrackableMimiView
-    - mimi : MimiModel
+    '- trackableMimiView : TrackableMimiView
+    '- mimi : MimiModel
+    + TopRegionDrawable : MimiRegionDrawable <<observable>>
+    + CenterRegionDrawable : MimiRegionDrawable <<observable>>
+    + BottomRegionDrawable : MimiRegionDrawable <<observable>>
+    - topRegion : MimiRegion
+    - centerRegion : MimiRegion
+    - bottomRegion : MimiRegion
+    - tracker : PositionTracker
     + OnMoveOnMimi : Action
-    + BindTrackableMimi(trackableMimiView : TrackableMimiView) : void
-    - RunTrackerProcess()
+    '+ BindTrackableMimi(trackableMimiView : TrackableMimiView) : void
+    '- RunTrackerProcess()
+    ~ TrackableMimiViewModel(tracker : PositionTracker, mimiTop : Geometry, mimiCenter : Geometry, mimiBottom : Geometry)
+    ~ InvokeTrackerProcess(updateInterval : int) : void
+    - RunTrackerProcess(updateInterval : int) : void
 }
 
 ' class MimiRegionViewModel
@@ -108,7 +123,7 @@ class MimiRegionDrawable
     + OffsetX : double
     + OffsetY : double
     - mimiRegion : MimiRegion
-    - internal : InternalRegion
+    '- internal : InternalRegion
     - padding : float
     - offsetX : double
     - offsetY : double
@@ -120,7 +135,7 @@ class MimiRegionDrawable
 ' Message
 class DrawMessage
 {
-    
+
 }
 
 ' Page
@@ -138,13 +153,13 @@ package TakeMauiEasy
 }
 
 ' 
-MimiModel o-- "3" MimiRegion
+'MimiModel o-- "3" MimiRegion
 MimiRegion --> InternalRegion
 MimiRegion *-- MimiHair
 MimiRegion *-- MimiDirt
 '
 TrackableMimiViewModel --> PositionTracker
-TrackableMimiViewModel --> MimiModel
+'TrackableMimiViewModel --> MimiModel
 TrackableMimiViewModel o-- "3" MimiRegionDrawable
 
 MainPage --> TrackableMimiViewModel

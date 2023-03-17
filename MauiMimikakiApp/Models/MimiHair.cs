@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp.Models;
 
-public class MimiHair
+public class MimiHair : ITrackerListener
 {
     public Point Origin => _origin;
     public Point Position => _position;
+
+    public double Thinness => _thinness;
 
     Point _origin;
     Point _position;
     
     //Point _force;
+
+    double _thinness;
+    readonly double _originalThinness;
 
     readonly double _springConst;
 
@@ -25,16 +30,18 @@ public class MimiHair
 
         _springConst = springConst;
         //_force = Point.Zero;
+
+        _thinness = _originalThinness = 2.0;
     }
 
-    public void Displace(Point displacement)
-    {
-        _position = _position.Offset(displacement.X, displacement.Y);
+    // public void Displace(Point displacement)
+    // {
+    //     _position = _position.Offset(displacement.X, displacement.Y);
 
-        UpdatePosition();
-    }
+    //     UpdatePosition();
+    // }
 
-    async void UpdatePosition(int milliSec = 100, double cutoffDisplacement = 0.2, double cutoffVelocity = 0.2)
+    async void UpdatePositionAsync(int milliSec = 100, double cutoffDisplacement = 0.2, double cutoffVelocity = 0.2)
     {
         double dt = (double)milliSec/1000;
 
@@ -59,4 +66,18 @@ public class MimiHair
         _position = _origin;
     }
 
+    
+    public void OnMove(Point position, Point velocity, double milliSecUpdateInterval)
+    {
+        double dt = milliSecUpdateInterval;
+
+        if (position.Distance(_origin) < 5)
+        {
+            _thinness = 1.2 * _originalThinness;
+        }
+        else 
+        {
+            _thinness = _originalThinness;
+        }
+    }
 }

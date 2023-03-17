@@ -39,15 +39,15 @@ public class MimiRegionDrawable : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        canvas.FillColor = Colors.Purple;
-        canvas.Alpha = 0.3f;
-        canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
+        // canvas.FillColor = Colors.Purple;
+        // canvas.Alpha = 0.3f;
+        // canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
 
         // canvas.StrokeColor = Colors.Red;
         // canvas.StrokeSize = 2;
         // canvas.DrawCircle(_padding, _padding, 4);
 
-        VisualizeHair(canvas, Colors.LightGray, 2.0f);
+        VisualizeHair(canvas, Colors.Red);
 
         // canvas.FillColor = Colors.Blue;
         // VisualizeRegion(canvas, "boundary", Colors.Red);
@@ -56,8 +56,9 @@ public class MimiRegionDrawable : IDrawable
         // VisualizeRegion(canvas, "inner", Colors.Pink);
     }
 
-    void VisualizeHair(ICanvas canvas, Color color, float thinness)
+    void VisualizeHair(ICanvas canvas, Color color)
     {   
+
         foreach (var hair in _mimiRegion.Hairs)
         {
             var origin = hair.Origin;
@@ -69,10 +70,12 @@ public class MimiRegionDrawable : IDrawable
             var y0 = origin.Y - _offsetY;
 
             canvas.FillColor = color;
-            canvas.FillCircle( (float)x0, (float)y0, thinness);
+            //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
+            canvas.FillCircle( (float)x0, (float)y0, (float)hair.Thinness);
 
             canvas.FillColor = Colors.Black;
-            canvas.FillCircle( (float)x, (float)y, thinness*0.5f);
+            //canvas.Alpha = 1.0f;
+            canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.8f);
         }
     }
 

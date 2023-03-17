@@ -18,13 +18,17 @@ public partial class TrackableMimiView : ContentView
 
     public double TargetImageOriginalHeight { get; init; }
 
+
+    public View MimiTrackerLayer => TrackerLayer;
+
     //PositionTracker _tracker = null;
     //View _targetView = null;
 
     //double _targetWidthRequest;
     //double _targetHeightRequest;
 
-    //double _displayRatio;
+    public double? DisplayRatio => _displayRatio;
+    double? _displayRatio = null;
 
     public TrackableMimiView() //(TrackableMimiViewModel vm)
     {
@@ -62,11 +66,11 @@ public partial class TrackableMimiView : ContentView
         this.WidthRequest = TargetImage.DesiredSize.Width;
         this.HeightRequest = TargetImage.DesiredSize.Height;
         
-        var displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
+        _displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
 
         FrontLayer.AnchorX = 0;
         FrontLayer.AnchorY = 0;
-        FrontLayer.Scale = displayRatio;
+        FrontLayer.Scale = _displayRatio.Value;
     }
 
     // async void RunInvalidateProcess()

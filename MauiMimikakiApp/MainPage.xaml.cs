@@ -8,21 +8,27 @@ namespace MauiMimikakiApp;
 
 public partial class MainPage : ContentPage
 {
-	readonly TrackableMimiViewModel _vm;
-	//readonly PositionTracker _tracker;
+	TrackableMimiViewModel _vm;
 
-
-	public MainPage() //(TrackableMimiViewModel vm)
+	public MainPage() 
 	{
 		InitializeComponent();
 
+		InitializeMimiViewModel();
+	}
+
+
+	async void InitializeMimiViewModel()
+	{
 		//MimiGrid.IsVisible = false;
 
-        var tracker = new PositionTracker(MimiView);
+		await EasyTasks.WaitFor(() => MimiView.DisplayRatio.HasValue);
 
-		MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker);
+		var tracker = new PositionTracker(MimiView.MimiTrackerLayer);
 
-		//InitializeTrackableMimi();
+		double displayRatio = MimiView.DisplayRatio.Value;
+
+		MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker, displayRatio);
 
 		// Set Sample loop logic
 		_vm.OnMoveOnMimi += (state) =>
@@ -37,37 +43,16 @@ public partial class MainPage : ContentPage
 
 		_vm.InvokeTrackerProcess(100);
 
-		// Initialize Tracker
-
 		//MimiGrid.IsVisible = true;
 	}
 
-
-	//void InitializeTrackableMimi()
-	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker)	
+	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker, double displayRatio)	
 	{
-
 		var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
         var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
         var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
-		return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);
-		
-		//_vm.InitializeDetectableGeometries(mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry);	
-
-		
-		// _vm.OnMoveOnMimi += (state) =>
-		// {
-		// 	Point position = state.Position;
-
-		// 	double velocity = state.Velocity.Distance(Point.Zero);
-
-		// 	FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
-
-		// };
-
-		// _vm.InvokeTrackerProcess(100);
-
+		return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry, displayRatio);
 	}
 
 	

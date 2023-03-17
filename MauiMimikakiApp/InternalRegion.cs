@@ -10,12 +10,12 @@ public class InternalRegion
 {
     //public bool[,] IsInner => _isInner;
     //public bool[,] IsBoundary => _isBoundary;
-
-    public double MaxWidth => _bottomRight.X - _topLeft.X;
-    public double MaxHeight => _bottomRight.Y - _topLeft.Y;
-    public Point TopLeft => _topLeft;
-    public Point BottomRight => _bottomRight;
-    public Point Center => TopLeft.Offset(MaxWidth/2, MaxHeight/2);
+    readonly public Rect Bounds;
+    // public double MaxWidth => _bottomRight.X - _topLeft.X;
+    // public double MaxHeight => _bottomRight.Y - _topLeft.Y;
+    // public Point TopLeft => _topLeft;
+    // public Point BottomRight => _bottomRight;
+    // public Point Center => TopLeft.Offset(MaxWidth/2, MaxHeight/2);
 
     readonly Point _topLeft;
     readonly Point _bottomRight;
@@ -65,6 +65,11 @@ public class InternalRegion
         _dy = dy;
 
         GetMinAndMaxPoints(pathF, out _topLeft, out _bottomRight);
+
+        var maxWidth = _bottomRight.X - _topLeft.X;
+        var maxHeight = _bottomRight.Y - _topLeft.Y;
+
+        Bounds = new Rect(_topLeft, new Size(maxWidth, maxHeight));
 
         _xs = (int)Math.Floor((double)_topLeft.X / dx) * dx;
 		_ys = (int)Math.Floor((double)_topLeft.Y / dy) * dy;
