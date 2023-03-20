@@ -19,15 +19,20 @@ class MimiRegion
     - dirtList : List<MimiDirt>
     + MimiRegion(internalRegion : InternalRegion)
     - InitializeMimiHair(density : double)
-    + OnTouch : Action
-    + OnDirtRemoving : Action
-    + OnDirtRemoved : Action
+    '+ OnTouch : Action
+    '+ OnDirtRemoving : Action
+    '+ OnDirtRemoved : Action
+}
+
+interface ITrackerListener
+{
+    
 }
 
 class MimiHair
 {
     - origin : Point
-    - movement : Point
+    - position : Point
     - springConst : double
     + MimiHair(position : Point)
     + GetPosition() : Point
@@ -43,22 +48,11 @@ class MimiDirt
 
 class InternalRegion
 {
-    '- dict : Dictionary<string, bool[,]>
-    '+ this[string] : bool[,]
-    - isInner : bool[,]
-    - isBoundary : bool[,]
-    + MaxWidth : float
-    + MaxHeight : float
-    + TopLeft : Point
-    + Center : Point
-    + LenX : int
-    + LenY : int
-    + Dx : int
-    + Dy : int
-    + Xs : int
-    + Ys : int
-    + Xe : int
-    + Ye : int
+    + Bounds : Rect <<read only>>
+    - topLeft : Point <<read only>>
+    - bottomRight : Point <<read only>>
+    - isInner : bool[,] <<read only>>
+    - isBoundary : bool[,] <<read only>>
     + InternalRegion(pathF : PathF, dx : int, dy : int)
     - FillBoundaryPoints(pathF : PathF) : void
     - FillInternalRegion() : void
@@ -70,22 +64,14 @@ class InternalRegion
 ' Views
 class TrackableMimiView
 {
-    ' - targetView : ViewModels
     + TargetImageSource : ImageSource
     + TargetImageOriginalHeight : double
-    ' - displayRatio : double
+    + MimiTrackerLayer : View <<get only property>>
+    + DisplayRatio : double? <<get only property>>
     + TrackableView()
-    ' + SetTargetView(targetView : View, targetHeightRequest : double) : Task
-    ' - InitializeTrackableView() : Task
-    ' + RegistDetectableRegionView(detectableView : DetectableRegionView) : void
+    - TargetImage_SizeChanged(sender : object, e : EventArgs) : void
 }
 
-' class MimiRegionView
-' {
-'     - regionDots : Shape[,]
-'     + DetectableRegionView(...)
-'     + ShowFlaggedRegion(region : PathInternalRegion, flags : bool[,], color : Color) : void
-' }
 
 ' ViewModels
 class TrackableMimiViewModel
@@ -108,12 +94,6 @@ class TrackableMimiViewModel
     - RunTrackerProcess(updateInterval : int) : void
 }
 
-' class MimiRegionViewModel
-' {
-'     - regionView : MimiRegionView
-'     - region : MimiRegion
-'     + MimiRegionViewModel(geometry : Geometry)
-' }
 
 ' Drawable
 class MimiRegionDrawable
@@ -135,13 +115,14 @@ class MimiRegionDrawable
 ' Message
 class DrawMessage
 {
-
+    ~ DrawMEssage(value : string)
 }
 
 ' Page
 class MainPage
 {
     + MainPage()
+    - InitializeMimiViewModel() : void
     - InstantiateMimiViewModel(tracker : PositionTracker) : TrackableMimiViewModel
     - GetGeometryFromString(pathString : string) : Geometry
 }
@@ -150,6 +131,8 @@ class MainPage
 package TakeMauiEasy
 {
     class PositionTracker
+
+    class EasyTasks
 }
 
 ' 

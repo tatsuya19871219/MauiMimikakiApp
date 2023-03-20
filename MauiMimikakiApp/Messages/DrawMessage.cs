@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiMimikakiApp
+namespace MauiMimikakiApp.Messages
 {
     internal class DrawMessage : ValueChangedMessage<string>
     {

@@ -11,11 +11,13 @@ public class MimiRegion
     //public InternalRegion Internal => _internalRegion;
     public Rect Bounds => _internalRegion.Bounds;
     public IEnumerable<MimiHair> Hairs => _hairs;
-    public IEnumerable<MimiDust> Dusts => _dusts;
+    public IEnumerable<MimiDirt> Dirts => _dirts;
     
     readonly InternalRegion _internalRegion;
     readonly List<MimiHair> _hairs = new();
-    readonly List<MimiDust> _dusts = new();
+    readonly List<MimiDirt> _dirts = new();
+
+    internal PathF OriginalPath => _internalRegion.GetOriginalPath();
 
 
     public MimiRegion(InternalRegion internalRegion)
@@ -70,5 +72,22 @@ public class MimiRegion
                             _hairs.Add(new MimiHair(new Point(x,y)));
             }
         }
+    }
+
+    internal void GenerateMimiDirt()
+    {
+        Point point = _internalRegion.GeneratePointInRegion();
+
+        _dirts.Add(new MimiDirt(point));
+    }
+
+    internal void RemoveMimiDirt(MimiDirt dirt)
+    {
+        _dirts.Remove(dirt);
+    }
+
+    internal bool Contains(Point point)
+    {
+        return _internalRegion.ContainsInRegion(point.X, point.Y);
     }
 }

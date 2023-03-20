@@ -1,4 +1,5 @@
-﻿using MauiMimikakiApp.CustomViews;
+﻿using Plugin.Maui.Audio;
+using MauiMimikakiApp.CustomViews;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 
@@ -8,28 +9,42 @@ namespace MauiMimikakiApp;
 
 public partial class MainPage : ContentPage
 {
+	readonly IAudioManager _audioManager;
+
+	IAudioPlayer _kakiSEPlayer;
+
 	TrackableMimiViewModel _vm;
 
-	public MainPage() 
+	public MainPage(IAudioManager audioManager) 
 	{
 		InitializeComponent();
 
-		InitializeMimiViewModel();
+		_audioManager = audioManager;
+
+		InitializeMimi();
 	}
 
 
-	async void InitializeMimiViewModel()
+	async void InitializeMimi()
 	{
 		//MimiGrid.IsVisible = false;
 
 		await EasyTasks.WaitFor(() => MimiView.DisplayRatio.HasValue);
 
-		var tracker = new PositionTracker(MimiView.MimiTrackerLayer);
+		PositionTracker tracker = null;
+#if ANDROID
+		tracker = new PositionTracker(MimiView.MimiTrackerLayer);
+#elif WINDOWS
+		tracker = new PositionTracker(MimiView);
+#endif
 
 		double displayRatio = MimiView.DisplayRatio.Value;
 
 		MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker, displayRatio);
 
+		// Set up SEs
+		_kakiSEPlayer = _audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("kaki.mp3"));
+		
 		// Set Sample loop logic
 		_vm.OnMoveOnMimi += (state) =>
 		{
@@ -38,6 +53,13 @@ public partial class MainPage : ContentPage
 			double velocity = state.Velocity.Distance(Point.Zero);
 
 			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
+
+			// test
+			_kakiSEPlayer.Speed = velocity*50;
+			if(!_kakiSEPlayer.IsPlaying && velocity > 0.02) 
+			{
+				_kakiSEPlayer.Play();
+			}
 
 		};
 

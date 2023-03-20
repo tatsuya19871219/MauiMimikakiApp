@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
+using MauiMimikakiApp.Messages;
+using MauiMimikakiApp.Models;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 using TakeMauiEasy;
@@ -39,12 +41,39 @@ public partial class TrackableMimiView : ContentView
         // Register DrawMessages
         StrongReferenceMessenger.Default.Register<DrawMessage>(this, (s, e) =>
         {
-            MainThread.InvokeOnMainThreadAsync(() =>
+            switch (e.Value)
             {
-                TopRegion.Invalidate();
-                CenterRegion.Invalidate();
-                BottomRegion.Invalidate();
-            });
+                case "draw" :
+                    
+                    MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        TopRegion.Invalidate();
+                        CenterRegion.Invalidate();
+                        BottomRegion.Invalidate();
+                    });
+                    
+                    break;
+
+                // case "float" :
+
+                //     MainThread.InvokeOnMainThreadAsync(() =>
+                //     {
+                //         AddFloatingDirt();
+                //     });
+
+                //     break;
+
+                default:
+                    break;    
+            }
+        });
+
+        StrongReferenceMessenger.Default.Register<MakeFloatingDirtMessage>(this, (s, e) =>
+        {
+                MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    AddFloatingDirt(e.Value);
+                });
         });
         
         //RunInvalidateProcess();
@@ -71,6 +100,45 @@ public partial class TrackableMimiView : ContentView
         FrontLayer.AnchorX = 0;
         FrontLayer.AnchorY = 0;
         FrontLayer.Scale = _displayRatio.Value;
+    }
+
+    // for test
+    async void AddFloatingDirt(Shape dirtObject)
+    {
+        // Rectangle rect = new Rectangle {Fill = Colors.Magenta, WidthRequest = 8, HeightRequest = 8};
+
+        // Point position = dirt.Position;
+
+        //dirtObject.Stroke = Colors.Green;
+
+        var width0 = dirtObject.WidthRequest;
+        var height0 = dirtObject.HeightRequest;
+
+        var x0 = dirtObject.TranslationX;
+        var y0 = dirtObject.TranslationY;
+
+        dirtObject.WidthRequest /= _displayRatio.Value;
+        dirtObject.HeightRequest /= _displayRatio.Value;
+
+        // dirtObject.WidthRequest *= 1.2;
+        // dirtObject.HeightRequest *= 1.2;
+
+        var x = dirtObject.TranslationX = x0 + width0/2 - dirtObject.WidthRequest/2;
+        var y = dirtObject.TranslationY = y0 + height0/2 - dirtObject.HeightRequest/2;
+
+        // rect.TranslationX = x0 - rect.Width/2;
+        // rect.TranslationY = y0 - rect.Height/2;
+
+        FloatingObjectsLayer.Add(dirtObject);
+
+        uint animationTime = 2500;
+
+        dirtObject.RotateTo(300, animationTime);
+        await dirtObject.TranslateTo(x, y+500, animationTime);
+
+        //await Task.Delay((int)animationTime);
+
+        FloatingObjectsLayer.Remove(dirtObject);
     }
 
     // async void RunInvalidateProcess()

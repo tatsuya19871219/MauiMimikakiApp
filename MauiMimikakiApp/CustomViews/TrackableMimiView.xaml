@@ -30,7 +30,8 @@
 
             </Grid>
 
-            <Grid x:Name="FloatingObjectsLayer"/>
+            <Grid x:Name="FloatingObjectsLayer"
+                    HorizontalOptions="Start" VerticalOptions="Start"/>
 
         </Grid>
 

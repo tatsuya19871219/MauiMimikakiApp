@@ -17,6 +17,9 @@ public class InternalRegion
     // public Point BottomRight => _bottomRight;
     // public Point Center => TopLeft.Offset(MaxWidth/2, MaxHeight/2);
 
+    readonly PathF _originalPath;
+    internal PathF GetOriginalPath() => _originalPath;
+
     readonly Point _topLeft;
     readonly Point _bottomRight;
 
@@ -46,6 +49,7 @@ public class InternalRegion
     readonly int _lenX;
     readonly int _lenY;
 
+    readonly Random _rnd = new();
 
     // Indexer
     // public bool[,] this[string key]
@@ -60,6 +64,8 @@ public class InternalRegion
     public InternalRegion(PathF pathF, int dx = 5, int dy = 5)
     {
         if (!pathF.Closed) throw new ArgumentException("Given path is not closed.");
+
+        _originalPath = pathF;
 
         _dx = dx;
         _dy = dy;
@@ -266,5 +272,26 @@ public class InternalRegion
         }
 
         return minDistance;
+    }
+
+    public Point GeneratePointInRegion()
+    {
+        double tryX; // = GenerateRandomUniform(Bounds.Left, Bounds.Right);
+        double tryY; // = GenerateRandomUniform(Bounds.Top, Bounds.Bottom);
+
+        while (true)
+        {
+            tryX = GenerateRandomUniform(Bounds.Left, Bounds.Right);
+            tryY = GenerateRandomUniform(Bounds.Top, Bounds.Bottom);
+
+            if (ContainsInRegion(tryX, tryY)) break;
+        }
+
+        return new Point(tryX, tryY);
+    }
+
+    double GenerateRandomUniform(double minValue, double maxValue)
+    {
+        return _rnd.NextDouble() * (maxValue - minValue) + minValue;
     }
 }

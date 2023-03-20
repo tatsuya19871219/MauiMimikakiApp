@@ -6,6 +6,7 @@ using MauiMimikakiApp.Models;
 using MauiMimikakiApp.Drawables;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 using CommunityToolkit.Mvvm.Messaging;
+using MauiMimikakiApp.Messages;
 
 namespace MauiMimikakiApp.ViewModels;
 
@@ -82,9 +83,15 @@ internal partial class TrackableMimiViewModel : ObservableObject
 
     async void RunTrackerProcess(int updateInterval)
     {
-        IEnumerable<ITrackerListener> listeners = 
-            new[] { _topRegion.Hairs, _centerRegion.Hairs, _bottomRegion.Hairs }
+        IEnumerable<ITrackerListener> listenersOfHair = 
+            new[] { _topRegion.Hairs, _centerRegion.Hairs, _bottomRegion.Hairs}
             .SelectMany(listener => listener);
+
+        IEnumerable<ITrackerListener> listenersOfDirt = 
+            new[] { _topRegion.Dirts, _centerRegion.Dirts, _bottomRegion.Dirts }
+            .SelectMany(listener => listener);
+
+        IEnumerable<ITrackerListener> listeners = listenersOfHair.Concat(listenersOfDirt);
 
         while (true)
         {
@@ -93,14 +100,66 @@ internal partial class TrackableMimiViewModel : ObservableObject
             var velocity = ScaleForDisplayRatio(current.Velocity);
             double dt = (double)updateInterval/1000;
 
-            OnMoveOnMimi?.Invoke(current);
+            if (_topRegion.Contains(position) ||
+                _centerRegion.Contains(position) ||
+                _bottomRegion.Contains(position))
+                    OnMoveOnMimi?.Invoke(current);
 
             foreach (var listener in listeners)
                 listener.OnMove(position, velocity, dt);
 
+            // generate dirt
+            TryGenerateDirt();    
+
             StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
 
+            // dirt removed action
+            CheckDirtRemoved(_topRegion);
+            CheckDirtRemoved(_centerRegion);
+            CheckDirtRemoved(_bottomRegion);    
+
             await Task.Delay(updateInterval);
+        }
+    }
+
+    void TryGenerateDirt()
+    {
+        Random rnd = new Random();
+        if (rnd.NextDouble() > 0.8)
+            _topRegion.GenerateMimiDirt();
+
+        if (rnd.NextDouble() > 0.9)
+            _centerRegion.GenerateMimiDirt();
+
+        if (rnd.NextDouble() > 0.95)
+            _bottomRegion.GenerateMimiDirt();
+    }
+
+    void CheckDirtRemoved(MimiRegion region)
+    {
+        List<MimiDirt> removed = new();
+
+        foreach (var dirt in region.Dirts)
+        {
+            if (dirt.IsRemoved) removed.Add(dirt);
+        }
+
+        foreach (var dirt in removed)
+        {
+            // create floating dirt view (shape)
+            Rectangle rect = new Rectangle {Fill = Colors.Magenta, WidthRequest = dirt.Size, HeightRequest = dirt.Size};
+
+            Point position = dirt.Position;
+
+            var x0 = position.X;
+            var y0 = position.Y;
+
+            rect.TranslationX = x0 - dirt.Size/2;
+            rect.TranslationY = y0 - dirt.Size/2;
+
+            StrongReferenceMessenger.Default.Send(new MakeFloatingDirtMessage(rect));
+            
+            region.RemoveMimiDirt(dirt);
         }
     }
 
