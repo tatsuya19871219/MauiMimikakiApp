@@ -70,11 +70,14 @@ public partial class MainPage : ContentPage
 
 	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker, double displayRatio)	
 	{
+
 		var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
-        var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
-        var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
+		var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
+		var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
 		return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry, displayRatio);
+
+		//return new(tracker, null, null, null, displayRatio);
 	}
 
 	
@@ -83,22 +86,27 @@ public partial class MainPage : ContentPage
 		return (Geometry)new PathGeometryConverter().ConvertFromInvariantString(pathString);
     }
 
-	// async void RunTrackerProcess()
-	// {
-	// 	while (true)
-	// 	{
-	// 		PositionTrackerState current = _tracker.CurrentState;
+    private void StateTrigger_IsActiveChanged(object sender, EventArgs e)
+    {
 
-	// 		Point position = current.Position;
+    }
 
-	// 		double velocity = current.Velocity.Distance(Point.Zero);
+    // async void RunTrackerProcess()
+    // {
+    // 	while (true)
+    // 	{
+    // 		PositionTrackerState current = _tracker.CurrentState;
+
+    // 		Point position = current.Position;
+
+    // 		double velocity = current.Velocity.Distance(Point.Zero);
 
 
-	// 		FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
+    // 		FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
 
-	// 		await Task.Delay(100);
-	// 	}
-	// }
+    // 		await Task.Delay(100);
+    // 	}
+    // }
 
 }
 

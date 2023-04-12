@@ -1,4 +1,6 @@
-﻿using MauiMimikakiApp.ViewModels;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using MauiMimikakiApp.ViewModels;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
 
@@ -11,6 +13,8 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
+			.UseMauiCommunityToolkitCore()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

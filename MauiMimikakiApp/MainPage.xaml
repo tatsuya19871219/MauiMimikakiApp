@@ -3,10 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiMimikakiApp.MainPage"
              xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="LightPink">
 
+    <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="EarDirection">
+                    <VisualState Name="Right">
+                        <VisualState.StateTriggers>
+                            <StateTrigger IsActive="{Binding IsToggled, Source={x:Reference DirectionSwitch}}" IsActiveChanged="StateTrigger_IsActiveChanged"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>
+                            <!--<Setter TargetName="DirectionSwitch" Property="BackgroundColor" Value="Red"/>-->
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState Name="Left">
+                        <VisualState.StateTriggers>
+                            <StateTrigger IsActive="{Binding IsToggled, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}" IsActiveChanged="StateTrigger_IsActiveChanged"/>                          
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
+                            <!--<Setter TargetName="DirectionSwitch" Property="BackgroundColor" Value="Blue"/>-->
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+    
     <ContentPage.Resources>
-        <ResourceDictionary x:Name="PathDictionary" Source="DetectableRegionDictionary.xaml"/>
+        <!--<x:Double x:Key="MimiExpectedHeight">300</x:Double>-->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary x:Name="PathDictionary" Source="DetectableRegionDictionary.xaml"/>
+                <ResourceDictionary>
+                    <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </ContentPage.Resources>
 
     <FlexLayout Direction="Column" JustifyContent="SpaceBetween">
@@ -21,6 +53,23 @@
         <Label x:Name="HeaderLabel" 
                Text="Mimikaki"/>
 
+        <Switch x:Name="DirectionSwitch" IsToggled="False">
+
+            
+
+            <Switch.Triggers>
+                <Trigger TargetType="Switch" Property="IsToggled" Value="True">
+                    <!--<Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>-->
+                    <Setter Property="BackgroundColor" Value="Red"/>
+                </Trigger>
+                <Trigger TargetType="Switch" Property="IsToggled" Value="False">
+                    <!--<Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>-->
+                    <Setter Property="BackgroundColor" Value="Blue"/>
+                </Trigger>
+            </Switch.Triggers>
+
+        </Switch>
+
         <Grid x:Name="MimiGrid" HeightRequest="550"
               BackgroundColor="LightYellow"
               VerticalOptions="Center"
@@ -28,7 +77,9 @@
 
             <custom:TrackableMimiView x:Name="MimiView" 
                             TargetImageSource="mimi.png"
-                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}"/>
+                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}">
+                
+            </custom:TrackableMimiView>
 
         </Grid>
         
