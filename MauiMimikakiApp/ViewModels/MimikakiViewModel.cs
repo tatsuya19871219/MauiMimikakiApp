@@ -13,6 +13,8 @@ namespace MauiMimikakiApp.ViewModels;
 internal partial class MimikakiViewModel : ObservableObject
 {
 
+    [ObservableProperty] double actualImageHeight;
+
     [ObservableProperty] MimiRegionDrawable topRegionDrawable;
     [ObservableProperty] MimiRegionDrawable centerRegionDrawable;
     [ObservableProperty] MimiRegionDrawable bottomRegionDrawable;
@@ -30,6 +32,19 @@ internal partial class MimikakiViewModel : ObservableObject
     readonly double _displayRatio;
 
     internal Action<PositionTrackerState> OnMoveOnMimi;
+
+    readonly MimiViewBox _viewBox;
+    readonly Path _top;
+    readonly Path _center;
+    readonly Path _bottom;
+
+    internal MimikakiViewModel(MimiViewBox viewbox, Path top, Path center, Path bottom)
+    {
+        _viewBox = viewbox;
+        _top = top;
+        _center = center;
+        _bottom = bottom;
+    }
 
     internal MimikakiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
     {

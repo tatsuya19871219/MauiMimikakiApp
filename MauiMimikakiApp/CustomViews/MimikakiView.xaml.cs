@@ -31,6 +31,8 @@ public partial class MimikakiView : ContentView
     //double _targetWidthRequest;
     //double _targetHeightRequest;
 
+    MimikakiViewModel _vm;
+
     MimiViewBox _viewbox;
 
     public double? DisplayRatio => _displayRatio;
@@ -43,6 +45,8 @@ public partial class MimikakiView : ContentView
         TargetImage.BindingContext = this;
 
         _viewbox = viewbox;
+
+        _vm = new MimikakiViewModel(viewbox, outerPath, middlePath, innerPath);
 
         //GetBoundsAsync();
 
@@ -127,6 +131,8 @@ public partial class MimikakiView : ContentView
         FrontLayer.AnchorX = 0;
         FrontLayer.AnchorY = 0;
         FrontLayer.Scale = _displayRatio.Value;
+
+        // Initialize view model here
     }
 
     // for test
