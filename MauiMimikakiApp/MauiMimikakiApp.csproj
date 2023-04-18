@@ -40,7 +40,7 @@
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-		<MauiImage Update="Resources\Images\mimi.svg" BaseSize="424,600" />
+		<MauiImage Update="Resources\Images\mimi_kanji.svg" BaseSize="424,600" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -48,6 +48,7 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
@@ -70,10 +71,8 @@
 	  <Compile Update="CustomViews\MimikakiView.xaml.cs">
 	    <DependentUpon>MimikakiView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="DetectableRegionDictionary.xaml.cs">
-	    <DependentUpon>DetectableRegionDictionary.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
+
 
 	<ItemGroup>
 	  <MauiXaml Update="CustomViews\MimiRegionView.xaml">
@@ -82,9 +81,12 @@
 	  <MauiXaml Update="CustomViews\MimikakiView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="DetectableRegionDictionary.xaml">
+	  <MauiXaml Update="Resources\Raw\KanjiMimiResourceDictionary.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+		<MauiXaml Update="Resources\Raw\DrawingMimiResourceDictionary.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>

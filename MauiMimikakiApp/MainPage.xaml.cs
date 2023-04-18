@@ -42,30 +42,30 @@ public partial class MainPage : ContentPage
 
 		double displayRatio = MimiView.DisplayRatio.Value;
 
-		MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker, displayRatio);
+		//MimiView.BindingContext = _vm = InstantiateMimiViewModel(tracker, displayRatio);
 
 		// Set up SEs
 		_kakiSEPlayer = _audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("kaki.mp3"));
 		
 		// Set Sample loop logic
-		_vm.OnMoveOnMimi += (state) =>
-		{
-			Point position = state.Position;
+		// _vm.OnMoveOnMimi += (state) =>
+		// {
+		// 	// Point position = state.Position;
 
-			double velocity = state.Velocity.Distance(Point.Zero);
+		// 	// double velocity = state.Velocity.Distance(Point.Zero);
 
-			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
+		// 	// FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
 
-			// test
-			_kakiSEPlayer.Speed = velocity*50;
-			if(!_kakiSEPlayer.IsPlaying && velocity > 0.02) 
-			{
-				_kakiSEPlayer.Play();
-			}
+		// 	// test
+		// 	//_kakiSEPlayer.Speed = velocity*50;
+		// 	//if(!_kakiSEPlayer.IsPlaying && velocity > 0.02) 
+		// 	//{
+		// 	//	_kakiSEPlayer.Play();
+		// 	//}
 
-		};
+		// };
 
-		_vm.InvokeTrackerProcess(100);
+		//_vm.InvokeTrackerProcess(100);
 
         //MimiGrid.IsVisible = true;
 
@@ -75,35 +75,26 @@ public partial class MainPage : ContentPage
 
 			PositionTrackerState state = e.Value;
 
+			Point position = state.Position;
 
-     //       switch (e.Value)
-     //       {
-     //           case "draw":
+			double velocity = state.Velocity.Distance(Point.Zero);
 
-     //               MainThread.InvokeOnMainThreadAsync(() =>
-     //               {
-                        
-     //               });
+			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
 
-					//break;
-
-     //           default:
-     //               break;
-     //       }
         });
     }
 
-	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker, double displayRatio)	
-	{
+	//TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker, double displayRatio)	
+	//{
 
-		var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
-		var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
-		var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
+	//	var mimiTopGeometry = GetGeometryFromString(PathDictionary["MimiTopPathGeometryString"] as string);
+	//	var mimiCenterGeometry = GetGeometryFromString(PathDictionary["MimiCenterPathGeometryString"] as string);
+	//	var mimiBottomGeometry = GetGeometryFromString(PathDictionary["MimiBottomPathGeometryString"] as string);
 
-		return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry, displayRatio);
+	//	return new(tracker, mimiTopGeometry, mimiCenterGeometry, mimiBottomGeometry, displayRatio);
 
-		//return new(tracker, null, null, null, displayRatio);
-	}
+	//	//return new(tracker, null, null, null, displayRatio);
+	//}
 
 	
 	Geometry GetGeometryFromString(string pathString)
@@ -115,23 +106,6 @@ public partial class MainPage : ContentPage
     {
 
     }
-
-    // async void RunTrackerProcess()
-    // {
-    // 	while (true)
-    // 	{
-    // 		PositionTrackerState current = _tracker.CurrentState;
-
-    // 		Point position = current.Position;
-
-    // 		double velocity = current.Velocity.Distance(Point.Zero);
-
-
-    // 		FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
-
-    // 		await Task.Delay(100);
-    // 	}
-    // }
 
 }
 

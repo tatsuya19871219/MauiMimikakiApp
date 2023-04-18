@@ -33,7 +33,7 @@
         <!--<x:Double x:Key="MimiExpectedHeight">300</x:Double>-->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary x:Name="PathDictionary" Source="DetectableRegionDictionary.xaml"/>
+                <ResourceDictionary Source="Resources\Raw\KanjiMimiResourceDictionary.xaml"/>
                 <ResourceDictionary>
                     <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
                 </ResourceDictionary>
@@ -76,8 +76,8 @@
               Scale="1">
 
             <custom:MimikakiView x:Name="MimiView" 
-                            TargetImageSource="mimi.png"
-                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}">
+                            TargetImageSource="{StaticResource Filename}"
+                            TargetImageOriginalHeight="600">
                 
             </custom:MimikakiView>
 
