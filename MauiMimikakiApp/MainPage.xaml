@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiMimikakiApp.MainPage"
              xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
+             xmlns:models="clr-namespace:MauiMimikakiApp.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="LightPink">
 
@@ -77,8 +78,13 @@
 
             <custom:MimikakiView x:Name="MimiView" 
                             TargetImageSource="{StaticResource Filename}"
-                            TargetImageOriginalHeight="600">
-                
+                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}">
+                <x:Arguments>
+                    <models:MimiViewBox Bounds="{StaticResource ViewBoxRect}"/>
+                    <Path Data="{StaticResource MimiTopPathGeometryString}"/>
+                    <Path Data="{StaticResource MimiCenterPathGeometryString}"/>
+                    <Path Data="{StaticResource MimiBottomPathGeometryString}"/>
+                </x:Arguments>
             </custom:MimikakiView>
 
         </Grid>

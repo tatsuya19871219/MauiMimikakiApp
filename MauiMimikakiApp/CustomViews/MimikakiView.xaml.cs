@@ -4,6 +4,7 @@ using MauiMimikakiApp.Models;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 using TakeMauiEasy;
+using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace MauiMimikakiApp.CustomViews;
 
@@ -21,6 +22,7 @@ public partial class MimikakiView : ContentView
     public double TargetImageOriginalHeight { get; init; }
 
 
+
     public View MimiTrackerLayer => TrackerLayer;
 
     //PositionTracker _tracker = null;
@@ -29,8 +31,33 @@ public partial class MimikakiView : ContentView
     //double _targetWidthRequest;
     //double _targetHeightRequest;
 
+    MimiViewBox _viewbox;
+
     public double? DisplayRatio => _displayRatio;
     double? _displayRatio = null;
+
+    public MimikakiView(MimiViewBox viewbox, Path outerPath, Path middlePath, Path innerPath)
+    {
+        InitializeComponent();
+
+        TargetImage.BindingContext = this;
+
+        _viewbox = viewbox;
+
+        //GetBoundsAsync();
+
+        //_viewbox = viewbox.Bounds;
+        //_viewbox = viewbox.GetBoundsAsync().Result;
+
+        //var bounds = _viewbox.GetBoundsAsync().Result;
+
+        // Pass arguments to the ViewModel
+    }
+
+    // async void GetBoundsAsync()
+    // {
+    //     var bounds = await _viewbox.GetBoundsAsync();
+    // }
 
     public MimikakiView() //(TrackableMimiViewModel vm)
     {

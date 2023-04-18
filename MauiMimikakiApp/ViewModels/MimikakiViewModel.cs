@@ -10,7 +10,7 @@ using MauiMimikakiApp.Messages;
 
 namespace MauiMimikakiApp.ViewModels;
 
-internal partial class TrackableMimiViewModel : ObservableObject
+internal partial class MimikakiViewModel : ObservableObject
 {
 
     [ObservableProperty] MimiRegionDrawable topRegionDrawable;
@@ -31,7 +31,7 @@ internal partial class TrackableMimiViewModel : ObservableObject
 
     internal Action<PositionTrackerState> OnMoveOnMimi;
 
-    internal TrackableMimiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
+    internal MimikakiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
     {
         _tracker = tracker;
         _displayRatio = displayRatio;

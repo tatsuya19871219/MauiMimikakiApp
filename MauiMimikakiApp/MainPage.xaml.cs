@@ -15,7 +15,7 @@ public partial class MainPage : ContentPage
 
 	IAudioPlayer _kakiSEPlayer;
 
-	TrackableMimiViewModel _vm;
+	MimikakiViewModel _vm;
 
 	public MainPage(IAudioManager audioManager) 
 	{
