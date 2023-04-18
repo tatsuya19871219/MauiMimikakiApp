@@ -75,11 +75,11 @@
               VerticalOptions="Center"
               Scale="1">
 
-            <custom:TrackableMimiView x:Name="MimiView" 
+            <custom:MimikakiView x:Name="MimiView" 
                             TargetImageSource="mimi.png"
                             TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}">
                 
-            </custom:TrackableMimiView>
+            </custom:MimikakiView>
 
         </Grid>
         

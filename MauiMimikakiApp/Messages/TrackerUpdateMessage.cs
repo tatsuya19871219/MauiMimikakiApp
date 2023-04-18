@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TakeMauiEasy;
 
 namespace MauiMimikakiApp.Messages
 {
-    internal class DrawMessage : ValueChangedMessage<string>
+    internal class TrackerUpdateMessage : ValueChangedMessage<PositionTrackerState>
     {
-        internal DrawMessage(string value) : base(value)
+        internal TrackerUpdateMessage(PositionTrackerState state) : base(state)
         {
         }
     }
 }
+

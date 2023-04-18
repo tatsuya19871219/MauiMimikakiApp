@@ -4,6 +4,8 @@ using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 
 using TakeMauiEasy;
+using CommunityToolkit.Mvvm.Messaging;
+using MauiMimikakiApp.Messages;
 
 namespace MauiMimikakiApp;
 
@@ -65,8 +67,31 @@ public partial class MainPage : ContentPage
 
 		_vm.InvokeTrackerProcess(100);
 
-		//MimiGrid.IsVisible = true;
-	}
+        //MimiGrid.IsVisible = true;
+
+        // Register DrawMessages
+        StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
+        {
+
+			PositionTrackerState state = e.Value;
+
+
+     //       switch (e.Value)
+     //       {
+     //           case "draw":
+
+     //               MainThread.InvokeOnMainThreadAsync(() =>
+     //               {
+                        
+     //               });
+
+					//break;
+
+     //           default:
+     //               break;
+     //       }
+        });
+    }
 
 	TrackableMimiViewModel InstantiateMimiViewModel(PositionTracker tracker, double displayRatio)	
 	{

@@ -67,8 +67,8 @@
 	  <Compile Update="CustomViews\MimiRegionView.xaml.cs">
 	    <DependentUpon>MimiRegionView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="CustomViews\TrackableMimiView.xaml.cs">
-	    <DependentUpon>TrackableMimiView.xaml</DependentUpon>
+	  <Compile Update="CustomViews\MimikakiView.xaml.cs">
+	    <DependentUpon>MimikakiView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="DetectableRegionDictionary.xaml.cs">
 	    <DependentUpon>DetectableRegionDictionary.xaml</DependentUpon>
@@ -79,7 +79,7 @@
 	  <MauiXaml Update="CustomViews\MimiRegionView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="CustomViews\TrackableMimiView.xaml">
+	  <MauiXaml Update="CustomViews\MimikakiView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="DetectableRegionDictionary.xaml">

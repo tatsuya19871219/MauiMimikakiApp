@@ -7,10 +7,10 @@ using TakeMauiEasy;
 
 namespace MauiMimikakiApp.CustomViews;
 
-public partial class TrackableMimiView : ContentView
+public partial class MimikakiView : ContentView
 {
     // Image Source
-    public static BindableProperty TargetImageSourceProperty = BindableProperty.Create("TargetImageSource", typeof(ImageSource), typeof(TrackableMimiView), null);
+    public static BindableProperty TargetImageSourceProperty = BindableProperty.Create("TargetImageSource", typeof(ImageSource), typeof(MimikakiView), null);
 
     public ImageSource TargetImageSource
     {
@@ -32,14 +32,14 @@ public partial class TrackableMimiView : ContentView
     public double? DisplayRatio => _displayRatio;
     double? _displayRatio = null;
 
-    public TrackableMimiView() //(TrackableMimiViewModel vm)
+    public MimikakiView() //(TrackableMimiViewModel vm)
     {
         InitializeComponent();
 
         TargetImage.BindingContext = this;
 
         // Register DrawMessages
-        StrongReferenceMessenger.Default.Register<DrawMessage>(this, (s, e) =>
+        StrongReferenceMessenger.Default.Register<MimiViewInvalidateMessage>(this, (s, e) =>
         {
             switch (e.Value)
             {
@@ -68,7 +68,7 @@ public partial class TrackableMimiView : ContentView
             }
         });
 
-        StrongReferenceMessenger.Default.Register<MakeFloatingDirtMessage>(this, (s, e) =>
+        StrongReferenceMessenger.Default.Register<FloatingDirtGenerateMessage>(this, (s, e) =>
         {
                 MainThread.InvokeOnMainThreadAsync(() =>
                 {

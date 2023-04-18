@@ -9,9 +9,9 @@ using Microsoft.Maui.Controls.Shapes;
 
 namespace MauiMimikakiApp.Messages
 {
-    internal class MakeFloatingDirtMessage : ValueChangedMessage<Shape>
+    internal class FloatingDirtGenerateMessage : ValueChangedMessage<Shape>
     {
-        internal MakeFloatingDirtMessage(Shape dirt) : base(dirt)
+        internal FloatingDirtGenerateMessage(Shape dirt) : base(dirt)
         {
         }
     }

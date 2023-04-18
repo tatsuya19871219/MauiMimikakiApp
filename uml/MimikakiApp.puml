@@ -130,26 +130,25 @@ class MainPage
 ' Library
 package TakeMauiEasy
 {
-    class PositionTracker
-
     class EasyTasks
+    class PositionTracker
 }
 
 ' 
-'MimiModel o-- "3" MimiRegion
 MimiRegion --> InternalRegion
-MimiRegion *-- MimiHair
-MimiRegion *-- MimiDirt
-'
+MimiRegion *- MimiHair
+MimiRegion *- MimiDirt
+
 TrackableMimiViewModel --> PositionTracker
-'TrackableMimiViewModel --> MimiModel
 TrackableMimiViewModel o-- "3" MimiRegionDrawable
 
-MainPage --> TrackableMimiViewModel
-MainPage ..> PositionTracker
-MainPage --> TrackableMimiView
+TrackableMimiView ..> TrackableMimiViewModel : <create>
+
+' MainPage --> TrackableMimiViewModel
+'MainPage .> PositionTracker
+MainPage -> TrackableMimiView
 
 MimiRegionDrawable --|> IDrawable
-MimiRegionDrawable --> MimiRegion
+MimiRegionDrawable -> MimiRegion
 
 @enduml

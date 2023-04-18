@@ -100,6 +100,8 @@ internal partial class TrackableMimiViewModel : ObservableObject
             var velocity = ScaleForDisplayRatio(current.Velocity);
             double dt = (double)updateInterval/1000;
 
+            StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
+
             if (_topRegion.Contains(position) ||
                 _centerRegion.Contains(position) ||
                 _bottomRegion.Contains(position))
@@ -111,7 +113,7 @@ internal partial class TrackableMimiViewModel : ObservableObject
             // generate dirt
             TryGenerateDirt();    
 
-            StrongReferenceMessenger.Default.Send(new DrawMessage("draw"));
+            StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
 
             // dirt removed action
             CheckDirtRemoved(_topRegion);
@@ -157,7 +159,7 @@ internal partial class TrackableMimiViewModel : ObservableObject
             rect.TranslationX = x0 - dirt.Size/2;
             rect.TranslationY = y0 - dirt.Size/2;
 
-            StrongReferenceMessenger.Default.Send(new MakeFloatingDirtMessage(rect));
+            StrongReferenceMessenger.Default.Send(new FloatingDirtGenerateMessage(rect));
             
             region.RemoveMimiDirt(dirt);
         }

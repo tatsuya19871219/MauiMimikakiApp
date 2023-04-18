@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiMimikakiApp.CustomViews.TrackableMimiView"
+             x:Class="MauiMimikakiApp.CustomViews.MimikakiView"
              xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews">
     
     <Grid x:Name="TrackableContent">
@@ -31,7 +31,8 @@
             </Grid>
 
             <Grid x:Name="FloatingObjectsLayer"
-                    HorizontalOptions="Start" VerticalOptions="Start"/>
+                    HorizontalOptions="Start" VerticalOptions="Start"
+                    InputTransparent="True"/>
 
         </Grid>
 
