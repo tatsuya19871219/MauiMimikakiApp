@@ -21,8 +21,8 @@ internal partial class MimikakiViewModel : ObservableObject
     [ObservableProperty] double _viewHeight;
     [ObservableProperty] double _viewDisplayRatio;
 
-    static int dx = 2;
-    static int dy = 2;
+    static int dx = 1;
+    static int dy = 1;
 
     static int dt = 100;
 
@@ -71,6 +71,8 @@ internal partial class MimikakiViewModel : ObservableObject
 
     void InitializeModel()
     {
+        //var figs = (_outer.Data as PathGeometry).Figures;
+
         _outerRegion ??= new( new InternalRegion(_outer.GetPath(), dx, dy) );
         _innerRegion ??= new( new InternalRegion(_inner.GetPath(), dx, dy) );
         _holeRegion ??= new( new InternalRegion(_hole.GetPath(), dx, dy) );

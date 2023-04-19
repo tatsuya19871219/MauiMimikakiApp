@@ -23,7 +23,8 @@ class MimiRegion
     - internalRegion : InternalRegion
     - hairList : List<MimiHair>
     - dirtList : List<MimiDirt>
-    + MimiRegion(internalRegion : InternalRegion)
+    + MimiRegion(pathF : PathF, dx : int, dy : int)
+    '+ MimiRegion(internalRegion : InternalRegion)
     - InitializeMimiHair(density : double)
     '+ OnTouch : Action
     '+ OnDirtRemoving : Action
@@ -52,6 +53,14 @@ class MimiDirt
     + MimiDirt(position : Point, hardness : double)
 }
 
+interface IRegion
+{
+    ' IsInner : bool[,]
+    ' IsBoundary : bool[,]
+    ContainsInRegion(point : Point) : bool
+    OnBoundary(point : Point) : bool
+}
+
 class InternalRegion
 {
     + Bounds : Rect <<read only>>
@@ -59,7 +68,20 @@ class InternalRegion
     '- bottomRight : Point <<read only>>
     - isInner : bool[,] <<read only>>
     - isBoundary : bool[,] <<read only>>
+    - subRegions : List<SubRegion> 
     + InternalRegion(pathF : PathF, dx : int, dy : int)
+    ' - FillBoundaryPoints(pathF : PathF) : void
+    ' - FillInternalRegion() : void
+    - ConvertToRegionIndex(x : double, y : double) : (int, int)
+    + ContainsInRegion(point : Point) : bool
+    + ContainsInRegion(x: double, y : double) : bool
+}
+
+class SubRegion
+{
+    - isInner : bool[,] <<read only>>
+    - isBoundary : bool[,] <<read only>>
+    + SubRegion(pathF : PathF, dx : int, dy : int)
     - FillBoundaryPoints(pathF : PathF) : void
     - FillInternalRegion() : void
     - ConvertToRegionIndex(x : double, y : double) : (int, int)
@@ -144,6 +166,10 @@ package TakeMauiEasy
 MimiRegion -> InternalRegion
 MimiRegion *-- MimiHair
 MimiRegion *-- MimiDirt
+
+InternalRegion *-- SubRegion
+InternalRegion ..|> IRegion
+SubRegion ..|> IRegion
 
 MimiHair ..|> ITrackerListener
 MimiDirt ..|> ITrackerListener

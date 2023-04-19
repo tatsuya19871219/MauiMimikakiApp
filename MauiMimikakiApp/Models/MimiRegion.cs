@@ -19,6 +19,8 @@ public class MimiRegion
 
     internal PathF OriginalPath => _internalRegion.GetOriginalPath();
 
+    internal List<Point> Boundary => _internalRegion.GetBoundaryPointList();
+
 
     public MimiRegion(InternalRegion internalRegion)
     {

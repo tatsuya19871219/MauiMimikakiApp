@@ -49,6 +49,10 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<!--<ItemGroup>
+	  <MauiXaml Remove="Resources\Raw\TestResourceDictionary.xaml" />
+	</ItemGroup>-->
+
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
@@ -73,6 +77,13 @@
 	  </Compile>
 	</ItemGroup>
 
+	<!--<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\TestResourceDictionary.xaml">
+	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiAsset>
+	</ItemGroup>-->
+
 
 	<ItemGroup>
 	  <MauiXaml Update="CustomViews\MimiRegionView.xaml">
@@ -87,6 +98,10 @@
 		<MauiXaml Update="Resources\Raw\DrawingMimiResourceDictionary.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Resources\Raw\TestResourceDictionary.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+
 	</ItemGroup>
 
 </Project>

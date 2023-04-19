@@ -71,6 +71,22 @@ public class MimiRegionDrawable : IDrawable
 
             canvas.FillCircle((float)x, (float)y, 3);
         }
+
+        var boundary = _mimiRegion.Boundary;
+
+        
+        canvas.FillColor = Colors.Green;
+
+        for (int i = 0; i < boundary.Count; i++)
+        {
+            Point p = boundary[i];
+
+            var x = p.X - _offsetX;
+            var y = p.Y - _offsetY;
+
+            canvas.FillCircle((float)x, (float)y, 2);
+        }
+
     }
 
     void VisualizeHairs(ICanvas canvas, Color color)
