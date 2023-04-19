@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace MauiMimikakiApp.Models;
 
-public class MimiRegion
+internal class MimiRegion
 {
-    //public InternalRegion Internal => _internalRegion;
     public Rect Bounds => _internalRegion.Bounds;
     public IEnumerable<MimiHair> Hairs => _hairs;
     public IEnumerable<MimiDirt> Dirts => _dirts;
@@ -17,19 +16,14 @@ public class MimiRegion
     readonly List<MimiHair> _hairs = new();
     readonly List<MimiDirt> _dirts = new();
 
-    internal PathF OriginalPath => _internalRegion.GetOriginalPath();
+    // internal PathF OriginalPath => _internalRegion.GetOriginalPath();
 
-    internal List<Point> Boundary => _internalRegion.GetBoundaryPointList();
+    // internal List<Point> Boundary => _internalRegion.GetBoundaryPointList();
 
 
-    public MimiRegion(InternalRegion internalRegion)
+    internal MimiRegion(PathF pathF, int dx, int dy)
     {
-        _internalRegion = internalRegion;
-
-        // var topleft = _internalRegion.TopLeft;
-        // var size = new Size(_internalRegion.MaxWidth, _internalRegion.MaxHeight);
-
-        // Bounds = new Rect(topleft, size);
+        _internalRegion = new(pathF, dx, dy);
 
         // initialize mimi hairs
         InitializeMimiHair(0.2);
@@ -42,13 +36,6 @@ public class MimiRegion
         double dy = 1/density;
 
         double hairMargin = 0;
-
-        // var topleft = _internalRegion.TopLeft;
-        // var bottomright = _internalRegion.BottomRight;
-        // var center = _internalRegion.Center;
-
-        // var maxWidth = _internalRegion.MaxWidth;
-        // var maxHeight = _internalRegion.MaxHeight;
 
         Point center = Bounds.Center;
 
@@ -69,8 +56,8 @@ public class MimiRegion
         {
             for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
             {
-                if (_internalRegion.ContainsInRegion(x,y)
-                    && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
+                if (_internalRegion.ContainsInRegion(new(x,y))
+                    && _internalRegion.DistanceFromBoundary(new(x,y)) > hairMargin)
                             _hairs.Add(new MimiHair(new Point(x,y)));
             }
         }
@@ -90,6 +77,6 @@ public class MimiRegion
 
     internal bool Contains(Point point)
     {
-        return _internalRegion.ContainsInRegion(point.X, point.Y);
+        return _internalRegion.ContainsInRegion(point);
     }
 }

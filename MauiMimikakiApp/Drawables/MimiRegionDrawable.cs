@@ -22,7 +22,7 @@ public class MimiRegionDrawable : IDrawable
     readonly double _offsetX;
     readonly double _offsetY;
 
-    public MimiRegionDrawable(MimiRegion mimiRegion, double padding = 0) : base()
+    internal MimiRegionDrawable(MimiRegion mimiRegion, double padding = 0) : base()
     {
         _mimiRegion = mimiRegion;
 
@@ -43,7 +43,7 @@ public class MimiRegionDrawable : IDrawable
         // canvas.Alpha = 0.3f;
         // canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
 
-        VisualizeOriginalPath(canvas);
+        //VisualizeOriginalPath(canvas);
 
         VisualizeHairs(canvas, Colors.Black);
 
@@ -56,38 +56,38 @@ public class MimiRegionDrawable : IDrawable
         // VisualizeRegion(canvas, "inner", Colors.Pink);
     }
 
-    void VisualizeOriginalPath(ICanvas canvas)
-    {
-        var pathF = _mimiRegion.OriginalPath;
+    // void VisualizeOriginalPath(ICanvas canvas)
+    // {
+    //     var pathF = _mimiRegion.OriginalPath;
 
-        canvas.FillColor = Colors.Red;
+    //     canvas.FillColor = Colors.Red;
 
-        for (int i = 0; i < pathF.Count; i++)
-        {
-            Point p = pathF[i];
+    //     for (int i = 0; i < pathF.Count; i++)
+    //     {
+    //         Point p = pathF[i];
 
-            var x = p.X - _offsetX;
-            var y = p.Y - _offsetY;
+    //         var x = p.X - _offsetX;
+    //         var y = p.Y - _offsetY;
 
-            canvas.FillCircle((float)x, (float)y, 3);
-        }
+    //         canvas.FillCircle((float)x, (float)y, 3);
+    //     }
 
-        var boundary = _mimiRegion.Boundary;
+    //     var boundary = _mimiRegion.Boundary;
 
         
-        canvas.FillColor = Colors.Green;
+    //     canvas.FillColor = Colors.Green;
 
-        for (int i = 0; i < boundary.Count; i++)
-        {
-            Point p = boundary[i];
+    //     for (int i = 0; i < boundary.Count; i++)
+    //     {
+    //         Point p = boundary[i];
 
-            var x = p.X - _offsetX;
-            var y = p.Y - _offsetY;
+    //         var x = p.X - _offsetX;
+    //         var y = p.Y - _offsetY;
 
-            canvas.FillCircle((float)x, (float)y, 2);
-        }
+    //         canvas.FillCircle((float)x, (float)y, 2);
+    //     }
 
-    }
+    // }
 
     void VisualizeHairs(ICanvas canvas, Color color)
     {   

@@ -73,9 +73,9 @@ internal partial class MimikakiViewModel : ObservableObject
     {
         //var figs = (_outer.Data as PathGeometry).Figures;
 
-        _outerRegion ??= new( new InternalRegion(_outer.GetPath(), dx, dy) );
-        _innerRegion ??= new( new InternalRegion(_inner.GetPath(), dx, dy) );
-        _holeRegion ??= new( new InternalRegion(_hole.GetPath(), dx, dy) );
+        _outerRegion ??= new(_outer.GetPath(), dx, dy);
+        _innerRegion ??= new(_inner.GetPath(), dx, dy);
+        _holeRegion ??= new(_hole.GetPath(), dx, dy);
 
         OuterRegionDrawable ??= new MimiRegionDrawable(_outerRegion);
         InnerRegionDrawable ??= new MimiRegionDrawable(_innerRegion);
