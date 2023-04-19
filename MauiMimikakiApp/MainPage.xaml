@@ -31,7 +31,6 @@
     </VisualStateManager.VisualStateGroups>
     
     <ContentPage.Resources>
-        <!--<x:Double x:Key="MimiExpectedHeight">300</x:Double>-->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources\Raw\DrawingMimiResourceDictionary.xaml"/>

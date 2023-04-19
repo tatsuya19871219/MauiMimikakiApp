@@ -12,10 +12,6 @@
 
         <Image x:Name="TargetImage">
             <Image.Behaviors>
-                <!-- <toolkit:EventToCommandBehavior
-                    EventName="Loaded"
-                    Command="{Binding ImageLoadedCommand}"
-                    CommandParameter="{x:Reference TargetImage}"/> -->
                 <toolkit:EventToCommandBehavior
                     EventName="SizeChanged"
                     Command="{Binding SizeChangedCommand}"
