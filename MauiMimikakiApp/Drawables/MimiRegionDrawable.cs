@@ -43,7 +43,7 @@ public class MimiRegionDrawable : IDrawable
         // canvas.Alpha = 0.3f;
         // canvas.FillRectangle(0, 0, (float)WidthRequest, (float)HeightRequest);
 
-        //VisualizeOriginalPath(canvas);
+        VisualizeOriginalPath(canvas);
 
         VisualizeHairs(canvas, Colors.Black);
 

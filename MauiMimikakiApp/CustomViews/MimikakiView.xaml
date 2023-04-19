@@ -5,12 +5,17 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
              xmlns:vm="clr-namespace:MauiMimikakiApp.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              x:DataType="vm:MimikakiViewModel">
 
     <Grid x:Name="TrackableContent">
 
         <Image x:Name="TargetImage">
             <Image.Behaviors>
+                <!-- <toolkit:EventToCommandBehavior
+                    EventName="Loaded"
+                    Command="{Binding ImageLoadedCommand}"
+                    CommandParameter="{x:Reference TargetImage}"/> -->
                 <toolkit:EventToCommandBehavior
                     EventName="SizeChanged"
                     Command="{Binding SizeChangedCommand}"
@@ -40,8 +45,7 @@
             </Grid>
 
             <Grid x:Name="FloatingObjectsLayer"
-                    HorizontalOptions="Start" VerticalOptions="Start"
-                    InputTransparent="True"/>
+                    HorizontalOptions="Start" VerticalOptions="Start"/>
 
         </Grid>
 

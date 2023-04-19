@@ -34,7 +34,7 @@
         <!--<x:Double x:Key="MimiExpectedHeight">300</x:Double>-->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources\Raw\KanjiMimiResourceDictionary.xaml"/>
+                <ResourceDictionary Source="Resources\Raw\DrawingMimiResourceDictionary.xaml"/>
                 <ResourceDictionary>
                     <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
                 </ResourceDictionary>
@@ -77,12 +77,12 @@
               Scale="1">
 
             <custom:MimikakiView x:Name="MimiView" 
-                                Filename="mimi_kanji.png">
+                                Filename="{StaticResource Filename}">
                 <x:Arguments>
                     <models:MimiViewBox Bounds="{StaticResource ViewBoxRect}"/>
-                    <Path Data="{StaticResource MimiTopPathGeometryString}"/>
-                    <Path Data="{StaticResource MimiCenterPathGeometryString}"/>
-                    <Path Data="{StaticResource MimiBottomPathGeometryString}"/>
+                    <Path Data="{StaticResource MimiOuterPathString}"/>
+                    <Path Data="{StaticResource MimiInnerPathString}"/>
+                    <Path Data="{StaticResource MimiHolePathString}"/>
                 </x:Arguments>
             </custom:MimikakiView>
 

@@ -3,6 +3,7 @@ using MauiMimikakiApp.Messages;
 using MauiMimikakiApp.Models;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
+using System.Reflection;
 using TakeMauiEasy;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -19,9 +20,13 @@ public partial class MimikakiView : ContentView
 
     void InitTargetImage(string filename)
     {
-        // Resource check
+        //var assembly = GetType().GetTypeInfo().Assembly;
+        //var files = assembly.GetManifestResourceNames().ToList();
+        //var res = Application.Current.Resources.ToList();
+
+        // Should check whether the resource of the filename exists
         FileImageSource source = ImageSource.FromFile(filename) as FileImageSource;
-        
+
         TargetImage.Source = source;
     }
 
@@ -30,8 +35,8 @@ public partial class MimikakiView : ContentView
 
     MimiViewBox _viewbox;
 
-    public double? DisplayRatio => _displayRatio;
-    double? _displayRatio = null;
+    // public double? DisplayRatio => _displayRatio;
+    // double? _displayRatio = null;
 
     public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
@@ -41,64 +46,24 @@ public partial class MimikakiView : ContentView
 
         _viewbox = viewbox;
 
-        _vm = new MimikakiViewModel(viewbox, outer, inner, hole) {TrackerLayer = TrackerLayer};
+        _vm = new MimikakiViewModel(viewbox, outer, inner, hole) {
+#if WINDOWS
+            TrackerLayer = TrackableContent
+#elif ANDROID
+            TrackerLayer = TrackerLayer
+#endif
+        };
 
-        this.BindingContext = _vm;   // This will overwrite the BindingContext of its children
-                                        // (e.g., TargetImage.BindingContext = this; will be no effect)
+        this.BindingContext = _vm;
 
-        //TargetImage.BindingContext = this; // overwrite
-
-        //TargetImage.SetBinding(Image.SourceProperty, new Binding(nameof(TargetImageSource), source: this));
-        //TargetImage.BindingContext = _vm;
-
-        //FrontLayer.BindingContext = _vm;
-        //TargetImage.BindingContext = this;
-
-        //GetBoundsAsync();
-
-        //_viewbox = viewbox.Bounds;
-        //_viewbox = viewbox.GetBoundsAsync().Result;
-
-        //var bounds = _viewbox.GetBoundsAsync().Result;
-
-        // Pass arguments to the ViewModel
-    }
-
-    // async void GetBoundsAsync()
-    // {
-    //     var bounds = await _viewbox.GetBoundsAsync();
-    // }
-
-    public MimikakiView() //(TrackableMimiViewModel vm)
-    {
-        InitializeComponent();
-
-        TargetImage.BindingContext = this;
-
-        // Register DrawMessages
+        // Resister messages
         StrongReferenceMessenger.Default.Register<MimiViewInvalidateMessage>(this, (s, e) =>
         {
             switch (e.Value)
             {
                 case "draw" :
-                    
-                    //MainThread.InvokeOnMainThreadAsync(() =>
-                    //{
-                    //    TopRegion.Invalidate();
-                    //    CenterRegion.Invalidate();
-                    //    BottomRegion.Invalidate();
-                    //});
-                    
+                    MainThread.InvokeOnMainThreadAsync(InvalidateRegions);                    
                     break;
-
-                // case "float" :
-
-                //     MainThread.InvokeOnMainThreadAsync(() =>
-                //     {
-                //         AddFloatingDirt();
-                //     });
-
-                //     break;
 
                 default:
                     break;    
@@ -113,34 +78,16 @@ public partial class MimikakiView : ContentView
                 });
         });
         
-        //RunInvalidateProcess();
     }
 
-    //private async void TargetImage_SizeChanged(object sender, EventArgs e)
-    //{
-    //    if (TargetImageSource is null) throw new ArgumentNullException("Image source is null.");
-    //    if (TargetImageOriginalHeight < 0) throw new Exception("Invalid TargetImageOriginalHeight is set.");
-
-    //    //while (true)
-    //    //{
-    //    //    if (TargetImage.DesiredSize.Width > 0) break;
-    //    //    await Task.Delay(100);
-    //    //}
-
-    //    await EasyTasks.WaitFor(() => TargetImage.DesiredSize.Width > 0);
-
-    //    this.WidthRequest = TargetImage.DesiredSize.Width;
-    //    this.HeightRequest = TargetImage.DesiredSize.Height;
-        
-    //    _displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
-
-    //    FrontLayer.AnchorX = 0;
-    //    FrontLayer.AnchorY = 0;
-    //    FrontLayer.Scale = _displayRatio.Value;
-
-    //    // Initialize view model here
-    //}
-
+    void InvalidateRegions()
+    {
+        OuterRegion.Invalidate();
+        InnerRegion.Invalidate();
+        HoleRegion.Invalidate();
+    }
+    
+    
     // for test
     async void AddFloatingDirt(Shape dirtObject)
     {
@@ -150,20 +97,23 @@ public partial class MimikakiView : ContentView
 
         //dirtObject.Stroke = Colors.Green;
 
-        var width0 = dirtObject.WidthRequest;
-        var height0 = dirtObject.HeightRequest;
+        // var width0 = dirtObject.WidthRequest;
+        // var height0 = dirtObject.HeightRequest;
 
-        var x0 = dirtObject.TranslationX;
-        var y0 = dirtObject.TranslationY;
+        // var x0 = dirtObject.TranslationX;
+        // var y0 = dirtObject.TranslationY;
 
-        dirtObject.WidthRequest /= _displayRatio.Value;
-        dirtObject.HeightRequest /= _displayRatio.Value;
+        // dirtObject.WidthRequest /= _displayRatio.Value;
+        // dirtObject.HeightRequest /= _displayRatio.Value;
 
-        // dirtObject.WidthRequest *= 1.2;
-        // dirtObject.HeightRequest *= 1.2;
+        // // dirtObject.WidthRequest *= 1.2;
+        // // dirtObject.HeightRequest *= 1.2;
 
-        var x = dirtObject.TranslationX = x0 + width0/2 - dirtObject.WidthRequest/2;
-        var y = dirtObject.TranslationY = y0 + height0/2 - dirtObject.HeightRequest/2;
+        // var x = dirtObject.TranslationX = x0 + width0/2 - dirtObject.WidthRequest/2;
+        // var y = dirtObject.TranslationY = y0 + height0/2 - dirtObject.HeightRequest/2;
+
+        var x = dirtObject.TranslationX;
+        var y = dirtObject.TranslationY;
 
         // rect.TranslationX = x0 - rect.Width/2;
         // rect.TranslationY = y0 - rect.Height/2;
@@ -209,16 +159,5 @@ public partial class MimikakiView : ContentView
     //     }
     // }
 
-    // public PositionTracker GetPositionTracker() => _tracker;
-
-    //protected override void OnBindingContextChanged()
-    //{
-    //    base.OnBindingContextChanged();
-    //}
-
-    //protected override void OnSizeAllocated(double width, double height)
-    //{
-    //    base.OnSizeAllocated(width, height);
-    //}
-
+ 
 }

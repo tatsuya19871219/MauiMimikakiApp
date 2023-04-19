@@ -95,7 +95,7 @@ public class InternalRegion
 
         FillBoundaryPoints(pathF);
 
-        FillInternalRegion();
+        //FillInternalRegion();
     }
 
     void GetMinAndMaxPoints(PathF pathF, out Point minPoint, out Point maxPoint)
