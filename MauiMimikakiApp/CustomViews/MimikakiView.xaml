@@ -2,15 +2,24 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MauiMimikakiApp.CustomViews.MimikakiView"
-             xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews">
-    
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
+             xmlns:vm="clr-namespace:MauiMimikakiApp.ViewModels"
+             x:DataType="vm:MimikakiViewModel">
+
     <Grid x:Name="TrackableContent">
 
-        <Image x:Name="TargetImage" Source="{Binding TargetImageSource}" SizeChanged="TargetImage_SizeChanged"/>
+        <Image x:Name="TargetImage">
+            <Image.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="SizeChanged"
+                    Command="{Binding SizeChangedCommand}"
+                    CommandParameter="{x:Reference TargetImage}"/>
+            </Image.Behaviors>
+        </Image>
 
-        <Grid x:Name="FrontLayer">
+        <Grid x:Name="FrontLayer" AnchorX="0" AnchorY="0" Scale="{Binding ViewDisplayRatio}">
 
-            
             <Grid x:Name="DetectableRegions">
                 <Grid.Resources>
                     <Style TargetType="GraphicsView">
@@ -24,9 +33,9 @@
                     </Style>
                 </Grid.Resources>
 
-                <GraphicsView x:Name="TopRegion" BindingContext="{Binding TopRegionDrawable}"/>
-                <GraphicsView x:Name="CenterRegion" BindingContext="{Binding CenterRegionDrawable}"/>
-                <GraphicsView x:Name="BottomRegion" BindingContext="{Binding BottomRegionDrawable}"/>
+                <GraphicsView x:Name="OuterRegion" BindingContext="{Binding OuterRegionDrawable}"/>
+                <GraphicsView x:Name="InnerRegion" BindingContext="{Binding InnerRegionDrawable}"/>
+                <GraphicsView x:Name="HoleRegion" BindingContext="{Binding HoleRegionDrawable}"/>
 
             </Grid>
 
@@ -39,6 +48,5 @@
         <Grid x:Name="TrackerLayer"/> <!-- Especially for Android -->
 
     </Grid>
-
 
 </ContentView>

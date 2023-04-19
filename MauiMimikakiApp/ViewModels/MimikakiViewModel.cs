@@ -7,71 +7,132 @@ using MauiMimikakiApp.Drawables;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiMimikakiApp.Messages;
+using System.Windows.Input;
 
 namespace MauiMimikakiApp.ViewModels;
 
 internal partial class MimikakiViewModel : ObservableObject
 {
+    [ObservableProperty] MimiRegionDrawable _outerRegionDrawable;
+    [ObservableProperty] MimiRegionDrawable _innerRegionDrawable;
+    [ObservableProperty] MimiRegionDrawable _holeRegionDrawable;
 
-    [ObservableProperty] double actualImageHeight;
-
-    [ObservableProperty] MimiRegionDrawable topRegionDrawable;
-    [ObservableProperty] MimiRegionDrawable centerRegionDrawable;
-    [ObservableProperty] MimiRegionDrawable bottomRegionDrawable;
+    [ObservableProperty] double _viewWidth;
+    [ObservableProperty] double _viewHeight;
+    [ObservableProperty] double _viewDisplayRatio;
 
     static int dx = 2;
     static int dy = 2;
 
-    readonly PositionTracker _tracker;
+    required public Grid TrackerLayer {get; init;}
+
+    //readonly PositionTracker _tracker;
     //readonly MimiModel _mimi;
 
-    readonly MimiRegion _topRegion;
-    readonly MimiRegion _centerRegion;
-    readonly MimiRegion _bottomRegion;
-
-    readonly double _displayRatio;
-
-    internal Action<PositionTrackerState> OnMoveOnMimi;
-
     readonly MimiViewBox _viewBox;
-    readonly Path _top;
-    readonly Path _center;
-    readonly Path _bottom;
+    readonly Path _outer;
+    readonly Path _inner;
+    readonly Path _hole;
 
-    internal MimikakiViewModel(MimiViewBox viewbox, Path top, Path center, Path bottom)
+
+    MimiRegion _outerRegion;
+    MimiRegion _innerRegion;
+    MimiRegion _holeRegion;
+
+    
+    //internal Action<PositionTrackerState> OnMoveOnMimi;
+
+    
+    // // 
+    // public async void TargetImage_SizeChanged(object sender, EventArgs e)
+    // {
+    //     View targetImage = sender as View;
+
+    //     await EasyTasks.WaitFor(() => targetImage.DesiredSize.Width > 0);
+
+    //     //this.WidthRequest
+    //     ViewWidth = targetImage.DesiredSize.Width;
+    //     //this.HeightRequest 
+    //     ViewHeight = targetImage.DesiredSize.Height;
+
+    //     ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
+
+    //     // FrontLayer.AnchorX = 0;
+    //     // FrontLayer.AnchorY = 0;
+    //     // FrontLayer.Scale = _displayRatio.Value;
+
+    //     // Initialize view model here
+    //     Initialize();
+    // }
+
+    public ICommand SizeChangedCommand { get; private set; }
+
+    internal MimikakiViewModel(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
         _viewBox = viewbox;
-        _top = top;
-        _center = center;
-        _bottom = bottom;
+        _outer = outer;
+        _inner = inner;
+        _hole = hole;
+
+        SizeChangedCommand = new Command<View>(TargetSizeChanged);
     }
 
-    internal MimikakiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
+    async void TargetSizeChanged(View target)
     {
-        _tracker = tracker;
-        _displayRatio = displayRatio;
+        await EasyTasks.WaitFor(() => !target.DesiredSize.IsZero);
 
-        var topRegionPath = new Path(mimiTop);
-        var centerRegionPath = new Path(mimiCenter);
-        var bottomRegionPath = new Path(mimiBottom);
+        ViewWidth = target.DesiredSize.Width;
+        ViewHeight = target.DesiredSize.Height;
 
-        var topInternalRegion = new InternalRegion(topRegionPath.GetPath(), dx, dy);
-        var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath(), dx, dy);
-        var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath(), dx, dy);
-        
-        //_mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
+        ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
 
-        _topRegion = new(topInternalRegion);
-        _centerRegion = new(centerInternalRegion);
-        _bottomRegion = new(bottomInternalRegion);
+        View parent = target.Parent as View;
 
-        TopRegionDrawable = new MimiRegionDrawable(_topRegion);
-        CenterRegionDrawable = new MimiRegionDrawable(_centerRegion);
-        BottomRegionDrawable = new MimiRegionDrawable(_bottomRegion);
-    
-        //InvokeTrackerProcess();
-        //DoSomething();
+        parent.WidthRequest = ViewWidth;
+        parent.HeightRequest = ViewHeight;
+
+        // Initialize
+        InitializeModel();
     }
+
+    void InitializeModel()
+    {
+        _outerRegion = new( new InternalRegion(_outer.GetPath(), dx, dy) );
+        _innerRegion = new( new InternalRegion(_inner.GetPath(), dx, dy) );
+        _holeRegion = new( new InternalRegion(_hole.GetPath(), dx, dy) );
+
+        OuterRegionDrawable = new MimiRegionDrawable(_outerRegion);
+        InnerRegionDrawable = new MimiRegionDrawable(_innerRegion);
+        HoleRegionDrawable = new MimiRegionDrawable(_holeRegion);
+    }
+
+
+    // internal MimikakiViewModel(PositionTracker tracker, Geometry mimiTop, Geometry mimiCenter, Geometry mimiBottom, double displayRatio)
+    // {
+    //     _tracker = tracker;
+    //     _displayRatio = displayRatio;
+
+    //     var topRegionPath = new Path(mimiTop);
+    //     var centerRegionPath = new Path(mimiCenter);
+    //     var bottomRegionPath = new Path(mimiBottom);
+
+    //     var topInternalRegion = new InternalRegion(topRegionPath.GetPath(), dx, dy);
+    //     var centerInternalRegion = new InternalRegion(centerRegionPath.GetPath(), dx, dy);
+    //     var bottomInternalRegion = new InternalRegion(bottomRegionPath.GetPath(), dx, dy);
+        
+    //     //_mimi = new(topInternalRegion, centerInternalRegion, bottomInternalRegion);
+
+    //     _topRegion = new(topInternalRegion);
+    //     _centerRegion = new(centerInternalRegion);
+    //     _bottomRegion = new(bottomInternalRegion);
+
+    //     TopRegionDrawable = new MimiRegionDrawable(_topRegion);
+    //     CenterRegionDrawable = new MimiRegionDrawable(_centerRegion);
+    //     BottomRegionDrawable = new MimiRegionDrawable(_bottomRegion);
+    
+    //     //InvokeTrackerProcess();
+    //     //DoSomething();
+    // }
 
     // async void DoSomething()
     // {
@@ -89,68 +150,69 @@ internal partial class MimikakiViewModel : ObservableObject
     // }
 
 
-    internal void InvokeTrackerProcess(int updateInterval = 100)
-    {
-        if (updateInterval < 0) throw new Exception("Invalid update interval is given. The value should be positive.");
+    // internal void InvokeTrackerProcess(int updateInterval = 100)
+    // {
+    //     if (updateInterval < 0) throw new Exception("Invalid update interval is given. The value should be positive.");
 
-        RunTrackerProcess(updateInterval);
-    }
+    //     RunTrackerProcess(updateInterval);
+    // }
 
-    async void RunTrackerProcess(int updateInterval)
-    {
-        IEnumerable<ITrackerListener> listenersOfHair = 
-            new[] { _topRegion.Hairs, _centerRegion.Hairs, _bottomRegion.Hairs}
-            .SelectMany(listener => listener);
+    
+    // async void RunTrackerProcess(int updateInterval)
+    // {
+    //     IEnumerable<ITrackerListener> listenersOfHair = 
+    //         new[] { _topRegion.Hairs, _centerRegion.Hairs, _bottomRegion.Hairs}
+    //         .SelectMany(listener => listener);
 
-        IEnumerable<ITrackerListener> listenersOfDirt = 
-            new[] { _topRegion.Dirts, _centerRegion.Dirts, _bottomRegion.Dirts }
-            .SelectMany(listener => listener);
+    //     IEnumerable<ITrackerListener> listenersOfDirt = 
+    //         new[] { _topRegion.Dirts, _centerRegion.Dirts, _bottomRegion.Dirts }
+    //         .SelectMany(listener => listener);
 
-        IEnumerable<ITrackerListener> listeners = listenersOfHair.Concat(listenersOfDirt);
+    //     IEnumerable<ITrackerListener> listeners = listenersOfHair.Concat(listenersOfDirt);
 
-        while (true)
-        {
-            var current  = _tracker.CurrentState;
-            var position = ScaleForDisplayRatio(current.Position);
-            var velocity = ScaleForDisplayRatio(current.Velocity);
-            double dt = (double)updateInterval/1000;
+    //     while (true)
+    //     {
+    //         var current  = _tracker.CurrentState;
+    //         var position = ScaleForDisplayRatio(current.Position);
+    //         var velocity = ScaleForDisplayRatio(current.Velocity);
+    //         double dt = (double)updateInterval/1000;
 
-            StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
+    //         StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
 
-            if (_topRegion.Contains(position) ||
-                _centerRegion.Contains(position) ||
-                _bottomRegion.Contains(position))
-                    OnMoveOnMimi?.Invoke(current);
+    //         if (_topRegion.Contains(position) ||
+    //             _centerRegion.Contains(position) ||
+    //             _bottomRegion.Contains(position))
+    //                 OnMoveOnMimi?.Invoke(current);
 
-            foreach (var listener in listeners)
-                listener.OnMove(position, velocity, dt);
+    //         foreach (var listener in listeners)
+    //             listener.OnMove(position, velocity, dt);
 
-            // generate dirt
-            TryGenerateDirt();    
+    //         // generate dirt
+    //         TryGenerateDirt();    
 
-            StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
+    //         StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
 
-            // dirt removed action
-            CheckDirtRemoved(_topRegion);
-            CheckDirtRemoved(_centerRegion);
-            CheckDirtRemoved(_bottomRegion);    
+    //         // dirt removed action
+    //         CheckDirtRemoved(_topRegion);
+    //         CheckDirtRemoved(_centerRegion);
+    //         CheckDirtRemoved(_bottomRegion);    
 
-            await Task.Delay(updateInterval);
-        }
-    }
+    //         await Task.Delay(updateInterval);
+    //     }
+    // }
 
-    void TryGenerateDirt()
-    {
-        Random rnd = new Random();
-        if (rnd.NextDouble() > 0.8)
-            _topRegion.GenerateMimiDirt();
+    // void TryGenerateDirt()
+    // {
+    //     Random rnd = new Random();
+    //     if (rnd.NextDouble() > 0.8)
+    //         _topRegion.GenerateMimiDirt();
 
-        if (rnd.NextDouble() > 0.9)
-            _centerRegion.GenerateMimiDirt();
+    //     if (rnd.NextDouble() > 0.9)
+    //         _centerRegion.GenerateMimiDirt();
 
-        if (rnd.NextDouble() > 0.95)
-            _bottomRegion.GenerateMimiDirt();
-    }
+    //     if (rnd.NextDouble() > 0.95)
+    //         _bottomRegion.GenerateMimiDirt();
+    // }
 
     void CheckDirtRemoved(MimiRegion region)
     {
@@ -182,7 +244,8 @@ internal partial class MimikakiViewModel : ObservableObject
 
     Point ScaleForDisplayRatio(Point point)
     {
-        return new Point(point.X/_displayRatio, point.Y/_displayRatio);
+        return new Point(point.X/ViewDisplayRatio, point.Y/ViewDisplayRatio);
     }
-}
 
+
+}

@@ -10,26 +10,21 @@ namespace MauiMimikakiApp.CustomViews;
 
 public partial class MimikakiView : ContentView
 {
-    // Image Source
-    public static BindableProperty TargetImageSourceProperty = BindableProperty.Create("TargetImageSource", typeof(ImageSource), typeof(MimikakiView), null);
-
-    public ImageSource TargetImageSource
+    string _filename;
+    required public string Filename 
     {
-        get => (ImageSource)GetValue(TargetImageSourceProperty);
-        set => SetValue(TargetImageSourceProperty, value);
+        get  => _filename;
+        init => InitTargetImage(_filename = value);
     }
 
-    public double TargetImageOriginalHeight { get; init; }
+    void InitTargetImage(string filename)
+    {
+        // Resource check
+        FileImageSource source = ImageSource.FromFile(filename) as FileImageSource;
+        
+        TargetImage.Source = source;
+    }
 
-
-
-    public View MimiTrackerLayer => TrackerLayer;
-
-    //PositionTracker _tracker = null;
-    //View _targetView = null;
-
-    //double _targetWidthRequest;
-    //double _targetHeightRequest;
 
     MimikakiViewModel _vm;
 
@@ -38,15 +33,26 @@ public partial class MimikakiView : ContentView
     public double? DisplayRatio => _displayRatio;
     double? _displayRatio = null;
 
-    public MimikakiView(MimiViewBox viewbox, Path outerPath, Path middlePath, Path innerPath)
+    public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
         InitializeComponent();
 
-        TargetImage.BindingContext = this;
+        //TargetImage.BindingContext = this;
 
         _viewbox = viewbox;
 
-        _vm = new MimikakiViewModel(viewbox, outerPath, middlePath, innerPath);
+        _vm = new MimikakiViewModel(viewbox, outer, inner, hole) {TrackerLayer = TrackerLayer};
+
+        this.BindingContext = _vm;   // This will overwrite the BindingContext of its children
+                                        // (e.g., TargetImage.BindingContext = this; will be no effect)
+
+        //TargetImage.BindingContext = this; // overwrite
+
+        //TargetImage.SetBinding(Image.SourceProperty, new Binding(nameof(TargetImageSource), source: this));
+        //TargetImage.BindingContext = _vm;
+
+        //FrontLayer.BindingContext = _vm;
+        //TargetImage.BindingContext = this;
 
         //GetBoundsAsync();
 
@@ -76,12 +82,12 @@ public partial class MimikakiView : ContentView
             {
                 case "draw" :
                     
-                    MainThread.InvokeOnMainThreadAsync(() =>
-                    {
-                        TopRegion.Invalidate();
-                        CenterRegion.Invalidate();
-                        BottomRegion.Invalidate();
-                    });
+                    //MainThread.InvokeOnMainThreadAsync(() =>
+                    //{
+                    //    TopRegion.Invalidate();
+                    //    CenterRegion.Invalidate();
+                    //    BottomRegion.Invalidate();
+                    //});
                     
                     break;
 
@@ -110,30 +116,30 @@ public partial class MimikakiView : ContentView
         //RunInvalidateProcess();
     }
 
-    private async void TargetImage_SizeChanged(object sender, EventArgs e)
-    {
-        if (TargetImageSource is null) throw new ArgumentNullException("Image source is null.");
-        if (TargetImageOriginalHeight < 0) throw new Exception("Invalid TargetImageOriginalHeight is set.");
+    //private async void TargetImage_SizeChanged(object sender, EventArgs e)
+    //{
+    //    if (TargetImageSource is null) throw new ArgumentNullException("Image source is null.");
+    //    if (TargetImageOriginalHeight < 0) throw new Exception("Invalid TargetImageOriginalHeight is set.");
 
-        //while (true)
-        //{
-        //    if (TargetImage.DesiredSize.Width > 0) break;
-        //    await Task.Delay(100);
-        //}
+    //    //while (true)
+    //    //{
+    //    //    if (TargetImage.DesiredSize.Width > 0) break;
+    //    //    await Task.Delay(100);
+    //    //}
 
-        await EasyTasks.WaitFor(() => TargetImage.DesiredSize.Width > 0);
+    //    await EasyTasks.WaitFor(() => TargetImage.DesiredSize.Width > 0);
 
-        this.WidthRequest = TargetImage.DesiredSize.Width;
-        this.HeightRequest = TargetImage.DesiredSize.Height;
+    //    this.WidthRequest = TargetImage.DesiredSize.Width;
+    //    this.HeightRequest = TargetImage.DesiredSize.Height;
         
-        _displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
+    //    _displayRatio = this.DesiredSize.Height / TargetImageOriginalHeight;
 
-        FrontLayer.AnchorX = 0;
-        FrontLayer.AnchorY = 0;
-        FrontLayer.Scale = _displayRatio.Value;
+    //    FrontLayer.AnchorX = 0;
+    //    FrontLayer.AnchorY = 0;
+    //    FrontLayer.Scale = _displayRatio.Value;
 
-        // Initialize view model here
-    }
+    //    // Initialize view model here
+    //}
 
     // for test
     async void AddFloatingDirt(Shape dirtObject)

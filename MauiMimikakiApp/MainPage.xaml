@@ -77,8 +77,7 @@
               Scale="1">
 
             <custom:MimikakiView x:Name="MimiView" 
-                            TargetImageSource="{StaticResource Filename}"
-                            TargetImageOriginalHeight="{StaticResource MimiExpectedHeight}">
+                                Filename="mimi_kanji.png">
                 <x:Arguments>
                     <models:MimiViewBox Bounds="{StaticResource ViewBoxRect}"/>
                     <Path Data="{StaticResource MimiTopPathGeometryString}"/>
