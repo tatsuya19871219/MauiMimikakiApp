@@ -28,6 +28,11 @@ abstract class AbstractRegion
 
     abstract internal bool ContainsInRegion(Point point);
     abstract internal bool OnBoundary(Point point);
+    abstract internal double DistanceFromBoundary(Point point);
+
+    internal bool ContainsInRegion(double x, double y) => ContainsInRegion( new(x,y) );
+    internal bool OnBoundary(double x, double y) => OnBoundary( new(x,y) );
+    internal double DistanceFromBoundary(double x, double y) => DistanceFromBoundary( new(x,y) );
 
     void GetMinAndMaxPoints(PathF pathF, out Point minPoint, out Point maxPoint)
     {

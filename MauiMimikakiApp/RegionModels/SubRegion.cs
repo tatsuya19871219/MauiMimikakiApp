@@ -19,6 +19,8 @@ internal class SubRegion : AbstractRegion
     readonly bool[,] _isInner;
     readonly bool[,] _isBoundary;
 
+    readonly List<Point> _boundaryList;
+
     public SubRegion(PathF pathF, List<PointF> sharedVertecies, int dx = 5, int dy = 5) : base(pathF)
     {
         _dx = dx;
@@ -42,6 +44,8 @@ internal class SubRegion : AbstractRegion
         FillBoundaryPoints(pathF, sharedVertecies);
 
         FillInternalRegion();
+
+        _boundaryList = GetBoundaryPointList();
     }
 
     // Fill boundary by linear interpolation
@@ -157,6 +161,45 @@ internal class SubRegion : AbstractRegion
         return _isBoundary[idx_x, idx_y] && !_isInner[idx_x, idx_y];    
     }
 
+    internal override double DistanceFromBoundary(Point point)
+    {
+        if (OnBoundary(point)) return 0;
+
+        var distanceList = _boundaryList.Select( p => p.Distance(point) ).ToList();
+
+        return distanceList.Min();
+    }
+
+    // internal override double DistanceFromBoundary(Point point)
+    // {
+
+    //     if (!ContainsInRegion(point)) return double.NaN;
+    //     if (OnBoundary(point)) return 0;
+
+    //     var (idx_x, idx_y) = ConvertToRegionIndex(point);
+
+    //     int idxFromBoundX = Math.Min(idx_x, _lenX-idx_x-1);
+    //     int idxFromBoundY = Math.Min(idx_y, _lenY-idx_y-1);    
+
+    //     double minDistance = double.PositiveInfinity;
+
+    //     for (int i = -idxFromBoundX; i < idxFromBoundX; i++)
+    //     {
+    //         for (int j = -idxFromBoundY; j < idxFromBoundY; j++)
+    //         {
+    //             if (_isBoundary[idx_x+i, idx_y+j])
+    //             {
+    //                 var p = new Point(_dx*i, _dy*j);
+    //                 double distance = p.Distance(Point.Zero);
+
+    //                 if (minDistance > distance) minDistance = distance;
+    //             }
+    //         }
+    //     }
+
+    //     return minDistance;
+    // }
+
     (int idx_x, int idx_y) ConvertToRegionIndex(Point point)
     {
         var (x, y) = point;
@@ -167,13 +210,30 @@ internal class SubRegion : AbstractRegion
         return (idx_x, idx_y);
     }
 
-    // Point GetPositionOfIndex(int idx_x, int idx_y)
-    // {
-    //     double x = _xs + idx_x * _dx + _dx/2;
-    //     double y = _ys + idx_y * _dy + _dy/2;
+    Point GetPositionOfIndex(int idx_x, int idx_y)
+    {
+        double x = _xGrid[0] + idx_x * _dx + _dx/2;
+        double y = _yGrid[0] + idx_y * _dy + _dy/2;
 
-    //     return new Point(x,y);
-    // }
+        return new Point(x,y);
+    }
+
+    List<Point> GetBoundaryPointList()
+    {
+        List<Point> boundary = new();
+
+        for (int j = 0; j < _lenY; j++)
+        {
+            for (int i = 0; i <_lenX; i++)
+            {
+                if (_isBoundary[i,j])
+                    boundary.Add( GetPositionOfIndex(i, j) );
+            }
+        }
+
+        return boundary;
+    }
+
 
 }
 
