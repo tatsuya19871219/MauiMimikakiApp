@@ -53,7 +53,7 @@ internal class MimiRegion
             for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
             {
                 if (_internalRegion.ContainsInRegion(x,y)
-                    && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
+                    )//&& _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
                             _hairs.Add(new MimiHair(new Point(x,y)));
             }
         }

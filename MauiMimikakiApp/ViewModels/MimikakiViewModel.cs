@@ -21,8 +21,8 @@ internal partial class MimikakiViewModel : ObservableObject
     [ObservableProperty] double _viewHeight;
     [ObservableProperty] double _viewDisplayRatio;
 
-    static int dx = 1;
-    static int dy = 1;
+    static int dx = 20;
+    static int dy = 20;
 
     static int dt = 100;
 

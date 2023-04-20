@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,11 +27,13 @@ internal class SubRegion : AbstractRegion
         _dx = dx;
         _dy = dy;
 
-        var xs = (int)Math.Floor(Bounds.Left / dx) * dx;
-		var ys = (int)Math.Floor(Bounds.Top / dy) * dy;
+        var margin = 2*Math.Max(dx, dy);
 
-		var xe = (int)Math.Ceiling(Bounds.Right / dx) * dx;
-		var ye = (int)Math.Ceiling(Bounds.Bottom / dy) * dy;
+        var xs = (int)Math.Floor(Bounds.Left / dx) * dx - margin;
+		var ys = (int)Math.Floor(Bounds.Top / dy) * dy - margin;
+
+		var xe = (int)Math.Ceiling(Bounds.Right / dx) * dx + margin;
+		var ye = (int)Math.Ceiling(Bounds.Bottom / dy) * dy + margin;
 
         var lenX = (xe - xs) / dx + 1;
 		var lenY = (ye - ys) / dy + 1;
@@ -59,6 +62,9 @@ internal class SubRegion : AbstractRegion
             if (pA.Equals(pB)) continue;
 
             bool checkAsRegion = sharedVertexies.Contains(pA) && sharedVertexies.Contains(pB);
+
+            //Debug.Assert(!checkAsRegion, $"{sharedVertexies}");
+
             var markAsBroundary = (Point point) => 
             {
                 var (idx_x, idx_y) = ConvertToRegionIndex(point);
