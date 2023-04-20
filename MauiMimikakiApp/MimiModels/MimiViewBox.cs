@@ -9,12 +9,6 @@ namespace MauiMimikakiApp.Models;
 public class MimiViewBox
 {
     required public Rect Bounds { private get; init; }
-
-    //public MimiViewBox(Rect bounds)
-    //{
-    //    Bounds = bounds;
-    //}
-
     public async Task<Rect> GetBoundsAsync()
     {
         while(true)

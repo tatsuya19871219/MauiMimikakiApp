@@ -16,10 +16,6 @@ internal class MimiRegion
     readonly List<MimiHair> _hairs = new();
     readonly List<MimiDirt> _dirts = new();
 
-    // internal PathF OriginalPath => _internalRegion.GetOriginalPath();
-
-    // internal List<Point> Boundary => _internalRegion.GetBoundaryPointList();
-
 
     internal MimiRegion(PathF pathF, int dx, int dy)
     {
@@ -56,8 +52,8 @@ internal class MimiRegion
         {
             for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
             {
-                if (_internalRegion.ContainsInRegion(new(x,y))
-                    && _internalRegion.DistanceFromBoundary(new(x,y)) > hairMargin)
+                if (_internalRegion.ContainsInRegion(x,y)
+                    && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
                             _hairs.Add(new MimiHair(new Point(x,y)));
             }
         }
