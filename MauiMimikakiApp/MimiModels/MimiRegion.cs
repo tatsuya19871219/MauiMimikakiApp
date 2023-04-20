@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiMimikakiApp.Models;
+﻿namespace MauiMimikakiApp.Models;
 
 internal class MimiRegion
 {
@@ -38,22 +32,12 @@ internal class MimiRegion
         var maxWidth = Bounds.Width;
         var maxHeight = Bounds.Height;
 
-        // for (double x = topleft.X + hairMargin; x <= bottomright.X - hairMargin; x+=dx)
-        // {
-        //     for (double y = topleft.Y + hairMargin; y <= bottomright.Y - hairMargin; y+=dy)
-        //     {
-        //         if (_internalRegion.ContainsInRegion(x,y) 
-        //             && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
-        //                     _hairs.Add(new MimiHair(new Point(x,y)));
-        //     }
-        // }
-
         for (double x = center.X - maxWidth/2; x <= center.X + maxWidth/2; x+=dx)
         {
             for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
             {
                 if (_internalRegion.ContainsInRegion(x,y)
-                    )//&& _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
+                    && _internalRegion.DistanceFromBoundary(x,y) > hairMargin)
                             _hairs.Add(new MimiHair(new Point(x,y)));
             }
         }

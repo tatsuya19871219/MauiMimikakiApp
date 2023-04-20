@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiMimikakiApp.Models;
+﻿namespace MauiMimikakiApp.Models;
 
 internal class SubRegion : AbstractRegion
 {
@@ -63,8 +56,6 @@ internal class SubRegion : AbstractRegion
 
             bool checkAsRegion = sharedVertexies.Contains(pA) && sharedVertexies.Contains(pB);
 
-            //Debug.Assert(!checkAsRegion, $"{sharedVertexies}");
-
             var markAsBroundary = (Point point) => 
             {
                 var (idx_x, idx_y) = ConvertToRegionIndex(point);
@@ -88,10 +79,7 @@ internal class SubRegion : AbstractRegion
                     double x = pA.X + Math.Sign(diffX) * k * _dx;
                     double y = eqYLine(x);
 
-                    markAsBroundary( new(x,y) );
-                    // var (idx_x, idx_y) = ConvertToRegionIndex( new(x,y) );
-                    // _isBoundary[idx_x, idx_y] = true;
-                    
+                    markAsBroundary( new(x,y) );                    
                 }
             }
             else
@@ -101,10 +89,7 @@ internal class SubRegion : AbstractRegion
                     double y = pA.Y + Math.Sign(diffY) * k * _dy;
                     double x = eqXLine(y);
 
-                    markAsBroundary( new(x,y) );
-                    // var (idx_x, idx_y) = ConvertToRegionIndex( new(x,y) );
-                    // _isBoundary[idx_x, idx_y] = true;
-
+                    markAsBroundary( new(x,y) );                    
                 }
             }
 
@@ -239,7 +224,6 @@ internal class SubRegion : AbstractRegion
 
         return boundary;
     }
-
 
 }
 
