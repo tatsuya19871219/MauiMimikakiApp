@@ -86,6 +86,9 @@
 
 
 	<ItemGroup>
+	  <MauiXaml Update="CustomViews\MimiDirectionSwitch.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CustomViews\MimiRegionView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

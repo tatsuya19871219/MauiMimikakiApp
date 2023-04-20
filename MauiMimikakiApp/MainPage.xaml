@@ -11,20 +11,18 @@
                 <VisualStateGroup Name="EarDirection">
                     <VisualState Name="Right">
                         <VisualState.StateTriggers>
-                            <StateTrigger IsActive="{Binding IsToggled, Source={x:Reference DirectionSwitch}}" IsActiveChanged="StateTrigger_IsActiveChanged"/>
+                            <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
-                            <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>
-                            <!--<Setter TargetName="DirectionSwitch" Property="BackgroundColor" Value="Red"/>-->
+                            <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState Name="Left">
                         <VisualState.StateTriggers>
-                            <StateTrigger IsActive="{Binding IsToggled, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}" IsActiveChanged="StateTrigger_IsActiveChanged"/>                          
+                            <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
-                            <!--<Setter TargetName="DirectionSwitch" Property="BackgroundColor" Value="Blue"/>-->
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -53,22 +51,9 @@
         <Label x:Name="HeaderLabel" 
                Text="Mimikaki"/>
 
-        <Switch x:Name="DirectionSwitch" IsToggled="False">
-
-            
-
-            <Switch.Triggers>
-                <Trigger TargetType="Switch" Property="IsToggled" Value="True">
-                    <!--<Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>-->
-                    <Setter Property="BackgroundColor" Value="Red"/>
-                </Trigger>
-                <Trigger TargetType="Switch" Property="IsToggled" Value="False">
-                    <!--<Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>-->
-                    <Setter Property="BackgroundColor" Value="Blue"/>
-                </Trigger>
-            </Switch.Triggers>
-
-        </Switch>
+        <custom:MimiDirectionSwitch x:Name="DirectionSwitch"
+                                    InitialRight="{StaticResource IsRight}"
+                                    HorizontalOptions="Start"/>
 
         <Grid x:Name="MimiGrid" HeightRequest="550"
               BackgroundColor="LightYellow"

@@ -8,5 +8,6 @@
     <x:String x:Key="MimiOuterPathString">m 295.20869,519.83956 162.65139,6.807 4.29913,-152.62003 -88.8492,83.117 -73.80999,-80.96742 z m 4.29133,-143.66345 -87.40835,75.23522 -76.66827,-68.06996 -2.8661,129.69118 162.65139,6.80701 z</x:String>
     <x:String x:Key="MimiInnerPathString">M 447.11217,200 500,100 H 300 l 50,50 z M 350,150 300,250 500,300 447.11217,200 Z</x:String>
     <x:String x:Key="MimiHolePathString">m 100.5,100.5 v 150 h 100 v -150 z</x:String>
+    <x:Boolean x:Key="IsRight">True</x:Boolean>
 
 </ResourceDictionary>
