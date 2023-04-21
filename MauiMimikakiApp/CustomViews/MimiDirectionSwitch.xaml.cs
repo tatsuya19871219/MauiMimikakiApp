@@ -12,12 +12,10 @@ public partial class MimiDirectionSwitch : ContentView
 		set => SetValue(IsRightProperty, value);
 	}
 
-	required public bool InitialRight 
+	required public bool RightInInit
 	{
-		init => GoTo(IsRight = value);
+		init => GoTo(value);
 	}
-
-	//readonly ResourceDictionary _res;
 
 	readonly Point _rightPosition;
 	readonly Point _leftPosition;
@@ -36,16 +34,17 @@ public partial class MimiDirectionSwitch : ContentView
 		_leftPosition.X -= width/4;
 	}
 
-    private void DirectionSwitch_Clicked(object sender, EventArgs e)
-    {
-		GoTo(IsRight = !IsRight);
-    }
+	private void SwitchTipTapped(object sender, TappedEventArgs e)
+	{
+		GoTo(!IsRight);
+	}
 
 	void GoTo(bool isRight)
 	{
+		IsRight = isRight;
 		var dest = isRight ? _rightPosition : _leftPosition;
 		
-		DirectionSwitch.TranslateTo(dest.X, dest.Y, 100);
+		SwitchTip.TranslateTo(dest.X, dest.Y, 100);
 	}
 
 }
@@ -64,28 +63,3 @@ internal class BoolToDirectionConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
-// public class IsRightConverter : IValueConverter
-// {
-//     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-//     {
-//         return ((string)value).Equals("Right");
-//     }
-
-//     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-//     {
-//         return (bool)value ? "Right" : "Left";
-//     }
-// }
-
-// public class IsLeftConverter : IValueConverter
-// {
-//     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-//     {
-//         return ((string)value).Equals("Left");
-//     }
-
-//     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-//     {
-//         return (bool)value ? "Left" : "Right";
-//     }
-// }

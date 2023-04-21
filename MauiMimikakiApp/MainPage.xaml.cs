@@ -11,8 +11,6 @@ namespace MauiMimikakiApp;
 
 public partial class MainPage : ContentPage
 {
-	readonly IAudioManager _audioManager;
-
 	IAudioPlayer _kakiSEPlayer;
 
 	MimikakiViewModel _vm;
@@ -21,27 +19,12 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
-		_audioManager = audioManager;
-
-		InitializeMimi();
+		RegisterTrackerMessages();
+		PrepareSEPlayer(audioManager);
 	}
 
-
-	async void InitializeMimi()
+	void RegisterTrackerMessages()
 	{
-//		await EasyTasks.WaitFor(() => MimiView.DisplayRatio.HasValue);
-
-// 		PositionTracker tracker = null;
-// #if ANDROID
-// 		tracker = new PositionTracker(MimiView.MimiTrackerLayer);
-// #elif WINDOWS
-// 		tracker = new PositionTracker(MimiView);
-// #endif
-
-		// Set up SE player
-		_kakiSEPlayer = _audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("kaki.mp3"));
-		
-        // Register messages
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
 
@@ -71,12 +54,12 @@ public partial class MainPage : ContentPage
 			}
 			
 		});
-    }
+	}
 
-    private void StateTrigger_IsActiveChanged(object sender, EventArgs e)
-    {
-
-    }
-
+	async void PrepareSEPlayer(IAudioManager audioManager)
+	{
+		_kakiSEPlayer = audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("kaki.mp3"));
+	}
+        
 }
 

@@ -1,38 +1,40 @@
-﻿using MauiMimikakiApp.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MauiMimikakiApp.Models;
 
 namespace MauiMimikakiApp.Drawables;
 
-public class MimiRegionDrawable : IDrawable
+public partial class MimiRegionDrawable : ObservableObject, IDrawable
 {
-    public double WidthRequest {get; init;}
-    public double HeightRequest {get; init;}
-
-    public double OffsetX => _offsetX;
-    public double OffsetY => _offsetY;
+    [ObservableProperty] double _regionWidthRequest;
+    [ObservableProperty] double _regionHeightRequest;
+    [ObservableProperty] double _regionOffsetX;
+    [ObservableProperty] double _regionOffsetY;
 
     readonly MimiRegion _mimiRegion;
 
-    readonly float _padding;
-    readonly double _offsetX;
-    readonly double _offsetY;
 
     internal MimiRegionDrawable(MimiRegion mimiRegion, double padding = 0) : base()
     {
         _mimiRegion = mimiRegion;
 
-        _padding = (float)padding;
-
         var bounds = _mimiRegion.Bounds;
 
-        _offsetX = bounds.Left - _padding;
-        _offsetY = bounds.Top - _padding;
+        RegionOffsetX = bounds.Left - padding;
+        RegionOffsetY = bounds.Top - padding;
 
-        WidthRequest = bounds.Width + 2*_padding;
-        HeightRequest = bounds.Height + 2*_padding;
+        RegionWidthRequest = bounds.Width + 2*padding;
+        RegionHeightRequest = bounds.Height + 2*padding;
+
+        //double density = DeviceDisplay.Current.MainDisplayInfo.Density;
+
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
+        // canvas.StrokeColor = Colors.Red;
+        // canvas.StrokeSize = 2;
+        // canvas.DrawRectangle(dirtyRect);
+
         VisualizeHairs(canvas, Colors.Black);
 
         VisualizeDirts(canvas, Colors.Magenta);
@@ -47,10 +49,10 @@ public class MimiRegionDrawable : IDrawable
             var origin = hair.Origin;
             var position = hair.Position;
 
-            var x = position.X - _offsetX;
-            var y = position.Y - _offsetY;
-            var x0 = origin.X - _offsetX;
-            var y0 = origin.Y - _offsetY;
+            var x = position.X - RegionOffsetX;
+            var y = position.Y - RegionOffsetY;
+            var x0 = origin.X - RegionOffsetX;
+            var y0 = origin.Y - RegionOffsetY;
 
             canvas.FillColor = Colors.LightGray;
             //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
@@ -72,10 +74,8 @@ public class MimiRegionDrawable : IDrawable
 
             var size = new Size(dirt.Size, dirt.Size);
 
-            var x = position.X - _offsetX - size.Width/2;
-            var y = position.Y - _offsetY - size.Height/2;
-
-            //canvas.StrokeSize = 10;
+            var x = position.X - RegionOffsetX - size.Width/2;
+            var y = position.Y - RegionOffsetY - size.Height/2;
 
             canvas.FillColor = color;
 

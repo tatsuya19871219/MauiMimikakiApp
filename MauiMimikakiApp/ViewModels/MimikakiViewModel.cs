@@ -20,6 +20,7 @@ internal partial class MimikakiViewModel : ObservableObject
     [ObservableProperty] double _viewWidth;
     [ObservableProperty] double _viewHeight;
     [ObservableProperty] double _viewDisplayRatio;
+    [ObservableProperty] bool _readyToMimikaki;
 
     static int dx = 10;
     static int dy = 10;
@@ -48,6 +49,8 @@ internal partial class MimikakiViewModel : ObservableObject
         _inner = inner;
         _hole = hole;
 
+        ReadyToMimikaki = false;
+
         SizeChangedCommand = new Command<View>(TargetSizeChanged);
     }
 
@@ -60,19 +63,11 @@ internal partial class MimikakiViewModel : ObservableObject
 
         ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
 
-        View parent = target.Parent as View;
-
-        parent.WidthRequest = ViewWidth;
-        parent.HeightRequest = ViewHeight;
-
-        // Initialize
         InitializeModel();
     }
 
-    void InitializeModel()
+    async void InitializeModel()
     {
-        //var figs = (_outer.Data as PathGeometry).Figures;
-
         _outerRegion ??= new(_outer.GetPath(), dx, dy);
         _innerRegion ??= new(_inner.GetPath(), dx, dy);
         _holeRegion ??= new(_hole.GetPath(), dx, dy);
@@ -81,8 +76,9 @@ internal partial class MimikakiViewModel : ObservableObject
         InnerRegionDrawable ??= new MimiRegionDrawable(_innerRegion);
         HoleRegionDrawable ??= new MimiRegionDrawable(_holeRegion);
 
-        //RunTrackerProcess(dt);        
-        //StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
+        ReadyToMimikaki = true;
+
+        RunTrackerProcess(dt);
     }
     
     async void RunTrackerProcess(int updateInterval)
@@ -115,12 +111,10 @@ internal partial class MimikakiViewModel : ObservableObject
             foreach (var listener in listeners)
                 listener.OnMove(position, velocity, dt);
 
-            // generate dirt
             TryGenerateDirt();    
 
             StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
 
-            // dirt removed action
             CheckDirtRemoved(_outerRegion);
             CheckDirtRemoved(_innerRegion);
             CheckDirtRemoved(_holeRegion);    
@@ -157,7 +151,7 @@ internal partial class MimikakiViewModel : ObservableObject
             var width = dirt.Size / ViewDisplayRatio;
             var height = dirt.Size / ViewDisplayRatio;
 
-            Rectangle rect = new Rectangle {Fill = Colors.Magenta, WidthRequest = width, HeightRequest = height};
+            Rectangle rect = new Rectangle {Fill = Colors.Magenta, Stroke=Colors.Magenta, WidthRequest = width, HeightRequest = height};
 
             Point position = dirt.Position;
 
@@ -177,6 +171,5 @@ internal partial class MimikakiViewModel : ObservableObject
     {
         return new Point(point.X / ViewDisplayRatio, point.Y / ViewDisplayRatio);
     }
-
 
 }

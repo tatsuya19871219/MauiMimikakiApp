@@ -8,24 +8,24 @@
              BackgroundColor="LightPink">
 
     <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup Name="EarDirection">
-                    <VisualState Name="Right">
-                        <VisualState.StateTriggers>
-                            <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
-                        </VisualState.Setters>
-                    </VisualState>
-                    <VisualState Name="Left">
-                        <VisualState.StateTriggers>
-                            <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
-                        </VisualState.StateTriggers>
-                        <VisualState.Setters>
-                            <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
-                        </VisualState.Setters>
-                    </VisualState>
-                </VisualStateGroup>
+        <VisualStateGroup Name="EarDirection">
+            <VisualState Name="Right">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState Name="Left">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
     
     <ContentPage.Resources>
@@ -48,17 +48,17 @@
             </Style>
         </FlexLayout.Resources>
 
-        <Label x:Name="HeaderLabel" 
-               Text="Mimikaki"/>
+        <Grid>
+            <Label x:Name="HeaderLabel" 
+                   Text="Mimikaki"/>
 
-        <custom:MimiDirectionSwitch x:Name="DirectionSwitch"
-                                    InitialRight="{StaticResource IsRight}"
-                                    HorizontalOptions="Start"/>
+            <custom:MimiDirectionSwitch x:Name="DirectionSwitch"
+                                        RightInInit="{StaticResource IsRight}"
+                                        HorizontalOptions="End"/>
+        </Grid>
 
-        <Grid x:Name="MimiGrid" HeightRequest="550"
-              BackgroundColor="LightYellow"
-              VerticalOptions="Center"
-              Scale="1">
+        <Grid x:Name="MimiGrid" HeightRequest="600"
+              BackgroundColor="LightYellow">
 
             <custom:MimikakiView x:Name="MimiView" 
                                 Filename="{StaticResource Filename}">

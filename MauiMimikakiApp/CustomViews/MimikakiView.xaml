@@ -6,11 +6,41 @@
              xmlns:custom="clr-namespace:MauiMimikakiApp.CustomViews"
              xmlns:vm="clr-namespace:MauiMimikakiApp.ViewModels"
              xmlns:sys="clr-namespace:System;assembly=netstandard"
-             x:DataType="vm:MimikakiViewModel">
+             x:DataType="vm:MimikakiViewModel" HorizontalOptions="Center">
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+            <VisualState x:Name="Initialized">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding ReadyToMimikaki}"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>                    
+                    <!--<Setter TargetName="Status" Property="Label.Text" Value="Initialized."/>-->
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
     <Grid x:Name="TrackableContent">
 
-        <Image x:Name="TargetImage">
+        <Grid.Resources>
+            <Style TargetType="View" 
+                    x:Key="ContentStyle">
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="VerticalOptions" Value="Start"/>
+            </Style>
+            <Style TargetType="Grid" 
+                    BasedOn="{StaticResource ContentStyle}"
+                    x:Key="ScaledContentStyle">
+                <Setter Property="AnchorX" Value="0"/>
+                <Setter Property="AnchorY" Value="0"/>
+                <Setter Property="Scale" Value="{Binding ViewDisplayRatio}"/>
+            </Style>
+        </Grid.Resources>
+
+        <!--<Label x:Name="Status" Text="Not initialized yet."/>-->
+
+        <Image x:Name="TargetImage" Style="{StaticResource ContentStyle}"> 
             <Image.Behaviors>
                 <toolkit:EventToCommandBehavior
                     EventName="SizeChanged"
@@ -19,29 +49,34 @@
             </Image.Behaviors>
         </Image>
 
-        <Grid x:Name="FrontLayer" AnchorX="0" AnchorY="0" Scale="{Binding ViewDisplayRatio}">
+        <Grid x:Name="FrontLayer" BackgroundColor="Transparent">
 
-            <Grid x:Name="DetectableRegions">
+            <Grid x:Name="DetectableRegions" Style="{StaticResource ScaledContentStyle}">                  
                 <Grid.Resources>
                     <Style TargetType="GraphicsView">
+                        <Setter Property="WidthRequest" Value="{Binding RegionWidthRequest}"/>
+                        <Setter Property="HeightRequest" Value="{Binding RegionHeightRequest}"/>
+                        <Setter Property="TranslationX" Value="{Binding RegionOffsetX}"/>
+                        <Setter Property="TranslationY" Value="{Binding RegionOffsetY}"/>                        
+                        <Setter Property="Style" Value="{StaticResource ContentStyle}"/>
                         <Setter Property="Drawable" Value="{Binding}"/>
-                        <Setter Property="WidthRequest" Value="{Binding WidthRequest}"/>
-                        <Setter Property="HeightRequest" Value="{Binding HeightRequest}"/>
-                        <Setter Property="TranslationX" Value="{Binding OffsetX}"/>
-                        <Setter Property="TranslationY" Value="{Binding OffsetY}"/>
-                        <Setter Property="HorizontalOptions" Value="Start"/>
-                        <Setter Property="VerticalOptions" Value="Start"/>
                     </Style>
                 </Grid.Resources>
 
                 <GraphicsView x:Name="OuterRegion" BindingContext="{Binding OuterRegionDrawable}"/>
                 <GraphicsView x:Name="InnerRegion" BindingContext="{Binding InnerRegionDrawable}"/>
-                <GraphicsView x:Name="HoleRegion" BindingContext="{Binding HoleRegionDrawable}"/>
-
+                <GraphicsView x:Name="HoleRegion" BindingContext="{Binding HoleRegionDrawable}"/> 
             </Grid>
 
-            <Grid x:Name="FloatingObjectsLayer"
-                    HorizontalOptions="Start" VerticalOptions="Start"/>
+            <Grid x:Name="FloatingObjectsLayer" Style="{StaticResource ScaledContentStyle}"/>                    
+
+            <Ellipse x:Name="PositionMarker" 
+                Style="{StaticResource ContentStyle}"
+                AnchorX="0.5" AnchorY="0.5"
+                TranslationX="0" TranslationY="0" 
+                WidthRequest="20" HeightRequest="20" 
+                Opacity="0.25"
+                Stroke="Red" InputTransparent="True"/>
 
         </Grid>
 

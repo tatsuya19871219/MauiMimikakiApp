@@ -20,8 +20,8 @@ public partial class MimikakiView : ContentView
 
     void InitTargetImage(string filename)
     {
-        // Should check whether the resource of the filename exists
-        FileImageSource source = ImageSource.FromFile(filename) as FileImageSource;
+        // Should check whether the resource exists
+        var source = ImageSource.FromFile(filename) as FileImageSource;
 
         TargetImage.Source = source;
     }
@@ -54,10 +54,20 @@ public partial class MimikakiView : ContentView
 
         StrongReferenceMessenger.Default.Register<FloatingDirtGenerateMessage>(this, (s, e) =>
         {
-                MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    AddFloatingDirt(e.Value);
-                });
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                AddFloatingDirt(e.Value);
+            });
+        });
+
+        StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
+        {
+            var current = e.Value as PositionTrackerState;
+
+            var position = current.Position;
+
+            PositionMarker.TranslationX = position.X - PositionMarker.Width/2;
+            PositionMarker.TranslationY = position.Y - PositionMarker.Height/2;
         });
         
     }
@@ -85,5 +95,5 @@ public partial class MimikakiView : ContentView
 
         FloatingObjectsLayer.Remove(dirtObject);
     }
- 
+
 }

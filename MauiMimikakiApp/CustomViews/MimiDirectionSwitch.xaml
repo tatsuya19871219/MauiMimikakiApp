@@ -5,29 +5,34 @@
              x:Class="MauiMimikakiApp.CustomViews.MimiDirectionSwitch">
 
     <ContentView.Resources>
-        <!-- <local:IsRightConverter x:Key="IsRightConverter"/>
-        <local:IsLeftConverter x:Key="IsLeftConverter"/> -->
         <local:BoolToDirectionConverter x:Key="BoolToDirection"/>
 
-        <x:Double x:Key="CornerRadius">10</x:Double>
+        <x:Double x:Key="CornerRadius">5</x:Double>
         <x:Double x:Key="BorderSize">2</x:Double>
-        <x:Double x:Key="SwitchBodyWidth">100</x:Double>
-        <x:Double x:Key="SwitchBodyHeight">50</x:Double>
-        <x:Double x:Key="SwitchTipSize">40</x:Double>
+        <x:Double x:Key="SwitchBodyWidth">60</x:Double>
+        <x:Double x:Key="SwitchBodyHeight">30</x:Double>
+        <x:Double x:Key="SwitchTipSize">20</x:Double>
+        <Color x:Key="BaseColor">Purple</Color>
     </ContentView.Resources>
 
-    <VerticalStackLayout>
+    <VerticalStackLayout Padding="10">
         <Grid>
             <RoundRectangle BackgroundColor="Transparent"
-                            Stroke="Purple"
+                            Stroke="{StaticResource BaseColor}"
                             CornerRadius="{StaticResource CornerRadius}"
                             StrokeThickness="{StaticResource BorderSize}"
                             WidthRequest="{StaticResource SwitchBodyWidth}"
                             HeightRequest="{StaticResource SwitchBodyHeight}"/>
-            <Button x:Name="DirectionSwitch" 
-                    Clicked="DirectionSwitch_Clicked"
-                    WidthRequest="{StaticResource SwitchTipSize}"
-                    HeightRequest="{StaticResource SwitchTipSize}"/>
+            
+            <RoundRectangle x:Name="SwitchTip"
+                            Fill="{StaticResource BaseColor}"
+                            CornerRadius="{StaticResource CornerRadius}"
+                            WidthRequest="{StaticResource SwitchTipSize}"
+                            HeightRequest="{StaticResource SwitchTipSize}">
+                <RoundRectangle.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="SwitchTipTapped"/>
+                </RoundRectangle.GestureRecognizers>
+            </RoundRectangle>
         </Grid>
         <Label Text="{Binding IsRight, Converter={StaticResource BoolToDirection}, 
                         StringFormat='{0} mimi'}"/>
