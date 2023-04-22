@@ -61,7 +61,7 @@
               BackgroundColor="LightYellow">
 
             <custom:MimikakiView x:Name="MimiView" 
-                                Filename="{StaticResource Filename}">
+                                 ImageFilename="{StaticResource Filename}">
                 <x:Arguments>
                     <models:MimiViewBox Bounds="{StaticResource ViewBoxRect}"/>
                     <Path Data="{StaticResource MimiOuterPathString}"/>

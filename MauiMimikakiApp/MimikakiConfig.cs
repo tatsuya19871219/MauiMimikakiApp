@@ -14,6 +14,8 @@ internal class MimikakiConfig
     static Func<string, string> configPath;
     static readonly Assembly assembly;
 
+    static public MimikakiConfig Current;
+
     public int Dx { get; private set; }
     public int Dy { get; private set; }
     [JsonInclude] public int dt { get; private set; }
@@ -34,7 +36,7 @@ internal class MimikakiConfig
 
         var contents = reader.ReadToEnd();
 
-        return JsonSerializer.Deserialize<MimikakiConfig>(contents);
+        return Current = JsonSerializer.Deserialize<MimikakiConfig>(contents);
     }
 
 }

@@ -12,19 +12,21 @@ namespace MauiMimikakiApp.CustomViews;
 public partial class MimikakiView : ContentView
 {
     string _filename;
-    required public string Filename 
-    {
-        get  => _filename;
-        init => InitTargetImage(_filename = value);
-    }
+    required public string ImageFilename { init => TargetImage.Source = value; }
+    // {
+    //     get  => _filename;
+    //     init => InitTargetImage(_filename = value);
+    // }
 
-    void InitTargetImage(string filename)
-    {
-        // Should check whether the resource exists
-        var source = ImageSource.FromFile(filename) as FileImageSource;
+    // void InitTargetImage(string filename)
+    // {
+    //     // Should check whether the resource exists
+        
 
-        TargetImage.Source = source;
-    }
+    //     var source = ImageSource.FromFile(filename) as FileImageSource;
+
+    //     TargetImage.Source = source;
+    // }
 
     public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
