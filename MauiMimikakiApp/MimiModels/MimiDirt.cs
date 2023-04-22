@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MauiMimikakiApp.Models;
+﻿namespace MauiMimikakiApp.Models;
 
 public class MimiDirt : ITrackerListener
 {
@@ -19,16 +13,7 @@ public class MimiDirt : ITrackerListener
         this.Position = position;
 
         this.Size = 5;
-        //
-        //DoTestWork();
     }
-
-    // //
-    // async void DoTestWork()
-    // {
-    //     await Task.Delay(2000);
-    //     IsRemoved = true;
-    // }
 
     public void OnMove(Point position, Point velocity, double milliSecUpdateInterval)
     {

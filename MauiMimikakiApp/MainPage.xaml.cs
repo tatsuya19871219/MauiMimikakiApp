@@ -13,7 +13,6 @@ namespace MauiMimikakiApp;
 public partial class MainPage : ContentPage
 {
 	IAudioPlayer _kakiSEPlayer;
-	MimikakiViewModel _vm;
 
 	Stopwatch _stopwatch;
 
@@ -27,13 +26,15 @@ public partial class MainPage : ContentPage
 		_stopwatch = new Stopwatch();
 		_stopwatch.Start();
 
-		var config = MimikakiConfig.Load("Config.json");
+		//var config 
+		_ = MimikakiConfig.Load("Config.json");
 	}
 
 	void RegisterTrackerMessages()
 	{
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
+			// Update header text
 			_stopwatch.Stop();
 
 			int elapsedMilli = (int)_stopwatch.ElapsedMilliseconds;
@@ -45,6 +46,8 @@ public partial class MainPage : ContentPage
 			_stopwatch.Reset();
 			_stopwatch.Start();
 
+
+			// Update footer text
 			PositionTrackerState state = e.Value;
 
 			Point position = state.Position;
@@ -59,31 +62,41 @@ public partial class MainPage : ContentPage
 		{
 			PositionTrackerState state = e.Value;
 
-			Point position = state.Position;
+			//Point position = state.Position;
 
 			double velocity = state.Velocity.Distance(Point.Zero);
 
-			// test
-			try
+			if (velocity < 0.02)
 			{
-				_kakiSEPlayer.Speed = velocity * 50;
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex);
-			}
+				_kakiSEPlayer.Stop();
+				return;
+			} 
 
-			if (!_kakiSEPlayer.IsPlaying && velocity > 0.02)
-			{
-				try
-				{
-					_kakiSEPlayer.Play();
-				}
-				catch (Exception ex)
-				{
-					Debug.WriteLine(ex.Message);
-				}
-			}
+			if (!_kakiSEPlayer.IsPlaying) _kakiSEPlayer.Play();
+
+			_kakiSEPlayer.Speed = velocity*25;
+
+			// // test
+			// try
+			// {
+			// 	_kakiSEPlayer.Speed = velocity * 50;
+			// }
+			// catch (Exception ex)
+			// {
+			// 	Debug.WriteLine(ex);
+			// }
+
+			// if (!_kakiSEPlayer.IsPlaying && velocity > 0.02)
+			// {
+			// 	try
+			// 	{
+			// 		_kakiSEPlayer.Play();
+			// 	}
+			// 	catch (Exception ex)
+			// 	{
+			// 		Debug.WriteLine(ex.Message);
+			// 	}
+			// }
 
 		});
 	}
