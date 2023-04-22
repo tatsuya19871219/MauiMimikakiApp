@@ -19,6 +19,7 @@ internal class MimikakiConfig
     public int Dx { get; private set; }
     public int Dy { get; private set; }
     [JsonInclude] public int dt { get; private set; }
+    [JsonInclude] public Hoge hoge { get; private set; }
 
     static MimikakiConfig()
     {

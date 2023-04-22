@@ -26,8 +26,7 @@ public partial class MainPage : ContentPage
 		_stopwatch = new Stopwatch();
 		_stopwatch.Start();
 
-		//var config 
-		_ = MimikakiConfig.Load("Config.json");
+		var config = MimikakiConfig.Load("Config.json");
 	}
 
 	void RegisterTrackerMessages()
