@@ -13,21 +13,7 @@ public partial class MimikakiView : ContentView
 {
     string _filename;
     required public string ImageFilename { init => TargetImage.Source = value; }
-    // {
-    //     get  => _filename;
-    //     init => InitTargetImage(_filename = value);
-    // }
-
-    // void InitTargetImage(string filename)
-    // {
-    //     // Should check whether the resource exists
-        
-
-    //     var source = ImageSource.FromFile(filename) as FileImageSource;
-
-    //     TargetImage.Source = source;
-    // }
-
+    
     public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
         InitializeComponent();
@@ -81,8 +67,6 @@ public partial class MimikakiView : ContentView
         HoleRegion.Invalidate();
     }
 
-
-    // for test
     async void AddFloatingDirt(Shape dirtObject)
     {
         var x = dirtObject.TranslationX;
