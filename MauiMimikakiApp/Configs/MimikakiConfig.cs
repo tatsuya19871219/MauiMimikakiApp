@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace MauiMimikakiApp;
 
@@ -16,10 +10,11 @@ internal class MimikakiConfig
 
     static public MimikakiConfig Current;
 
-    public int Dx { get; private set; }
-    public int Dy { get; private set; }
-    [JsonInclude] public int dt { get; private set; }
-    [JsonInclude] public Hoge hoge { get; private set; }
+    // Properties in JSON config file
+    public string KakiSoundFilename { get; init; }
+    public int TrackerUpdateInterval { get; init; }
+    public int GraphicsUpdateInterval { get; init; }
+    public ModelParams Params { get; init; }
 
     static MimikakiConfig()
     {

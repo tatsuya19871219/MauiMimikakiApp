@@ -1,8 +1,32 @@
 ﻿{
-  "holle": 5,
-  "dt": 5,
-  "hoge": {
-    "ABC": 16,
-    "Foo": "go"
+  "KakiSoundFilename" : "kaki.mp3",
+  "TrackerUpdateInterval" : 10,
+  "GraphicsUpdateInterval": 30,
+  "Params" : 
+  {
+    "RegionRoughness" : 
+    {
+      "DX" : 10,
+      "DY" : 10
+    },
+    "MimiHair" :
+    {
+      "Thinness" : 2.0,
+      "SpringConst" : 0.5
+    },
+    "MimiHairDensity" : 0.05,
+    "MimiDirt" :
+    {
+      "Size" : 5,
+      "Hardness" : 1,
+      "ColorName" : "Magenta"
+    },
+    "MimiDirtGenerationRate" :
+    {
+      "Outer" : 0.9,
+      "Inner" : 0.95,
+      "Hole" : 0.99
+    },
+    "TouchPointRadius" : 20
   }
 }

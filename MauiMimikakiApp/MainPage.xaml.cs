@@ -20,13 +20,14 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
+		var config = MimikakiConfig.Load("Config.json");
+
 		RegisterTrackerMessages();
 		PrepareSEPlayer(audioManager);
 
 		_stopwatch = new Stopwatch();
 		_stopwatch.Start();
 
-		var config = MimikakiConfig.Load("Config.json");
 	}
 
 	void RegisterTrackerMessages()
@@ -102,7 +103,11 @@ public partial class MainPage : ContentPage
 
 	async void PrepareSEPlayer(IAudioManager audioManager)
 	{
-		_kakiSEPlayer = audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync("kaki.mp3"));
+		var filename = MimikakiConfig.Current.KakiSoundFilename;
+		
+		using var stream = await FileSystem.OpenAppPackageFileAsync(filename);
+		
+		_kakiSEPlayer = audioManager.CreatePlayer(stream);
 	}
         
 }
