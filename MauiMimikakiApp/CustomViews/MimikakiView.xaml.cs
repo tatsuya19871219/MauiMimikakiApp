@@ -31,11 +31,11 @@ public partial class MimikakiView : ContentView
         InitializeComponent();
 
         BindingContext = new MimikakiViewModel(viewbox, outer, inner, hole) {
-#if WINDOWS
-            TrackerLayer = TrackableContent
-#elif ANDROID
+// #if WINDOWS
+//             TrackerLayer = TrackableContent
+// #elif ANDROID
             TrackerLayer = TrackerLayer
-#endif
+// #endif
         };
 
         // Resister messages
@@ -78,8 +78,8 @@ public partial class MimikakiView : ContentView
         InnerRegion.Invalidate();
         HoleRegion.Invalidate();
     }
-    
-    
+
+
     // for test
     async void AddFloatingDirt(Shape dirtObject)
     {

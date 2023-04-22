@@ -31,11 +31,13 @@ public partial class MimiRegionDrawable : ObservableObject, IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        // canvas.StrokeColor = Colors.Red;
-        // canvas.StrokeSize = 2;
-        // canvas.DrawRectangle(dirtyRect);
+        canvas.StrokeColor = Colors.Red;
+        canvas.StrokeSize = 2;
 
-        VisualizeHairs(canvas, Colors.Black);
+        //canvas.DrawRectangle(dirtyRect);
+        canvas.DrawRectangle(new Rect(0, 0, RegionWidthRequest, RegionHeightRequest));
+
+        //VisualizeHairs(canvas, Colors.Black);
 
         VisualizeDirts(canvas, Colors.Magenta);
     }

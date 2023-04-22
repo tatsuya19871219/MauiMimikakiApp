@@ -31,7 +31,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources\Raw\DrawingMimiResourceDictionary.xaml"/>
+                <ResourceDictionary Source="Resources\Raw\TestResourceDictionary.xaml"/>
                 <ResourceDictionary>
                     <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
                 </ResourceDictionary>
@@ -57,7 +57,7 @@
                                         HorizontalOptions="End"/>
         </Grid>
 
-        <Grid x:Name="MimiGrid" HeightRequest="600"
+        <Grid x:Name="MimiGrid" HeightRequest="550"
               BackgroundColor="LightYellow">
 
             <custom:MimikakiView x:Name="MimiView" 

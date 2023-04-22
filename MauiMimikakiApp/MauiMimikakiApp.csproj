@@ -39,19 +39,19 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+		<MauiImage Update="Resources\Images\inner_region_test.svg" BaseSize="600,600" />
 		<MauiImage Update="Resources\Images\mimi_kanji.svg" BaseSize="424,600" />
-
+		<MauiImage Update="Resources\Images\mimi_drawing.svg" BaseSize="400,600" />
+		
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<EmbeddedResource Include="Resources\Raw\Config.json" />
 	</ItemGroup>
 
-	<!--<ItemGroup>
-	  <MauiXaml Remove="Resources\Raw\TestResourceDictionary.xaml" />
-	</ItemGroup>-->
+
 
 
 	<ItemGroup>
@@ -77,12 +77,6 @@
 	  </Compile>
 	</ItemGroup>
 
-	<!--<ItemGroup>
-	  <MauiAsset Update="Resources\Raw\TestResourceDictionary.xaml">
-	    <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiAsset>
-	</ItemGroup>-->
 
 
 	<ItemGroup>
@@ -106,5 +100,6 @@
 		</MauiXaml>
 
 	</ItemGroup>
+
 
 </Project>

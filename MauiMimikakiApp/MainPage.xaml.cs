@@ -6,14 +6,16 @@ using Microsoft.Maui.Controls.Shapes;
 using TakeMauiEasy;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiMimikakiApp.Messages;
+using System.Diagnostics;
 
 namespace MauiMimikakiApp;
 
 public partial class MainPage : ContentPage
 {
 	IAudioPlayer _kakiSEPlayer;
-
 	MimikakiViewModel _vm;
+
+	Stopwatch _stopwatch;
 
 	public MainPage(IAudioManager audioManager) 
 	{
@@ -21,12 +23,27 @@ public partial class MainPage : ContentPage
 
 		RegisterTrackerMessages();
 		PrepareSEPlayer(audioManager);
+
+		_stopwatch = new Stopwatch();
+		_stopwatch.Start();
+
+		var config = MimikakiConfig.Load("Config.json");
 	}
 
 	void RegisterTrackerMessages()
 	{
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
+			_stopwatch.Stop();
+
+			int elapsedMilli = (int)_stopwatch.ElapsedMilliseconds;
+
+			//Debug.Assert(elapsedMilli > 0);
+
+			HeaderLabel.Text = $"Update interval: {elapsedMilli} [ms]";
+
+			_stopwatch.Reset();
+			_stopwatch.Start();
 
 			PositionTrackerState state = e.Value;
 
@@ -47,12 +64,27 @@ public partial class MainPage : ContentPage
 			double velocity = state.Velocity.Distance(Point.Zero);
 
 			// test
-			_kakiSEPlayer.Speed = velocity*50;
-			if(!_kakiSEPlayer.IsPlaying && velocity > 0.02) 
+			try
 			{
-				_kakiSEPlayer.Play();
+				_kakiSEPlayer.Speed = velocity * 50;
 			}
-			
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex);
+			}
+
+			if (!_kakiSEPlayer.IsPlaying && velocity > 0.02)
+			{
+				try
+				{
+					_kakiSEPlayer.Play();
+				}
+				catch (Exception ex)
+				{
+					Debug.WriteLine(ex.Message);
+				}
+			}
+
 		});
 	}
 

@@ -8,18 +8,18 @@
              xmlns:sys="clr-namespace:System;assembly=netstandard"
              x:DataType="vm:MimikakiViewModel" HorizontalOptions="Center">
 
-    <VisualStateManager.VisualStateGroups>
+    <!-- <VisualStateManager.VisualStateGroups>
         <VisualStateGroup>
             <VisualState x:Name="Initialized">
                 <VisualState.StateTriggers>
                     <StateTrigger IsActive="{Binding ReadyToMimikaki}"/>
                 </VisualState.StateTriggers>
                 <VisualState.Setters>                    
-                    <!--<Setter TargetName="Status" Property="Label.Text" Value="Initialized."/>-->
+                    <Setter TargetName="Status" Property="Label.Text" Value="Initialized."/>                    
                 </VisualState.Setters>
             </VisualState>
         </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
+    </VisualStateManager.VisualStateGroups> -->
 
     <Grid x:Name="TrackableContent">
 
@@ -38,7 +38,7 @@
             </Style>
         </Grid.Resources>
 
-        <!--<Label x:Name="Status" Text="Not initialized yet."/>-->
+        <!-- <Label x:Name="Status" Text="Not initialized yet."/> -->
 
         <Image x:Name="TargetImage" Style="{StaticResource ContentStyle}"> 
             <Image.Behaviors>
@@ -53,13 +53,13 @@
 
             <Grid x:Name="DetectableRegions" Style="{StaticResource ScaledContentStyle}">                  
                 <Grid.Resources>
-                    <Style TargetType="GraphicsView">
+                    <Style TargetType="GraphicsView">                        
                         <Setter Property="WidthRequest" Value="{Binding RegionWidthRequest}"/>
-                        <Setter Property="HeightRequest" Value="{Binding RegionHeightRequest}"/>
+                        <Setter Property="HeightRequest" Value="{Binding RegionHeightRequest}"/>                    
                         <Setter Property="TranslationX" Value="{Binding RegionOffsetX}"/>
                         <Setter Property="TranslationY" Value="{Binding RegionOffsetY}"/>                        
                         <Setter Property="Style" Value="{StaticResource ContentStyle}"/>
-                        <Setter Property="Drawable" Value="{Binding}"/>
+                        <Setter Property="Drawable" Value="{Binding}"/>                        
                     </Style>
                 </Grid.Resources>
 
@@ -72,6 +72,7 @@
 
             <Ellipse x:Name="PositionMarker" 
                 Style="{StaticResource ContentStyle}"
+                StrokeThickness="2"
                 AnchorX="0.5" AnchorY="0.5"
                 TranslationX="0" TranslationY="0" 
                 WidthRequest="20" HeightRequest="20" 
@@ -80,7 +81,7 @@
 
         </Grid>
 
-        <Grid x:Name="TrackerLayer"/> <!-- Especially for Android -->
+        <Grid x:Name="TrackerLayer" BackgroundColor="Transparent"/> 
 
     </Grid>
 
