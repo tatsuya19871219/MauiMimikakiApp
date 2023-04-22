@@ -1,7 +1,4 @@
 ﻿using Plugin.Maui.Audio;
-using MauiMimikakiApp.CustomViews;
-using MauiMimikakiApp.ViewModels;
-using Microsoft.Maui.Controls.Shapes;
 
 using TakeMauiEasy;
 using CommunityToolkit.Mvvm.Messaging;
@@ -34,28 +31,8 @@ public partial class MainPage : ContentPage
 	{
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
-			// Update header text
-			_stopwatch.Stop();
-
-			int elapsedMilli = (int)_stopwatch.ElapsedMilliseconds;
-
-			//Debug.Assert(elapsedMilli > 0);
-
-			HeaderLabel.Text = $"Update interval: {elapsedMilli} [ms]";
-
-			_stopwatch.Reset();
-			_stopwatch.Start();
-
-
-			// Update footer text
-			PositionTrackerState state = e.Value;
-
-			Point position = state.Position;
-
-			double velocity = state.Velocity.Distance(Point.Zero);
-
-			FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
-
+			UpdateHeaderText();
+			UpdateFooterText(e.Value);			
         });
 
 		StrongReferenceMessenger.Default.Register<TrackerOnMimiMessage>(this, (s, e) =>
@@ -75,30 +52,31 @@ public partial class MainPage : ContentPage
 			if (!_kakiSEPlayer.IsPlaying) _kakiSEPlayer.Play();
 
 			_kakiSEPlayer.Speed = velocity*25;
-
-			// // test
-			// try
-			// {
-			// 	_kakiSEPlayer.Speed = velocity * 50;
-			// }
-			// catch (Exception ex)
-			// {
-			// 	Debug.WriteLine(ex);
-			// }
-
-			// if (!_kakiSEPlayer.IsPlaying && velocity > 0.02)
-			// {
-			// 	try
-			// 	{
-			// 		_kakiSEPlayer.Play();
-			// 	}
-			// 	catch (Exception ex)
-			// 	{
-			// 		Debug.WriteLine(ex.Message);
-			// 	}
-			// }
-
 		});
+	}
+
+	void UpdateHeaderText()
+	{
+		_stopwatch.Stop();
+
+		int elapsedMilli = (int)_stopwatch.ElapsedMilliseconds;
+
+		//Debug.Assert(elapsedMilli > 0);
+
+		HeaderLabel.Text = $"Update interval: {elapsedMilli} [ms]";
+
+		_stopwatch.Reset();
+		_stopwatch.Start();
+	}
+
+	void UpdateFooterText(PositionTrackerState state)
+	{
+		Point position = state.Position;
+
+		double velocity = state.Velocity.Distance(Point.Zero);
+
+		FooterLabel.Text = $"(x,y) = ({position.X:F1}, {position.Y:F1}), |v| = {velocity:F3} [px/ms]";
+
 	}
 
 	async void PrepareSEPlayer(IAudioManager audioManager)
