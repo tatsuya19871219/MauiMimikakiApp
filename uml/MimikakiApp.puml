@@ -1,14 +1,5 @@
 @startuml MimikakiClassDiagram
-' Models
-' class MimiModel
-' {
-'     - height : int
-'     - width : int
-'     - topRegion : MimiRegion
-'     - centerRegion : MimiRegion
-'     - bottomRegion : MimiRegion
-' }
-
+' MimiModels
 class MimiViewBox
 {
     + Bounds : Rect <<required>>
@@ -24,11 +15,10 @@ class MimiRegion
     - hairList : List<MimiHair>
     - dirtList : List<MimiDirt>
     + MimiRegion(pathF : PathF, dx : int, dy : int)
-    '+ MimiRegion(internalRegion : InternalRegion)
     - InitializeMimiHair(density : double)
-    '+ OnTouch : Action
-    '+ OnDirtRemoving : Action
-    '+ OnDirtRemoved : Action
+    ~ GenerateMimiDirt() : void
+    ~ RemoveMimiDirt() : void
+    ~ Contains(point : Point) : bool
 }
 
 interface ITrackerListener
@@ -53,54 +43,43 @@ class MimiDirt
     + MimiDirt(position : Point, hardness : double)
 }
 
-interface IRegion
+' RegionModels
+abstract AbstractRegion
 {
-    ' IsInner : bool[,]
-    ' IsBoundary : bool[,]
-    ContainsInRegion(point : Point) : bool
-    OnBoundary(point : Point) : bool
+    ~ OriginalPath : PathF
+    ~ Bounds : Rect
+    ~ AbstractRegion(pathF : PathF)
+    {abstract} ~ ContainsInRegion(point : Point) : bool
+    {abstract} ~ OnBoundary(point : Point) : bool
+    {abstract} ~ DistanceFromBoundary(point : Point) : double
+    '- GetMinAndMaxPoints(pathF : PathF, minPoint : out Point, maxPoint : out Point) : void
+    ~ IsOutOfBoundBox(point : Point) : bool
 }
 
 class InternalRegion
 {
-    + Bounds : Rect <<read only>>
-    '- topLeft : Point <<read only>>
-    '- bottomRight : Point <<read only>>
-    - isInner : bool[,] <<read only>>
-    - isBoundary : bool[,] <<read only>>
-    - subRegions : List<SubRegion> 
+    - subRegions : List<SubRegion>
     + InternalRegion(pathF : PathF, dx : int, dy : int)
-    ' - FillBoundaryPoints(pathF : PathF) : void
-    ' - FillInternalRegion() : void
-    - ConvertToRegionIndex(x : double, y : double) : (int, int)
-    + ContainsInRegion(point : Point) : bool
-    + ContainsInRegion(x: double, y : double) : bool
+    + GeneratePointInRegion() : Point
 }
 
 class SubRegion
 {
     - isInner : bool[,] <<read only>>
     - isBoundary : bool[,] <<read only>>
-    + SubRegion(pathF : PathF, dx : int, dy : int)
-    - FillBoundaryPoints(pathF : PathF) : void
+    + SubRegion(pathF : PathF, sharedVertices : List<PointF>, dx : int, dy : int)
+    - FillBoundaryPoints(pathF : PathF, sharedVertices : List<PointF>) : void
     - FillInternalRegion() : void
-    - ConvertToRegionIndex(x : double, y : double) : (int, int)
-    + ContainsInRegion(point : Point) : bool
-    + ContainsInRegion(x: double, y : double) : bool
+    '- ConvertToRegionIndex(x : double, y : double) : (int, int)
 }
 
 ' Views
-class MimikakiView
+class MimikakiView <<V, HotPink>>
 {
-    + TargetImageSource : ImageSource
-    '+ TargetImageOriginalHeight : double
-    '+ MimiTrackerLayer : View <<get only property>>
-    '+ DisplayRatio : double? <<get only property>>
-    '- MimikakiViewModel _vm;
-    '+ TrackableView()
+    + ImageFilename : string <<required>>
     + MimikakiView(viewbox : MimiViewBox, outer : Path, inner : Path, hole : Path)
-    '- TargetImage_SizeChanged(sender : object, e : EventArgs) : void
-    '- Initialize() : void
+    + RegisterMessages(): void
+    - InvalidateRegions() : void
     - AddFloatingDirt(dirtObject : Shape) : void
 }
 
@@ -116,13 +95,8 @@ class MimikakiViewModel
     - centerRegion : MimiRegion
     - bottomRegion : MimiRegion
     - tracker : PositionTracker
-    '+ OnMoveOnMimi : Action
-    '+ BindTrackableMimi(trackableMimiView : TrackableMimiView) : void
-    '- RunTrackerProcess()
     ~ MimikakiViewModel(viewbox : MimiViewBox, outer : Path, inner : Path, hole : Path)
-    '~ MimikakiViewModel(tracker : PositionTracker, mimiTop : Geometry, mimiCenter : Geometry, mimiBottom : Geometry)
     - Initialize();
-    '~ InvokeTrackerProcess(updateInterval : int) : void
     - RunTrackerProcess(updateInterval : int) : void
     ~ TargetImage_SizeChanged(sender : object, e : EventArgs) : void
 }
@@ -131,29 +105,31 @@ class MimikakiViewModel
 ' Drawable
 class MimiRegionDrawable
 {
-    + WidthRequest : double
-    + HeightRequest : double
-    + OffsetX : double
-    + OffsetY : double
+    + RegionWidthRequest : double
+    + RegionHeightRequest : double
+    + RegionOffsetX : double
+    + RegionOffsetY : double
     - mimiRegion : MimiRegion
-    '- internal : InternalRegion
-    - padding : float
-    - offsetX : double
-    - offsetY : double
     + MimiRegionDrawable(mimiRegion : MimiRegion, padding : double)
     + Draw(canvas : ICanvas, dirtyRect : RectF) : void
-    - VisualizeHair(canvas : ICanvas, color : Color, thinness : float) : void
+    - VisualizeHairs(canvas : ICanvas, color : Color) : void
+    - VisualizeDirts(canvas : ICanvas, color : Color) : void
 }
 
 
 ' Page
-class MainPage
+class MainPage <<(P, LimeGreen)>>
 {
     + MainPage()
-    '- InitializeMimiViewModel() : void
-    '- InstantiateMimiViewModel(tracker : PositionTracker) : TrackableMimiViewModel
-    '- GetGeometryFromString(pathString : string) : Geometry
+    - RegisterTrackerMessages() : void
+    - PrepareSEPlayer(audioManager : IAudioManager) : void
 }
+
+' Config
+' class MimikakiConfig
+' {
+
+' }
 
 ' Library
 package TakeMauiEasy
@@ -168,8 +144,8 @@ MimiRegion *-- MimiHair
 MimiRegion *-- MimiDirt
 
 InternalRegion *-- SubRegion
-InternalRegion ..|> IRegion
-SubRegion ..|> IRegion
+InternalRegion -up-|> AbstractRegion
+SubRegion -up-|> AbstractRegion
 
 MimiHair ..|> ITrackerListener
 MimiDirt ..|> ITrackerListener
@@ -190,28 +166,44 @@ MimiRegionDrawable --> MimiRegion
 @startuml MimikakiMessages
 
 ' Message
-class MimiViewInvalidateMessage <<(M, Orange) Message>>
-{
-    ~ MimiViewInvalidateMessage(value : string)
+namespace Messages{
+
+    class TrackerUpdateMessage <<(M, Orange) Message>>
+    {
+        ~ TrackerUpdateMessage(state : PositionTrackerState)
+    }
+
+    class TrackerOnMimiMessage <<(M, Orange) Message>>
+    {
+        ~ TrackerOnMimiMessage(state : PositionTrackerState)
+    }
+
+    class MimiViewInvalidateMessage <<(M, Orange) Message>>
+    {
+        ~ MimiViewInvalidateMessage(value : string)
+    }
+
+    class FloatingDirtGenerateMessage <<(M, Orange) Message>>
+    {
+        ~ FloatingDirtGenerateMessage(dirt : Shape)
+    }
+
+    ' Force to align vertically
+    TrackerUpdateMessage -[hidden]- TrackerOnMimiMessage
+    TrackerOnMimiMessage -[hidden]- MimiViewInvalidateMessage
+    MimiViewInvalidateMessage -[hidden]- FloatingDirtGenerateMessage
+
 }
 
-class FloatingDirtGenerateMessage <<(M, Orange) Message>>
-{
-    ~ FloatingDirtGenerateMessage(dirt : Shape)
-}
+MainPage .> Messages.TrackerUpdateMessage : <register>
+MainPage .> Messages.TrackerOnMimiMessage : <register>
 
-class TrackerUpdateMessage <<(M, Orange) Message>>
-{
-    ~ TrackerUpdateMessage(state : PositionTrackerState)
-}
+MimikakiView .left.> Messages.MimiViewInvalidateMessage : <register>
+MimikakiView .left.> Messages.FloatingDirtGenerateMessage : <register>
 
-
-MainPage ..> TrackerUpdateMessage : <register>
-MimikakiView ..> MimiViewInvalidateMessage : <register>
-MimikakiView ..> FloatingDirtGenerateMessage : <register>
-
-MimikakiViewModel .up.> TrackerUpdateMessage : <create>
-MimikakiViewModel .up.> MimiViewInvalidateMessage : <create>
-MimikakiViewModel .up.> FloatingDirtGenerateMessage : <create>
+MimikakiViewModel .> Messages.TrackerUpdateMessage : <create>
+MimikakiViewModel .> Messages.TrackerOnMimiMessage : <create>
+MimikakiViewModel .> Messages.MimiViewInvalidateMessage : <create>
+MimikakiViewModel .> Messages.FloatingDirtGenerateMessage : <create>
 
 @enduml

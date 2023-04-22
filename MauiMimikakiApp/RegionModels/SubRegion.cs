@@ -15,7 +15,7 @@ internal class SubRegion : AbstractRegion
 
     readonly List<Point> _boundaryList;
 
-    public SubRegion(PathF pathF, List<PointF> sharedVertecies, int dx = 5, int dy = 5) : base(pathF)
+    public SubRegion(PathF pathF, List<PointF> sharedVertices, int dx = 5, int dy = 5) : base(pathF)
     {
         _dx = dx;
         _dy = dy;
@@ -37,7 +37,7 @@ internal class SubRegion : AbstractRegion
         _isInner = new bool[lenX, lenY];
         _isBoundary = new bool[lenX, lenY];
 
-        FillBoundaryPoints(pathF, sharedVertecies);
+        FillBoundaryPoints(pathF, sharedVertices);
 
         FillInternalRegion();
 
@@ -45,7 +45,7 @@ internal class SubRegion : AbstractRegion
     }
 
     // Fill boundary by linear interpolation
-    void FillBoundaryPoints(PathF pathF, List<PointF> sharedVertexies)
+    void FillBoundaryPoints(PathF pathF, List<PointF> sharedVertices)
     {
         for (int i = 0; i < pathF.Count; i++)
         {
@@ -54,7 +54,7 @@ internal class SubRegion : AbstractRegion
 
             if (pA.Equals(pB)) continue;
 
-            bool checkAsRegion = sharedVertexies.Contains(pA) && sharedVertexies.Contains(pB);
+            bool checkAsRegion = sharedVertices.Contains(pA) && sharedVertices.Contains(pB);
 
             var markAsBroundary = (Point point) => 
             {
