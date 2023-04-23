@@ -44,6 +44,7 @@ internal partial class MimikakiViewModel : ObservableObject
 
     //MimikakiConfig _config;
     bool _modelInitialized = false;
+    bool _drawableInitialized = false;
 
     internal MimikakiViewModel(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
@@ -56,10 +57,10 @@ internal partial class MimikakiViewModel : ObservableObject
 
         SizeChangedCommand = new Command<View>(TargetSizeChanged);
 
-        //_config = MimikakiConfig.Current;
-
         InitializeModelAsync();
         PrepareDrawablesAsync();
+
+        InvokeMimikakiAsync();
     }
 
     async void TargetSizeChanged(View target)
@@ -90,12 +91,6 @@ internal partial class MimikakiViewModel : ObservableObject
         HoleViewBox = new(_holeRegion);
 
         _modelInitialized = true;
-        // //await Task.Delay(5000);
-
-        // ReadyToMimikaki = true;
-
-        RunGraphicsUpdateProcess(config.GraphicsUpdateInterval);
-        //RunTrackerProcess(_config.TrackerUpdateInterval);
     }
 
     async void PrepareDrawablesAsync()
@@ -105,27 +100,40 @@ internal partial class MimikakiViewModel : ObservableObject
         OuterRegionDrawable = new MimiRegionDrawable(_outerRegion, OuterViewBox);
         InnerRegionDrawable = new MimiRegionDrawable(_innerRegion, InnerViewBox);
         HoleRegionDrawable = new MimiRegionDrawable(_holeRegion, HoleViewBox);
+
+        _drawableInitialized = true;
     }
 
-    async void RunGraphicsUpdateProcess(int updateInterval)
+    async void InvokeMimikakiAsync()
     {
+        await EasyTasks.WaitFor(() => _modelInitialized && _drawableInitialized);
+
+        var config = MimikakiConfig.Current;
+
+        RunGraphicsUpdateProcess(config.GraphicsUpdateInterval);
+        RunTrackerProcess(config.TrackerUpdateInterval);
+
+        ReadyToMimikaki = true;
+    } 
+
+    async void RunGraphicsUpdateProcess(int graphicsUpdateInterval)
+    {        
         Stopwatch stopwatch = new Stopwatch();
 
         while (true)
         {
-            var t = Task.Delay(updateInterval);
+            var t = Task.Delay(graphicsUpdateInterval);
 
             StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
 
-            // wait at least updateInterval
+            // Wait at least the updateInterval [ms]
             await t;
         }
     }
     
-    async void RunTrackerProcess(int updateInterval)
+    async void RunTrackerProcess(int trackerUpdateInterval)
     {
         Stopwatch stopwatch = new Stopwatch();
-
 
         IEnumerable<ITrackerListener> listenersOfHair = 
             new[] { _outerRegion.Hairs, _innerRegion.Hairs, _holeRegion.Hairs}
@@ -137,101 +145,88 @@ internal partial class MimikakiViewModel : ObservableObject
 
         IEnumerable<ITrackerListener> listeners = listenersOfHair.Concat(listenersOfDirt);
 
-        double dt = (double)updateInterval/1000;
+        double dt = (double)trackerUpdateInterval/1000;
 
         while (true)
         {
+            var t = Task.Delay(trackerUpdateInterval);
 
-            // //try
-            // {
-            //     MimikakiViewUpdate(dt);
-            // }
-            //catch(Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
+            stopwatch.Restart();
 
-            await Task.Delay(updateInterval);
+            var current = _tracker.CurrentState;
+            var position = ScaleForDisplayRatio(current.Position);
+            var velocity = ScaleForDisplayRatio(current.Velocity);
 
-            // stopwatch.Restart();
+            StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
 
-            //var current = _tracker.CurrentState;
-            //var position = ScaleForDisplayRatio(current.Position);
-            //var velocity = ScaleForDisplayRatio(current.Velocity);
-            ////double dt = (double)updateInterval / 1000;
-
-            //StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
-
-            //if (_outerRegion.Contains(position) ||
-            //    _innerRegion.Contains(position) ||
-            //    _holeRegion.Contains(position))
-            //    StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
+            if (_outerRegion.Contains(position) ||
+               _innerRegion.Contains(position) ||
+               _holeRegion.Contains(position))
+               StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
 
 
-            //foreach (var listener in listenersOfDirt)
-            //    listener.OnMove(position, velocity, dt);
+            foreach (var listener in listenersOfDirt)
+               listener.OnMove(position, velocity, dt);
 
-            //// Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+            Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-            //TryGenerateDirt();
+            TryGenerateDirt();
 
-            //StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
+            CheckDirtRemoved(_outerRegion);
+            CheckDirtRemoved(_innerRegion);
+            CheckDirtRemoved(_holeRegion);
 
-            //CheckDirtRemoved(_outerRegion);
-            //CheckDirtRemoved(_innerRegion);
-            //CheckDirtRemoved(_holeRegion);
+            Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-            // Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+            await t;
 
-            // await Task.Delay(updateInterval);
+            stopwatch.Reset();
 
-            // Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
-
-            // //stopwatch.Reset();
+            Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
         }
     }
 
-    void MimikakiViewUpdate(double dt)
-    {
-        IEnumerable<ITrackerListener> listenersOfDirt =
-            new[] { _outerRegion.Dirts, _innerRegion.Dirts, _holeRegion.Dirts }
-            .SelectMany(listener => listener);
-        // stopwatch.Restart();
+    // void MimikakiViewUpdate(double dt)
+    // {
+    //     IEnumerable<ITrackerListener> listenersOfDirt =
+    //         new[] { _outerRegion.Dirts, _innerRegion.Dirts, _holeRegion.Dirts }
+    //         .SelectMany(listener => listener);
+    //     // stopwatch.Restart();
 
-        var current  = _tracker.CurrentState;
-            var position = ScaleForDisplayRatio(current.Position);
-            var velocity = ScaleForDisplayRatio(current.Velocity);
-        //double dt = (double)updateInterval/1000;
+    //     var current  = _tracker.CurrentState;
+    //         var position = ScaleForDisplayRatio(current.Position);
+    //         var velocity = ScaleForDisplayRatio(current.Velocity);
+    //     //double dt = (double)updateInterval/1000;
 
-        StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
+    //     StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
 
-        if (_outerRegion.Contains(position) ||
-            _innerRegion.Contains(position) ||
-            _holeRegion.Contains(position))
-            StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
-
-
-        foreach (var listener in listenersOfDirt)
-                listener.OnMove(position, velocity, dt);
-
-        // Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
-
-        TryGenerateDirt();
+    //     if (_outerRegion.Contains(position) ||
+    //         _innerRegion.Contains(position) ||
+    //         _holeRegion.Contains(position))
+    //         StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
 
 
+    //     foreach (var listener in listenersOfDirt)
+    //             listener.OnMove(position, velocity, dt);
 
-        CheckDirtRemoved(_outerRegion);
-        CheckDirtRemoved(_innerRegion);
-        CheckDirtRemoved(_holeRegion);
+    //     // Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-        // Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+    //     TryGenerateDirt();
 
-        // await Task.Delay(updateInterval);
 
-        // Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-        //stopwatch.Reset();
-    }
+    //     CheckDirtRemoved(_outerRegion);
+    //     CheckDirtRemoved(_innerRegion);
+    //     CheckDirtRemoved(_holeRegion);
+
+    //     // Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+
+    //     // await Task.Delay(updateInterval);
+
+    //     // Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+
+    //     //stopwatch.Reset();
+    // }
 
     void TryGenerateDirt()
     {
