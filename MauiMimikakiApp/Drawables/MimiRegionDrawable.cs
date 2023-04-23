@@ -3,27 +3,35 @@ using MauiMimikakiApp.Models;
 
 namespace MauiMimikakiApp.Drawables;
 
-public partial class MimiRegionDrawable : ObservableObject, IDrawable
+public class MimiRegionDrawable : IDrawable
 {
-    [ObservableProperty] double _regionWidthRequest;
-    [ObservableProperty] double _regionHeightRequest;
-    [ObservableProperty] double _regionOffsetX;
-    [ObservableProperty] double _regionOffsetY;
+    // [ObservableProperty] double _regionWidthRequest;
+    // [ObservableProperty] double _regionHeightRequest;
+    // [ObservableProperty] double _regionOffsetX;
+    // [ObservableProperty] double _regionOffsetY;
 
     readonly MimiRegion _mimiRegion;
+    readonly MimiRegionViewBox _viewBox;
 
+    readonly double _offsetX;
+    readonly double _offsetY;
 
-    internal MimiRegionDrawable(MimiRegion mimiRegion, double padding = 0) : base()
+    internal MimiRegionDrawable(MimiRegion mimiRegion, MimiRegionViewBox viewBox) : base()
     {
         _mimiRegion = mimiRegion;
 
-        var bounds = _mimiRegion.Bounds;
+        _viewBox = viewBox;
 
-        RegionOffsetX = bounds.Left - padding;
-        RegionOffsetY = bounds.Top - padding;
+        _offsetX = _viewBox.RegionOffsetX;
+        _offsetY = _viewBox.RegionOffsetY;
 
-        RegionWidthRequest = bounds.Width + 2*padding;
-        RegionHeightRequest = bounds.Height + 2*padding;
+        // var bounds = _mimiRegion.Bounds;
+
+        // RegionOffsetX = bounds.Left - padding;
+        // RegionOffsetY = bounds.Top - padding;
+
+        // RegionWidthRequest = bounds.Width + 2*padding;
+        // RegionHeightRequest = bounds.Height + 2*padding;
 
         //double density = DeviceDisplay.Current.MainDisplayInfo.Density;
 
@@ -34,8 +42,8 @@ public partial class MimiRegionDrawable : ObservableObject, IDrawable
         canvas.StrokeColor = Colors.Red;
         canvas.StrokeSize = 2;
 
-        //canvas.DrawRectangle(dirtyRect);
-        canvas.DrawRectangle(new Rect(0, 0, RegionWidthRequest, RegionHeightRequest));
+        canvas.DrawRectangle(dirtyRect);
+        //canvas.DrawRectangle(new Rect(0, 0, _viewBox.RegionWidthRequest, _viewBox.RegionHeightRequest));
 
         //VisualizeHairs(canvas, Colors.Black);
 
@@ -51,10 +59,10 @@ public partial class MimiRegionDrawable : ObservableObject, IDrawable
             var origin = hair.Origin;
             var position = hair.Position;
 
-            var x = position.X - RegionOffsetX;
-            var y = position.Y - RegionOffsetY;
-            var x0 = origin.X - RegionOffsetX;
-            var y0 = origin.Y - RegionOffsetY;
+            var x = position.X - _offsetX;
+            var y = position.Y - _offsetY;
+            var x0 = origin.X - _offsetX;
+            var y0 = origin.Y - _offsetY;
 
             canvas.FillColor = Colors.LightGray;
             //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
@@ -76,8 +84,8 @@ public partial class MimiRegionDrawable : ObservableObject, IDrawable
 
             var size = new Size(dirt.Size, dirt.Size);
 
-            var x = position.X - RegionOffsetX - size.Width/2;
-            var y = position.Y - RegionOffsetY - size.Height/2;
+            var x = position.X - _offsetX - size.Width/2;
+            var y = position.Y - _offsetY - size.Height/2;
 
             canvas.FillColor = color;
 

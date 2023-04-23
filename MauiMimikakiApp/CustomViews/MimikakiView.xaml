@@ -53,19 +53,39 @@
 
             <Grid x:Name="DetectableRegions" Style="{StaticResource ScaledContentStyle}">                  
                 <Grid.Resources>
-                    <Style TargetType="GraphicsView">                        
-                        <Setter Property="WidthRequest" Value="{Binding RegionWidthRequest}"/>
-                        <Setter Property="HeightRequest" Value="{Binding RegionHeightRequest}"/>                    
+                    <Style TargetType="Grid" BasedOn="{StaticResource ContentStyle}">
                         <Setter Property="TranslationX" Value="{Binding RegionOffsetX}"/>
-                        <Setter Property="TranslationY" Value="{Binding RegionOffsetY}"/>                        
-                        <Setter Property="Style" Value="{StaticResource ContentStyle}"/>
-                        <Setter Property="Drawable" Value="{Binding}"/>                        
+                        <Setter Property="TranslationY" Value="{Binding RegionOffsetY}"/>                                         
+                        <Setter Property="BackgroundColor" Value="LightGreen"/>
+                        <Setter Property="Opacity" Value="0.25"/>
+                    </Style>
+                    <Style TargetType="Label" BasedOn="{StaticResource ContentStyle}">
+                        <Setter Property="BackgroundColor" Value="Gray"/>                        
+                    </Style>
+                    <Style TargetType="GraphicsView" BasedOn="{StaticResource ContentStyle}">
+                        <Setter Property="WidthRequest" Value="{Binding RegionWidthRequest}"/>
+                        <Setter Property="HeightRequest" Value="{Binding RegionHeightRequest}"/>                        
                     </Style>
                 </Grid.Resources>
 
-                <GraphicsView x:Name="OuterRegion" BindingContext="{Binding OuterRegionDrawable}"/>
-                <GraphicsView x:Name="InnerRegion" BindingContext="{Binding InnerRegionDrawable}"/>
-                <GraphicsView x:Name="HoleRegion" BindingContext="{Binding HoleRegionDrawable}"/> 
+                <Grid BindingContext="{Binding OuterViewBox}">
+                    <Label Text="Outer"/>
+                    <GraphicsView x:Name="OuterRegion" 
+                                    Drawable="{Binding Path=OuterRegionDrawable, 
+                                                        Source={RelativeSource AncestorType={x:Type vm:MimikakiViewModel}}}"/>
+                </Grid>
+                <Grid BindingContext="{Binding InnerViewBox}">
+                    <Label Text="Inner"/>
+                    <GraphicsView x:Name="InnerRegion"
+                                    Drawable="{Binding Path=InnerRegionDrawable, 
+                                                        Source={RelativeSource AncestorType={x:Type vm:MimikakiViewModel}}}"/>
+                </Grid>
+                <Grid BindingContext="{Binding HoleViewBox}">
+                    <Label Text="Hole"/>
+                    <GraphicsView x:Name="HoleRegion"
+                                    Drawable="{Binding Path=HoleRegionDrawable, 
+                                                        Source={RelativeSource AncestorType={x:Type vm:MimikakiViewModel}}}"/>
+                </Grid>
             </Grid>
 
             <Grid x:Name="FloatingObjectsLayer" Style="{StaticResource ScaledContentStyle}"/>                    

@@ -29,9 +29,14 @@ public partial class MainPage : ContentPage
 
 	void RegisterTrackerMessages()
 	{
+		StrongReferenceMessenger.Default.Register<MimiViewInvalidateMessage>(this, (s, e) =>
+		{
+			UpdateHeaderText();
+		});
+
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
-			UpdateHeaderText();
+			//UpdateHeaderText();
 			UpdateFooterText(e.Value);			
         });
 

@@ -14,19 +14,18 @@ namespace MauiMimikakiApp.ViewModels;
 
 internal partial class MimikakiViewModel : ObservableObject
 {
+    [ObservableProperty] double _viewWidth;
+    [ObservableProperty] double _viewHeight;
+    [ObservableProperty] double _viewDisplayRatio;
+    [ObservableProperty] MimiRegionViewBox _outerViewBox;
+    [ObservableProperty] MimiRegionViewBox _innerViewBox;
+    [ObservableProperty] MimiRegionViewBox _holeViewBox;
     [ObservableProperty] MimiRegionDrawable _outerRegionDrawable;
     [ObservableProperty] MimiRegionDrawable _innerRegionDrawable;
     [ObservableProperty] MimiRegionDrawable _holeRegionDrawable;
 
-    [ObservableProperty] double _viewWidth;
-    [ObservableProperty] double _viewHeight;
-    [ObservableProperty] double _viewDisplayRatio;
     [ObservableProperty] bool _readyToMimikaki;
 
-    static int dx = 10;
-    static int dy = 10;
-
-    static int dt = 20;
 
     required public View TrackerLayer { init => _tracker = new PositionTracker(value); }
 
@@ -43,6 +42,9 @@ internal partial class MimikakiViewModel : ObservableObject
 
     public ICommand SizeChangedCommand { get; private set; }
 
+    //MimikakiConfig _config;
+    bool _modelInitialized = false;
+
     internal MimikakiViewModel(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
         _viewBox = viewbox;
@@ -53,6 +55,11 @@ internal partial class MimikakiViewModel : ObservableObject
         ReadyToMimikaki = false;
 
         SizeChangedCommand = new Command<View>(TargetSizeChanged);
+
+        //_config = MimikakiConfig.Current;
+
+        InitializeModelAsync();
+        PrepareDrawablesAsync();
     }
 
     async void TargetSizeChanged(View target)
@@ -63,27 +70,56 @@ internal partial class MimikakiViewModel : ObservableObject
         ViewHeight = target.DesiredSize.Height;
 
         ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
-
-        InitializeModel();
     }
 
-    async void InitializeModel()
+    async void InitializeModelAsync()
     {
-        // Load config from json file
+        await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
+        
+        var config = MimikakiConfig.Current;
 
-        _outerRegion ??= new(_outer.GetPath(), dx, dy);
-        _innerRegion ??= new(_inner.GetPath(), dx, dy);
-        _holeRegion ??= new(_hole.GetPath(), dx, dy);
+        int dx = config.Params.RegionRoughness.DX;
+        int dy = config.Params.RegionRoughness.DY;
 
-        OuterRegionDrawable ??= new MimiRegionDrawable(_outerRegion);
-        InnerRegionDrawable ??= new MimiRegionDrawable(_innerRegion);
-        HoleRegionDrawable ??= new MimiRegionDrawable(_holeRegion);
+        _outerRegion = new(_outer.GetPath(), dx, dy);
+        _innerRegion = new(_inner.GetPath(), dx, dy);
+        _holeRegion = new(_hole.GetPath(), dx, dy);
 
-        //await Task.Delay(5000);
+        OuterViewBox = new(_outerRegion);
+        InnerViewBox = new(_innerRegion);
+        HoleViewBox = new(_holeRegion);
 
-        ReadyToMimikaki = true;
+        _modelInitialized = true;
+        // //await Task.Delay(5000);
 
-        RunTrackerProcess(dt);
+        // ReadyToMimikaki = true;
+
+        RunGraphicsUpdateProcess(config.GraphicsUpdateInterval);
+        //RunTrackerProcess(_config.TrackerUpdateInterval);
+    }
+
+    async void PrepareDrawablesAsync()
+    {
+        await EasyTasks.WaitFor(() => _modelInitialized);
+
+        OuterRegionDrawable = new MimiRegionDrawable(_outerRegion, OuterViewBox);
+        InnerRegionDrawable = new MimiRegionDrawable(_innerRegion, InnerViewBox);
+        HoleRegionDrawable = new MimiRegionDrawable(_holeRegion, HoleViewBox);
+    }
+
+    async void RunGraphicsUpdateProcess(int updateInterval)
+    {
+        Stopwatch stopwatch = new Stopwatch();
+
+        while (true)
+        {
+            var t = Task.Delay(updateInterval);
+
+            StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
+
+            // wait at least updateInterval
+            await t;
+        }
     }
     
     async void RunTrackerProcess(int updateInterval)
@@ -106,10 +142,10 @@ internal partial class MimikakiViewModel : ObservableObject
         while (true)
         {
 
-            //try
-            {
-                MimikakiViewUpdate(dt);
-            }
+            // //try
+            // {
+            //     MimikakiViewUpdate(dt);
+            // }
             //catch(Exception ex)
             //{
             //    Debug.WriteLine(ex.Message);
@@ -182,7 +218,7 @@ internal partial class MimikakiViewModel : ObservableObject
 
         TryGenerateDirt();
 
-        StrongReferenceMessenger.Default.Send(new MimiViewInvalidateMessage("draw"));
+
 
         CheckDirtRemoved(_outerRegion);
         CheckDirtRemoved(_innerRegion);
