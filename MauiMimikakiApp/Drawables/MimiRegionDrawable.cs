@@ -5,11 +5,6 @@ namespace MauiMimikakiApp.Drawables;
 
 public class MimiRegionDrawable : IDrawable
 {
-    // [ObservableProperty] double _regionWidthRequest;
-    // [ObservableProperty] double _regionHeightRequest;
-    // [ObservableProperty] double _regionOffsetX;
-    // [ObservableProperty] double _regionOffsetY;
-
     readonly MimiRegion _mimiRegion;
     readonly MimiRegionViewBox _viewBox;
 
@@ -24,17 +19,6 @@ public class MimiRegionDrawable : IDrawable
 
         _offsetX = _viewBox.RegionOffsetX;
         _offsetY = _viewBox.RegionOffsetY;
-
-        // var bounds = _mimiRegion.Bounds;
-
-        // RegionOffsetX = bounds.Left - padding;
-        // RegionOffsetY = bounds.Top - padding;
-
-        // RegionWidthRequest = bounds.Width + 2*padding;
-        // RegionHeightRequest = bounds.Height + 2*padding;
-
-        //double density = DeviceDisplay.Current.MainDisplayInfo.Density;
-
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
