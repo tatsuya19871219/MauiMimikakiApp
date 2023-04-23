@@ -43,6 +43,8 @@ internal partial class MimikakiViewModel : ObservableObject
     public ICommand SizeChangedCommand { get; private set; }
 
     //MimikakiConfig _config;
+
+    bool _targetImageInitialized = false;
     bool _modelInitialized = false;
     bool _drawableInitialized = false;
 
@@ -57,10 +59,10 @@ internal partial class MimikakiViewModel : ObservableObject
 
         SizeChangedCommand = new Command<View>(TargetSizeChanged);
 
-        InitializeModelAsync();
-        PrepareDrawablesAsync();
+        InitializeModelAsync(() => MimikakiConfig.Current is not null);
+        PrepareDrawablesAsync(() => _modelInitialized);
 
-        InvokeMimikakiAsync();
+        InvokeMimikakiAsync(() => _targetImageInitialized && _modelInitialized && _drawableInitialized);
     }
 
     async void TargetSizeChanged(View target)
@@ -71,11 +73,14 @@ internal partial class MimikakiViewModel : ObservableObject
         ViewHeight = target.DesiredSize.Height;
 
         ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
+
+        _targetImageInitialized = true;
     }
 
-    async void InitializeModelAsync()
+    async void InitializeModelAsync(Func<bool> condition)
     {
-        await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
+        //await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
+        await EasyTasks.WaitFor(condition);
         
         var config = MimikakiConfig.Current;
 
@@ -93,9 +98,10 @@ internal partial class MimikakiViewModel : ObservableObject
         _modelInitialized = true;
     }
 
-    async void PrepareDrawablesAsync()
+    async void PrepareDrawablesAsync(Func<bool> condition)
     {
-        await EasyTasks.WaitFor(() => _modelInitialized);
+        //await EasyTasks.WaitFor(() => _modelInitialized);
+        await EasyTasks.WaitFor(condition);
 
         OuterRegionDrawable = new MimiRegionDrawable(_outerRegion, OuterViewBox);
         InnerRegionDrawable = new MimiRegionDrawable(_innerRegion, InnerViewBox);
@@ -104,9 +110,10 @@ internal partial class MimikakiViewModel : ObservableObject
         _drawableInitialized = true;
     }
 
-    async void InvokeMimikakiAsync()
+    async void InvokeMimikakiAsync(Func<bool> condition)
     {
-        await EasyTasks.WaitFor(() => _modelInitialized && _drawableInitialized);
+        //await EasyTasks.WaitFor(() => _targetImageInitialized && _modelInitialized && _drawableInitialized);
+        await EasyTasks.WaitFor(condition);
 
         var config = MimikakiConfig.Current;
 
