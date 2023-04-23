@@ -6,15 +6,15 @@
   {
     "RegionRoughness" : 
     {
-      "DX" : 10,
-      "DY" : 10
+      "DX" : 2,
+      "DY" : 2
     },
     "MimiHair" :
     {
-      "Thinness" : 2.0,
+      "Thinness" : 5.0,
       "SpringConst" : 0.5
     },
-    "MimiHairDensity" : 0.05,
+    "MimiHairDensity" : 0.1,
     "MimiDirt" :
     {
       "Size" : 5,

@@ -42,11 +42,13 @@ internal partial class MimikakiViewModel : ObservableObject
 
     public ICommand SizeChangedCommand { get; private set; }
 
-    //MimikakiConfig _config;
+    MimikakiConfig _config;
 
     bool _targetImageInitialized = false;
     bool _modelInitialized = false;
     bool _drawableInitialized = false;
+
+    Random _rnd = new();
 
     internal MimikakiViewModel(MimiViewBox viewbox, Path outer, Path inner, Path hole)
     {
@@ -82,14 +84,13 @@ internal partial class MimikakiViewModel : ObservableObject
         //await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
         await EasyTasks.WaitFor(condition);
         
-        var config = MimikakiConfig.Current;
+        _config = MimikakiConfig.Current;
 
-        int dx = config.Params.RegionRoughness.DX;
-        int dy = config.Params.RegionRoughness.DY;
+        var modelParams = _config.Params;
 
-        _outerRegion = new(_outer.GetPath(), dx, dy);
-        _innerRegion = new(_inner.GetPath(), dx, dy);
-        _holeRegion = new(_hole.GetPath(), dx, dy);
+        _outerRegion = new(_outer.GetPath(), modelParams);
+        _innerRegion = new(_inner.GetPath(), modelParams);
+        _holeRegion = new(_hole.GetPath(), modelParams);
 
         OuterViewBox = new(_outerRegion);
         InnerViewBox = new(_innerRegion);
@@ -115,10 +116,10 @@ internal partial class MimikakiViewModel : ObservableObject
         //await EasyTasks.WaitFor(() => _targetImageInitialized && _modelInitialized && _drawableInitialized);
         await EasyTasks.WaitFor(condition);
 
-        var config = MimikakiConfig.Current;
+        // var config = MimikakiConfig.Current;
 
-        RunGraphicsUpdateProcess(config.GraphicsUpdateInterval);
-        RunTrackerProcess(config.TrackerUpdateInterval);
+        RunGraphicsUpdateProcess(_config.GraphicsUpdateInterval);
+        RunTrackerProcess(_config.TrackerUpdateInterval);
 
         ReadyToMimikaki = true;
     } 
@@ -152,7 +153,14 @@ internal partial class MimikakiViewModel : ObservableObject
 
         IEnumerable<ITrackerListener> listeners = listenersOfHair.Concat(listenersOfDirt);
 
-        double dt = (double)trackerUpdateInterval/1000;
+        double dt = (double)trackerUpdateInterval/1000; //[sec]
+
+        var probs = _config.Params.MimiDirtGenerationRate;
+
+        // Dirt generation rate in dt
+        double rateOuter = probs.Outer * dt;
+        double rateInner = probs.Inner * dt;
+        double rateHole = probs.Hole * dt;
 
         while (true)
         {
@@ -177,7 +185,9 @@ internal partial class MimikakiViewModel : ObservableObject
 
             Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-            TryGenerateDirt();
+            TryGenerateDirt(_outerRegion, rateOuter);
+            TryGenerateDirt(_innerRegion, rateInner);
+            TryGenerateDirt(_holeRegion, rateHole);
 
             CheckDirtRemoved(_outerRegion);
             CheckDirtRemoved(_innerRegion);
@@ -192,60 +202,22 @@ internal partial class MimikakiViewModel : ObservableObject
             Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
         }
     }
-
-    // void MimikakiViewUpdate(double dt)
+    // void TryGenerateDirt()
     // {
-    //     IEnumerable<ITrackerListener> listenersOfDirt =
-    //         new[] { _outerRegion.Dirts, _innerRegion.Dirts, _holeRegion.Dirts }
-    //         .SelectMany(listener => listener);
-    //     // stopwatch.Restart();
+    //     Random rnd = new Random();
+    //     if (rnd.NextDouble() > 0.80)
+    //         _outerRegion.GenerateMimiDirt();
 
-    //     var current  = _tracker.CurrentState;
-    //         var position = ScaleForDisplayRatio(current.Position);
-    //         var velocity = ScaleForDisplayRatio(current.Velocity);
-    //     //double dt = (double)updateInterval/1000;
+    //     if (rnd.NextDouble() > 0.85)
+    //         _innerRegion.GenerateMimiDirt();
 
-    //     StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
-
-    //     if (_outerRegion.Contains(position) ||
-    //         _innerRegion.Contains(position) ||
-    //         _holeRegion.Contains(position))
-    //         StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
-
-
-    //     foreach (var listener in listenersOfDirt)
-    //             listener.OnMove(position, velocity, dt);
-
-    //     // Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
-
-    //     TryGenerateDirt();
-
-
-
-    //     CheckDirtRemoved(_outerRegion);
-    //     CheckDirtRemoved(_innerRegion);
-    //     CheckDirtRemoved(_holeRegion);
-
-    //     // Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
-
-    //     // await Task.Delay(updateInterval);
-
-    //     // Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
-
-    //     //stopwatch.Reset();
+    //     if (rnd.NextDouble() > 0.88)
+    //         _holeRegion.GenerateMimiDirt();
     // }
 
-    void TryGenerateDirt()
+    void TryGenerateDirt(MimiRegion region, double rate)
     {
-        Random rnd = new Random();
-        if (rnd.NextDouble() > 0.80)
-            _outerRegion.GenerateMimiDirt();
-
-        if (rnd.NextDouble() > 0.85)
-            _innerRegion.GenerateMimiDirt();
-
-        if (rnd.NextDouble() > 0.88)
-            _holeRegion.GenerateMimiDirt();
+        if (_rnd.NextDouble() < rate) region.GenerateMimiDirt();
     }
 
     void CheckDirtRemoved(MimiRegion region)

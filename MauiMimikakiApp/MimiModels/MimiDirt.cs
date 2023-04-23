@@ -1,24 +1,26 @@
 ﻿namespace MauiMimikakiApp.Models;
 
-public class MimiDirt : ITrackerListener
+internal class MimiDirt : ITrackerListener
 {
-    public bool IsRemoved { get; private set; } = false;
-    readonly public Point Position;
+    internal bool IsRemoved { get; private set; } = false;
+    readonly internal Point Position;
     //readonly double hardness;
 
-    readonly public double Size;
+    readonly MimiDirtConfig _config;
 
-    public MimiDirt(Point position)
+    readonly internal double Size;
+
+    internal MimiDirt(Point position, MimiDirtConfig config)
     {
-        this.Position = position;
+        Position = position;
 
-        this.Size = 5;
+        _config = config;
+
+        Size = _config.Size;
     }
 
-    public void OnMove(Point position, Point velocity, double milliSecUpdateInterval)
+    public void OnMove(Point position, Point velocity, double dt)
     {
-        double dt = milliSecUpdateInterval;
-
         if (position.Distance(Position) < Size)
         {
             IsRemoved = true;

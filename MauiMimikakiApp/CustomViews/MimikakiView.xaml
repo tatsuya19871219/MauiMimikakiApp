@@ -56,11 +56,12 @@
                     <Style TargetType="Grid" BasedOn="{StaticResource ContentStyle}">
                         <Setter Property="TranslationX" Value="{Binding RegionOffsetX}"/>
                         <Setter Property="TranslationY" Value="{Binding RegionOffsetY}"/>                                         
-                        <Setter Property="BackgroundColor" Value="LightGreen"/>
-                        <Setter Property="Opacity" Value="0.25"/>
+                        <!-- <Setter Property="BackgroundColor" Value="LightGreen"/>
+                        <Setter Property="Opacity" Value="0.25"/> -->
                     </Style>
                     <Style TargetType="Label" BasedOn="{StaticResource ContentStyle}">
-                        <Setter Property="BackgroundColor" Value="Gray"/>                        
+                        <Setter Property="BackgroundColor" Value="Gray"/>
+                        <Setter Property="IsVisible" Value="False"/>
                     </Style>
                     <Style TargetType="GraphicsView" BasedOn="{StaticResource ContentStyle}">
                         <Setter Property="WidthRequest" Value="{Binding RegionWidthRequest}"/>

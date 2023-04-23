@@ -29,7 +29,7 @@ public class MimiRegionDrawable : IDrawable
         canvas.DrawRectangle(dirtyRect);
         //canvas.DrawRectangle(new Rect(0, 0, _viewBox.RegionWidthRequest, _viewBox.RegionHeightRequest));
 
-        //VisualizeHairs(canvas, Colors.Black);
+        VisualizeHairs(canvas, Colors.Black);
 
         VisualizeDirts(canvas, Colors.Magenta);
     }

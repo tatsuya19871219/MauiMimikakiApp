@@ -1,11 +1,10 @@
 ﻿namespace MauiMimikakiApp.Models;
 
-public class MimiHair : ITrackerListener
+internal class MimiHair : ITrackerListener
 {
-    public Point Origin => _origin;
-    public Point Position => _position;
-
-    public double Thinness => _thinness;
+    internal Point Origin => _origin;
+    internal Point Position => _position;
+    internal double Thinness => _thinness;
 
     Point _origin;
     Point _position;
@@ -17,15 +16,19 @@ public class MimiHair : ITrackerListener
 
     readonly double _springConst;
 
-    public MimiHair(Point origin, double springConst = 0.5)
+    readonly MimiHairConfig _config;
+
+    internal MimiHair(Point origin, MimiHairConfig config)
     {
         _origin = origin;
         _position = origin;
 
-        _springConst = springConst;
+        _config = config;
+
+        _springConst = _config.SpringConst;
         //_force = Point.Zero;
 
-        _thinness = _originalThinness = 2.0;
+        _thinness = _originalThinness = _config.Thinness;
     }
 
     // public void Displace(Point displacement)
@@ -61,10 +64,8 @@ public class MimiHair : ITrackerListener
     }
 
     
-    public void OnMove(Point position, Point velocity, double milliSecUpdateInterval)
+    public void OnMove(Point position, Point velocity, double dt)
     {
-        double dt = milliSecUpdateInterval;
-
         if (position.Distance(_origin) < 5)
         {
             _thinness = 1.2 * _originalThinness;
