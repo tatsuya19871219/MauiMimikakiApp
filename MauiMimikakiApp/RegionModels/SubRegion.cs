@@ -47,7 +47,7 @@ internal class SubRegion : AbstractRegion
 
         _boundaryList = GetBoundaryPointList();
 
-        StrongReferenceMessenger.Default.Send(new RegionDebugMessage(_boundaryList));
+        //StrongReferenceMessenger.Default.Send(new RegionDebugMessage(_boundaryList));
     }
 
     // Fill boundary by linear interpolation

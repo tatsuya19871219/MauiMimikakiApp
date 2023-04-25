@@ -6,26 +6,27 @@
   {
     "RegionRoughness" : 
     {
-      "DX" : 2,
-      "DY" : 2
+      "dx" : 2,
+      "dy" : 2
     },
     "MimiHair" :
     {
-      "Thinness" : 1.0,
-      "SpringConst" : 0.5
+      "thinness" : 1.0,
+      "springConst" : 0.5,
+      "colorName" : "Purple"
     },
     "MimiHairDensity" : 0.1,
     "MimiDirt" :
     {
-      "Size" : 5,
-      "Hardness" : 1,
-      "ColorName" : "Magenta"
+      "size" : 5,
+      "hardness" : 1,
+      "colorName" : "Red"
     },
     "MimiDirtGenerationRate" :
     {
-      "Outer" : 0.8,
-      "Inner" : 0.9,
-      "Hole" : 0.95
+      "outer" : 0.8,
+      "inner" : 0.9,
+      "hole" : 0.95
     },
     "TouchPointRadius" : 20
   }

@@ -48,7 +48,7 @@ public partial class MainPage : ContentPage
 
 			double velocity = state.Velocity.Distance(Point.Zero);
 
-			Debug.WriteLine($"velocity : {velocity}");
+			//Debug.WriteLine($"velocity : {velocity}");
 
 			if (velocity < 0.01)
 			{
@@ -56,7 +56,7 @@ public partial class MainPage : ContentPage
 				return;
 			} 
 
-			if (!_kakiSEPlayer.IsPlaying) _kakiSEPlayer.Play();
+			//if (!_kakiSEPlayer.IsPlaying) _kakiSEPlayer.Play();
 
 			_kakiSEPlayer.Speed = velocity*25;
 		});

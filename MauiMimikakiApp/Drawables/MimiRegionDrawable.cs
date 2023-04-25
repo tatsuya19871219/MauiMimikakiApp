@@ -23,19 +23,19 @@ public class MimiRegionDrawable : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        canvas.StrokeColor = Colors.Red;
-        canvas.StrokeSize = 2;
+        // canvas.StrokeColor = Colors.Red;
+        // canvas.StrokeSize = 2;
 
-        canvas.DrawRectangle(dirtyRect);
+        // canvas.DrawRectangle(dirtyRect);
         //canvas.DrawRectangle(new Rect(0, 0, _viewBox.RegionWidthRequest, _viewBox.RegionHeightRequest));
 
-        VisualizeHairs(canvas, Colors.Black);
+        VisualizeHairs(canvas);
 
-        VisualizeDirts(canvas, Colors.Magenta);
+        VisualizeDirts(canvas);
     }
 
     
-    void VisualizeHairs(ICanvas canvas, Color color)
+    void VisualizeHairs(ICanvas canvas)
     {   
 
         foreach (var hair in _mimiRegion.Hairs)
@@ -48,21 +48,21 @@ public class MimiRegionDrawable : IDrawable
             var x0 = origin.X - _offsetX;
             var y0 = origin.Y - _offsetY;
 
-            canvas.FillColor = Colors.Gray;
+            canvas.FillColor = Colors.LightGray;
             //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
             canvas.FillCircle( (float)x0, (float)y0, (float)hair.Thinness);
 
-            canvas.FillColor = color;
+            canvas.FillColor = hair.HairColor;
             //canvas.Alpha = 1.0f;
             canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.75f);
         }
     }
 
-    void VisualizeDirts(ICanvas canvas, Color color)
+    void VisualizeDirts(ICanvas canvas)
     {
         foreach (var dirt in _mimiRegion.Dirts)
         {
-            if (dirt.IsRemoved) continue;
+            //if (dirt.IsRemoved) continue;
 
             var position = dirt.Position;
 
@@ -71,7 +71,7 @@ public class MimiRegionDrawable : IDrawable
             var x = position.X - _offsetX - size.Width/2;
             var y = position.Y - _offsetY - size.Height/2;
 
-            canvas.FillColor = color;
+            canvas.FillColor = dirt.DirtColor;
 
             canvas.FillRectangle((float)x, (float)y, (float)size.Width, (float)size.Height);
         }

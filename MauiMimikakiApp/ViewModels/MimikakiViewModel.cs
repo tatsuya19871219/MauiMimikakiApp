@@ -81,6 +81,8 @@ internal partial class MimikakiViewModel : ObservableObject
 
     async void InitializeModelAsync(Func<bool> condition)
     {
+        Stopwatch sw = Stopwatch.StartNew();
+
         //await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
         await EasyTasks.WaitFor(condition);
         
@@ -88,9 +90,13 @@ internal partial class MimikakiViewModel : ObservableObject
 
         var modelParams = _config.Params;
 
+        Debug.WriteLine($"A : Elapsed {sw.ElapsedMilliseconds} [ms]");
+
         _outerRegion = new(_outer.GetPath(), modelParams);
         _innerRegion = new(_inner.GetPath(), modelParams);
         _holeRegion = new(_hole.GetPath(), modelParams);
+
+        Debug.WriteLine($"B : Elapsed {sw.ElapsedMilliseconds} [ms]");
 
         OuterViewBox = new(_outerRegion);
         InnerViewBox = new(_innerRegion);
@@ -158,9 +164,9 @@ internal partial class MimikakiViewModel : ObservableObject
         var probs = _config.Params.MimiDirtGenerationRate;
 
         // Dirt generation rate in dt
-        double rateOuter = probs.Outer * dt;
-        double rateInner = probs.Inner * dt;
-        double rateHole = probs.Hole * dt;
+        double rateOuter = probs.outer * dt;
+        double rateInner = probs.inner * dt;
+        double rateHole = probs.hole * dt;
 
         while (true)
         {
@@ -225,10 +231,16 @@ internal partial class MimikakiViewModel : ObservableObject
 
             Rectangle rect = new Rectangle {Fill = Colors.Magenta, Stroke=Colors.Magenta, WidthRequest = width, HeightRequest = height};
 
+            //rect.AnchorX = 0.5;
+            //rect.AnchorY = 0.5;
+
+            //rect.HorizontalOptions = LayoutOptions.Center;
+            //rect.VerticalOptions = LayoutOptions.Center;
+
             Point position = dirt.Position;
 
-            var x0 = position.X;
-            var y0 = position.Y;
+            var x0 = position.X - width/2;
+            var y0 = position.Y - height/2;
 
             rect.TranslationX = x0;
             rect.TranslationY = y0;

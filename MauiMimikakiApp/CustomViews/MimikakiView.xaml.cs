@@ -86,14 +86,17 @@ public partial class MimikakiView : ContentView
         var x = dirtObject.TranslationX;
         var y = dirtObject.TranslationY;
 
+        dirtObject.Fill = Colors.Black;
+        dirtObject.Opacity = 0.5;
+
         FloatingObjectsLayer.Add(dirtObject);
 
         uint animationTime = 2500;
 
-        dirtObject.RotateTo(300, animationTime);
-        await dirtObject.TranslateTo(x, y+500, animationTime);
+        //dirtObject.RotateTo(300, animationTime);
+        //await dirtObject.TranslateTo(x, y+500, animationTime);
 
-        FloatingObjectsLayer.Remove(dirtObject);
+        //FloatingObjectsLayer.Remove(dirtObject);
     }
 
 }

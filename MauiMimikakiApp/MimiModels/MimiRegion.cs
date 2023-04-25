@@ -20,8 +20,8 @@ internal class MimiRegion
         //_config = config;
         _modelParams = modelParams;
 
-        int dx = _modelParams.RegionRoughness.DX;
-        int dy = _modelParams.RegionRoughness.DY;
+        int dx = _modelParams.RegionRoughness.dx;
+        int dy = _modelParams.RegionRoughness.dy;
 
         _internalRegion = new InternalRegion(new EdgeSet(pathF), dx, dy);
 
@@ -36,7 +36,7 @@ internal class MimiRegion
         double dx = 1/density;
         double dy = 1/density;
 
-        double hairMargin = _hairConfig.Thinness * 1.5;
+        double hairMargin = _hairConfig.thinness * 1.5;
 
         Point center = Bounds.Center;
 

@@ -1,10 +1,13 @@
-﻿namespace MauiMimikakiApp.Models;
+﻿using Microsoft.Maui.Graphics.Converters;
+
+namespace MauiMimikakiApp.Models;
 
 internal class MimiHair : ITrackerListener
 {
     internal Point Origin => _origin;
     internal Point Position => _position;
     internal double Thinness => _thinness;
+    readonly internal Color HairColor;
 
     Point _origin;
     Point _position;
@@ -25,10 +28,14 @@ internal class MimiHair : ITrackerListener
 
         _config = config;
 
-        _springConst = _config.SpringConst;
+        _springConst = _config.springConst;
         //_force = Point.Zero;
 
-        _thinness = _originalThinness = _config.Thinness;
+        _thinness = _originalThinness = _config.thinness;
+
+        var colorTypeConverter = new ColorTypeConverter();
+
+        HairColor = (Color) colorTypeConverter.ConvertFromString(_config.colorName);
     }
 
     // public void Displace(Point displacement)
