@@ -10,14 +10,12 @@ internal class MimiRegion
     readonly List<MimiHair> _hairs = new();
     readonly List<MimiDirt> _dirts = new();
 
-    //readonly MimikakiConfig _config;
     readonly ModelParams _modelParams;
     MimiHairConfig _hairConfig => _modelParams.MimiHair;
     MimiDirtConfig _dirtConfig => _modelParams.MimiDirt;
 
     internal MimiRegion(PathF pathF, ModelParams modelParams)
-    {
-        //_config = config;
+    {        
         _modelParams = modelParams;
 
         int dx = _modelParams.RegionRoughness.dx;
@@ -26,7 +24,6 @@ internal class MimiRegion
         _internalRegion = new InternalRegion(new EdgeSet(pathF), dx, dy);
 
         // initialize mimi hairs
-        //InitializeMimiHair(0.2);
         InitializeMimiHair(_modelParams.MimiHairDensity);
 
     }

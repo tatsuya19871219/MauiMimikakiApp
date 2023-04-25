@@ -1,14 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Maui.Controls.Shapes;
-using MauiMimikakiApp.CustomViews;
-using TakeMauiEasy;
-using MauiMimikakiApp.Models;
-using MauiMimikakiApp.Drawables;
-using Path = Microsoft.Maui.Controls.Shapes.Path;
 using CommunityToolkit.Mvvm.Messaging;
+using MauiMimikakiApp.Drawables;
 using MauiMimikakiApp.Messages;
-using System.Windows.Input;
+using MauiMimikakiApp.Models;
+using Microsoft.Maui.Controls.Shapes;
 using System.Diagnostics;
+using System.Windows.Input;
+using TakeMauiEasy;
+using Path = Microsoft.Maui.Controls.Shapes.Path;
 
 namespace MauiMimikakiApp.ViewModels;
 
@@ -83,7 +82,6 @@ internal partial class MimikakiViewModel : ObservableObject
     {
         Stopwatch sw = Stopwatch.StartNew();
 
-        //await EasyTasks.WaitFor(() => MimikakiConfig.Current is not null);
         await EasyTasks.WaitFor(condition);
         
         _config = MimikakiConfig.Current;
@@ -106,8 +104,7 @@ internal partial class MimikakiViewModel : ObservableObject
     }
 
     async void PrepareDrawablesAsync(Func<bool> condition)
-    {
-        //await EasyTasks.WaitFor(() => _modelInitialized);
+    {        
         await EasyTasks.WaitFor(condition);
 
         OuterRegionDrawable = new MimiRegionDrawable(_outerRegion, OuterViewBox);
@@ -119,10 +116,7 @@ internal partial class MimikakiViewModel : ObservableObject
 
     async void InvokeMimikakiAsync(Func<bool> condition)
     {
-        //await EasyTasks.WaitFor(() => _targetImageInitialized && _modelInitialized && _drawableInitialized);
-        await EasyTasks.WaitFor(condition);
-
-        // var config = MimikakiConfig.Current;
+        await EasyTasks.WaitFor(condition);     
 
         RunGraphicsUpdateProcess(_config.GraphicsUpdateInterval);
         RunTrackerProcess(_config.TrackerUpdateInterval);
@@ -163,10 +157,10 @@ internal partial class MimikakiViewModel : ObservableObject
 
         var probs = _config.Params.MimiDirtGenerationProbs;
 
-        // Dirt generation probability in dt
-        double probOuter = probs.outer * dt;
-        double probInner = probs.inner * dt;
-        double probHole = probs.hole * dt;
+        // A single dirt generation probability in 1 sec
+        double probOuter = probs.outer;
+        double probInner = probs.inner;
+        double probHole = probs.hole;
 
         while (true)
         {
@@ -191,9 +185,9 @@ internal partial class MimikakiViewModel : ObservableObject
 
             //Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-            TryGenerateDirt(_outerRegion, probOuter);
-            TryGenerateDirt(_innerRegion, probInner);
-            TryGenerateDirt(_holeRegion, probHole);
+            TryGenerateDirt(_outerRegion, probOuter, dt);
+            TryGenerateDirt(_innerRegion, probInner, dt);
+            TryGenerateDirt(_holeRegion, probHole, dt);
 
             CheckDirtRemoved(_outerRegion);
             CheckDirtRemoved(_innerRegion);
@@ -209,9 +203,9 @@ internal partial class MimikakiViewModel : ObservableObject
         }
     }
 
-    void TryGenerateDirt(MimiRegion region, double prob)
+    void TryGenerateDirt(MimiRegion region, double prob, double dt)
     {
-        if (_rnd.NextDouble() < prob) region.GenerateMimiDirt();
+        if (_rnd.NextDouble() < prob*dt) region.GenerateMimiDirt();
     }
 
     void CheckDirtRemoved(MimiRegion region)

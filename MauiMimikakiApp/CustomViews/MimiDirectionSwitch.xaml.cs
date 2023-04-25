@@ -1,5 +1,4 @@
 using System.Globalization;
-using MauiMimikakiApp.ViewModels;
 
 namespace MauiMimikakiApp.CustomViews;
 

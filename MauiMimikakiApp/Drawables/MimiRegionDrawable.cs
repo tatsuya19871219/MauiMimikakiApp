@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MauiMimikakiApp.Models;
+﻿using MauiMimikakiApp.Models;
 
 namespace MauiMimikakiApp.Drawables;
 

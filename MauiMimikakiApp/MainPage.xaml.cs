@@ -1,9 +1,8 @@
-﻿using Plugin.Maui.Audio;
-
-using TakeMauiEasy;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using MauiMimikakiApp.Messages;
+using Plugin.Maui.Audio;
 using System.Diagnostics;
+using TakeMauiEasy;
 
 namespace MauiMimikakiApp;
 

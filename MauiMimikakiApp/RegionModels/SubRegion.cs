@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using MauiMimikakiApp.Messages;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace MauiMimikakiApp.Models;
 

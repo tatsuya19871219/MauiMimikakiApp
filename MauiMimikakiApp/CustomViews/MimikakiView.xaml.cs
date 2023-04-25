@@ -3,7 +3,6 @@ using MauiMimikakiApp.Messages;
 using MauiMimikakiApp.Models;
 using MauiMimikakiApp.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
-using System.Reflection;
 using TakeMauiEasy;
 using Path = Microsoft.Maui.Controls.Shapes.Path;
 
@@ -11,7 +10,6 @@ namespace MauiMimikakiApp.CustomViews;
 
 public partial class MimikakiView : ContentView
 {
-    //string _filename;
     required public string ImageFilename { init => TargetImage.Source = value; }
     
     public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)

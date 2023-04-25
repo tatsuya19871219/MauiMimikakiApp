@@ -8,8 +8,6 @@ abstract class AbstractRegion
     {
         if (!edgeSet.Closed) throw new ArgumentException("Given path is not closed.");
 
-        //OriginalPath = pathF;
-
         GetMinAndMaxPoints(edgeSet, out var topLeft, out var bottomRight);
 
         var maxWidth = bottomRight.X - topLeft.X;
