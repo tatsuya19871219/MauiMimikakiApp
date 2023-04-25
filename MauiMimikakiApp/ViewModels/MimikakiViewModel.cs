@@ -175,15 +175,15 @@ internal partial class MimikakiViewModel : ObservableObject
             StrongReferenceMessenger.Default.Send(new TrackerUpdateMessage(current));
 
             if (_outerRegion.Contains(position) ||
-               _innerRegion.Contains(position) ||
-               _holeRegion.Contains(position))
+                _innerRegion.Contains(position) ||
+                _holeRegion.Contains(position))
                StrongReferenceMessenger.Default.Send(new TrackerOnMimiMessage(current));
 
 
-            foreach (var listener in listenersOfDirt)
+            foreach (var listener in listeners)
                listener.OnMove(position, velocity, dt);
 
-            Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+            //Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
             TryGenerateDirt(_outerRegion, rateOuter);
             TryGenerateDirt(_innerRegion, rateInner);
@@ -193,27 +193,15 @@ internal partial class MimikakiViewModel : ObservableObject
             CheckDirtRemoved(_innerRegion);
             CheckDirtRemoved(_holeRegion);
 
-            Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+            //Debug.WriteLine($"B: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
             await t;
 
             stopwatch.Reset();
 
-            Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
+            //Debug.WriteLine($"C: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
         }
     }
-    // void TryGenerateDirt()
-    // {
-    //     Random rnd = new Random();
-    //     if (rnd.NextDouble() > 0.80)
-    //         _outerRegion.GenerateMimiDirt();
-
-    //     if (rnd.NextDouble() > 0.85)
-    //         _innerRegion.GenerateMimiDirt();
-
-    //     if (rnd.NextDouble() > 0.88)
-    //         _holeRegion.GenerateMimiDirt();
-    // }
 
     void TryGenerateDirt(MimiRegion region, double rate)
     {

@@ -11,7 +11,7 @@
     },
     "MimiHair" :
     {
-      "Thinness" : 5.0,
+      "Thinness" : 1.0,
       "SpringConst" : 0.5
     },
     "MimiHairDensity" : 0.1,
@@ -23,9 +23,9 @@
     },
     "MimiDirtGenerationRate" :
     {
-      "Outer" : 0.9,
-      "Inner" : 0.95,
-      "Hole" : 0.99
+      "Outer" : 0.8,
+      "Inner" : 0.9,
+      "Hole" : 0.95
     },
     "TouchPointRadius" : 20
   }

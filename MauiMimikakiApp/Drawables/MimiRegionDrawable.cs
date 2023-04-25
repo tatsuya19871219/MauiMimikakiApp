@@ -48,13 +48,13 @@ public class MimiRegionDrawable : IDrawable
             var x0 = origin.X - _offsetX;
             var y0 = origin.Y - _offsetY;
 
-            canvas.FillColor = Colors.LightGray;
+            canvas.FillColor = Colors.Gray;
             //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
             canvas.FillCircle( (float)x0, (float)y0, (float)hair.Thinness);
 
             canvas.FillColor = color;
             //canvas.Alpha = 1.0f;
-            canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.25f);
+            canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.75f);
         }
     }
 

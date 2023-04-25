@@ -1,77 +1,16 @@
-@startuml MimikakiClassDiagram
-' MimiModels
+@startuml Mimikaki
 class MimiViewBox
 {
     + Bounds : Rect <<required>>
     + GetBoundsAsync() : Task<Rect>
 }
 
-class MimiRegion
+class MimiRegionViewBox
 {
     + Bounds : Rect
-    + Hairs : IEnumerable<MimiHair>
-    + Dirts : IEnumerable<MimiDirt>
-    - internalRegion : InternalRegion
-    - hairList : List<MimiHair>
-    - dirtList : List<MimiDirt>
-    + MimiRegion(pathF : PathF, dx : int, dy : int)
-    - InitializeMimiHair(density : double)
-    ~ GenerateMimiDirt() : void
-    ~ RemoveMimiDirt() : void
-    ~ Contains(point : Point) : bool
+    ~ MimiRegionViewBox()
 }
 
-interface ITrackerListener
-{
-    OnMove(position : Point, velocity : Point, milliSecUpdateInterval : double) : void
-}
-
-class MimiHair
-{
-    - origin : Point
-    - position : Point
-    - springConst : double
-    + MimiHair(position : Point)
-    + GetPosition() : Point
-    + UpdatePosition(force : Point) : void
-}
-
-class MimiDirt
-{
-    - position : Point
-    - hardness : double
-    + MimiDirt(position : Point, hardness : double)
-}
-
-' RegionModels
-abstract AbstractRegion
-{
-    ~ OriginalPath : PathF
-    ~ Bounds : Rect
-    ~ AbstractRegion(pathF : PathF)
-    {abstract} ~ ContainsInRegion(point : Point) : bool
-    {abstract} ~ OnBoundary(point : Point) : bool
-    {abstract} ~ DistanceFromBoundary(point : Point) : double
-    '- GetMinAndMaxPoints(pathF : PathF, minPoint : out Point, maxPoint : out Point) : void
-    ~ IsOutOfBoundBox(point : Point) : bool
-}
-
-class InternalRegion
-{
-    - subRegions : List<SubRegion>
-    + InternalRegion(pathF : PathF, dx : int, dy : int)
-    + GeneratePointInRegion() : Point
-}
-
-class SubRegion
-{
-    - isInner : bool[,] <<read only>>
-    - isBoundary : bool[,] <<read only>>
-    + SubRegion(pathF : PathF, sharedVertices : List<PointF>, dx : int, dy : int)
-    - FillBoundaryPoints(pathF : PathF, sharedVertices : List<PointF>) : void
-    - FillInternalRegion() : void
-    '- ConvertToRegionIndex(x : double, y : double) : (int, int)
-}
 
 ' Views
 class MimikakiView <<V, HotPink>>
@@ -138,21 +77,13 @@ package TakeMauiEasy
     class PositionTracker
 }
 
-' 
-MimiRegion -> InternalRegion
-MimiRegion *-- MimiHair
-MimiRegion *-- MimiDirt
-
-InternalRegion *-- SubRegion
-InternalRegion -up-|> AbstractRegion
-SubRegion -up-|> AbstractRegion
-
-MimiHair ..|> ITrackerListener
-MimiDirt ..|> ITrackerListener
-
+' arrows
 MimikakiViewModel -left-> MimiViewBox
 MimikakiViewModel --> PositionTracker
-MimikakiViewModel o-- "3" MimiRegionDrawable
+MimikakiViewModel o- "3" MimiRegionDrawable
+
+MimikakiViewModel o-- "3" MimiRegionViewBox
+MimikakiViewModel o- "3" MimiRegion
 
 MimikakiView ..> MimikakiViewModel : <create>
 
@@ -163,9 +94,113 @@ MimiRegionDrawable --> MimiRegion
 
 @enduml
 
+@startuml MimiRegion
+' Models
+class MimiRegion
+{
+    + Bounds : Rect
+    + Hairs : IEnumerable<MimiHair>
+    + Dirts : IEnumerable<MimiDirt>
+    - internalRegion : InternalRegion
+    - hairList : List<MimiHair>
+    - dirtList : List<MimiDirt>
+    + MimiRegion(pathF : PathF, dx : int, dy : int)
+    - InitializeMimiHair(density : double)
+    ~ GenerateMimiDirt() : void
+    ~ RemoveMimiDirt() : void
+    ~ Contains(point : Point) : bool
+}
+
+interface ITrackerListener
+{
+    OnMove(position : Point, velocity : Point, milliSecUpdateInterval : double) : void
+}
+
+class MimiHair
+{
+    - origin : Point
+    - position : Point
+    - springConst : double
+    + MimiHair(position : Point)
+    + GetPosition() : Point
+    + UpdatePosition(force : Point) : void
+}
+
+class MimiDirt
+{
+    - position : Point
+    - hardness : double
+    + MimiDirt(position : Point, hardness : double)
+}
+
+' RegionModels
+abstract AbstractRegion
+{
+    # bounds : Rect
+    ~ AbstractRegion(edgeSet : EdgeSet)
+    {abstract} ~ ContainsInRegion(point : Point) : bool
+    {abstract} ~ OnBoundary(point : Point) : bool
+    {abstract} ~ DistanceFromBoundary(point : Point) : double
+    - GetMinAndMaxPoints(points : List<Point>, minPoint : out Point, maxPoint : out Point) : void
+}
+
+class InternalRegion
+{
+    ~ Bounds : Rect
+    - subRegions : List<SubRegion>
+    + InternalRegion(edgeSet : EdgeSet, dx : int, dy : int)
+    + GeneratePointInRegion() : Point
+}
+
+class SubRegion
+{
+    - gridX : List<int>
+    - gridY : List<int>
+    - isInner : bool[,] <<read only>>
+    - isBoundary : bool[,] <<read only>>
+    + SubRegion(edgeSet : EdgeSet, sharedEdges : List<Edge>, dx : int, dy : int)
+    - FillBoundaryPoints(edgeSet : EdgeSet, sharedEdges : List<Edges>) : void
+    - FillInternalRegion() : void
+    '- ConvertToRegionIndex(x : double, y : double) : (int, int)
+}
+
+class EdgeSet <<IEnumerable>>
+{
+    - pathF : PathF
+    - edges : List<Edge>
+    - verticies : List<Point>
+    ~ IsClosed : bool
+    ~ EdgeSet(pathF : PathF)
+    ~ Separate() : List<EdgeSet>
+    ~ GetVerticies() : List<PointF>
+}
+
+class Edge <<(R, LightGreen) record>>
+{
+    + Edge(a : PointF, b : PointF)
+    + Equals(target : Edge) : bool
+}
+
+' arrows
+MimiRegion -> InternalRegion
+MimiRegion *-- MimiHair
+MimiRegion *-- MimiDirt
+
+InternalRegion *- SubRegion
+InternalRegion --|> AbstractRegion
+SubRegion --|> AbstractRegion
+
+MimiHair ..|> ITrackerListener
+MimiDirt ..|> ITrackerListener
+
+EdgeSet *-- Edge
+
+InternalRegion -[hidden]- EdgeSet
+
+@enduml
+
 @startuml MimikakiMessages
 
-' Message
 namespace Messages{
 
     class TrackerUpdateMessage <<(M, Orange) Message>>

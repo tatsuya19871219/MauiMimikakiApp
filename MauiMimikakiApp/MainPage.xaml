@@ -31,7 +31,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources\Raw\TestResourceDictionary.xaml"/>
+                <ResourceDictionary Source="Resources\Raw\KanjiMimiResourceDictionary.xaml"/>
                 <ResourceDictionary>
                     <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
                 </ResourceDictionary>

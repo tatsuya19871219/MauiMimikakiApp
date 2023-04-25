@@ -23,7 +23,7 @@ internal class MimiRegion
         int dx = _modelParams.RegionRoughness.DX;
         int dy = _modelParams.RegionRoughness.DY;
 
-        _internalRegion = new(pathF, dx, dy);
+        _internalRegion = new InternalRegion(new EdgeSet(pathF), dx, dy);
 
         // initialize mimi hairs
         //InitializeMimiHair(0.2);
@@ -36,25 +36,20 @@ internal class MimiRegion
         double dx = 1/density;
         double dy = 1/density;
 
-        double hairMargin = _hairConfig.Thinness*1.5;
+        double hairMargin = _hairConfig.Thinness * 1.5;
 
         Point center = Bounds.Center;
 
         var maxWidth = Bounds.Width;
         var maxHeight = Bounds.Height;
 
-        // var x01 = (center.X - maxWidth / 2);
-        // var x11 = (center.X + maxWidth / 2);
-
+        // Discritize the region and align the center
         var x0 = Math.Round((center.X - maxWidth / 2 - dx) / dx) * dx;
         var x1 = Math.Round((center.X + maxWidth / 2 + dx) / dx) * dx;
 
         var y0 = Math.Round((center.Y - maxHeight / 2 - dy) / dy) * dy;
         var y1 = Math.Round((center.Y + maxHeight / 2 + dy) / dy) * dy;
 
-        // for (double x = center.X - maxWidth/2; x <= center.X + maxWidth/2; x+=dx)
-        // {
-        //     for (double y = center.Y - maxHeight/2; y <= center.Y + maxHeight/2; y+=dy)
         for (double x = x0; x <= x1; x+=dx)
         {
             for (double y = y0; y <= y1; y+=dy)

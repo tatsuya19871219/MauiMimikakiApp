@@ -11,7 +11,7 @@ namespace MauiMimikakiApp.CustomViews;
 
 public partial class MimikakiView : ContentView
 {
-    string _filename;
+    //string _filename;
     required public string ImageFilename { init => TargetImage.Source = value; }
     
     public MimikakiView(MimiViewBox viewbox, Path outer, Path inner, Path hole)
@@ -56,6 +56,20 @@ public partial class MimikakiView : ContentView
 
             PositionMarker.TranslationX = position.X - PositionMarker.Width/2;
             PositionMarker.TranslationY = position.Y - PositionMarker.Height/2;
+        });
+
+        StrongReferenceMessenger.Default.Register<RegionDebugMessage>(this, (s, e) =>
+        {
+            List<Point> boundaryList = e.Value as List<Point>;
+
+            foreach (Point point in boundaryList)
+            {
+                Ellipse ellipse = new Ellipse() { BackgroundColor=Colors.Red, WidthRequest = 5, HeightRequest = 5 };
+                ellipse.TranslationX = point.X;
+                ellipse.TranslationY = point.Y;
+
+                FloatingObjectsLayer.Add(ellipse);
+            }
         });
         
     }

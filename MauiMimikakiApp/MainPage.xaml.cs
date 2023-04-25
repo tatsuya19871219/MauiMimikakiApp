@@ -48,7 +48,9 @@ public partial class MainPage : ContentPage
 
 			double velocity = state.Velocity.Distance(Point.Zero);
 
-			if (velocity < 0.02)
+			Debug.WriteLine($"velocity : {velocity}");
+
+			if (velocity < 0.01)
 			{
 				_kakiSEPlayer.Stop();
 				return;
