@@ -11,13 +11,15 @@ public partial class MainPage : ContentPage
 {
 	IAudioPlayer _kakiSEPlayer;
 
+	MimikakiConfig _config;
+
 	Stopwatch _stopwatch;
 
 	public MainPage(IAudioManager audioManager) 
 	{
 		InitializeComponent();
 
-		var config = MimikakiConfig.Load("Config.json");
+		_config = MimikakiConfig.Load("Config.json");
 
 		RegisterTrackerMessages();
 		PrepareSEPlayer(audioManager);
@@ -44,7 +46,7 @@ public partial class MainPage : ContentPage
 
 			//Debug.WriteLine($"velocity : {velocity}");
 
-			if (velocity < 0.02)
+			if (velocity < _config.SEcutoffVelocity)
 			{
 				if (_kakiSEPlayer.IsPlaying && _kakiSEPlayer.CurrentPosition > _kakiSEPlayer.Duration*0.2)
 				{
@@ -63,21 +65,24 @@ public partial class MainPage : ContentPage
 
 			double velocity = state.Velocity.Distance(Point.Zero);
 
-			if (velocity < 0.02) return;
+			if (velocity < _config.SEcutoffVelocity) return;
 
 
 			if (!_kakiSEPlayer.IsPlaying)
 			{
                 //var currentSESpeed = _kakiSEPlayer.Speed;
 
-                const double highCutoffVelocity = 1.0;
-                const double lowCutoffVelocity = 0.2;
+                const double highHingeVelocity = 1.0;
+                const double lowHingeVelocity = 0.2;
+
+				double highSpeed = 1.1;
+				double lowSpeed = 1.0;
 
                 var newSESpeed = velocity switch
                 {
-                    (> highCutoffVelocity) => 1.1,
-                    (< lowCutoffVelocity) => 1.0,
-                    _ => 1.05
+                    (> highHingeVelocity) => highSpeed,
+                    (< lowHingeVelocity) => lowSpeed,
+                    _ => lowSpeed + (highSpeed-lowSpeed) * (velocity - lowHingeVelocity) / (highHingeVelocity - lowHingeVelocity)
                 };
 
                 //Debug.WriteLine($"CanSetSpeed {_kakiSEPlayer.CanSetSpeed}");

@@ -12,6 +12,7 @@ internal class MimikakiConfig
 
     // Properties in JSON config file
     public string KakiSoundFilename { get; init; }
+    public double SEcutoffVelocity { get; init; }
     public int TrackerUpdateInterval { get; init; }
     public int GraphicsUpdateInterval { get; init; }
     public ModelParams Params { get; init; }

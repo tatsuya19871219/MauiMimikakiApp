@@ -163,10 +163,10 @@ internal partial class MimikakiViewModel : ObservableObject
 
         var probs = _config.Params.MimiDirtGenerationProbs;
 
-        // Dirt generation rate in dt
-        double rateOuter = Math.Pow(probs.outer, dt);
-        double rateInner = Math.Pow(probs.inner, dt);
-        double rateHole = Math.Pow(probs.hole, dt);
+        // Dirt generation probability in dt
+        double probOuter = probs.outer * dt;
+        double probInner = probs.inner * dt;
+        double probHole = probs.hole * dt;
 
         while (true)
         {
@@ -191,9 +191,9 @@ internal partial class MimikakiViewModel : ObservableObject
 
             //Debug.WriteLine($"A: Elapsed {stopwatch.ElapsedMilliseconds} [ms]");
 
-            TryGenerateDirt(_outerRegion, rateOuter);
-            TryGenerateDirt(_innerRegion, rateInner);
-            TryGenerateDirt(_holeRegion, rateHole);
+            TryGenerateDirt(_outerRegion, probOuter);
+            TryGenerateDirt(_innerRegion, probInner);
+            TryGenerateDirt(_holeRegion, probHole);
 
             CheckDirtRemoved(_outerRegion);
             CheckDirtRemoved(_innerRegion);
@@ -209,9 +209,9 @@ internal partial class MimikakiViewModel : ObservableObject
         }
     }
 
-    void TryGenerateDirt(MimiRegion region, double rate)
+    void TryGenerateDirt(MimiRegion region, double prob)
     {
-        if (_rnd.NextDouble() > rate) region.GenerateMimiDirt();
+        if (_rnd.NextDouble() < prob) region.GenerateMimiDirt();
     }
 
     void CheckDirtRemoved(MimiRegion region)

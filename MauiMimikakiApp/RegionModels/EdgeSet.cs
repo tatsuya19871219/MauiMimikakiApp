@@ -70,6 +70,16 @@ internal class EdgeSet : IEnumerable<Edge>
                     a =  b;
                     break;
 
+                case PathOperation.Cubic:
+
+                    // Connect to end point of the cubic curve directly
+                    b = seg[2];
+
+                    _edges.Add(new Edge(a, b));
+
+                    a = b;
+                    break;
+
                 case PathOperation.Close:
 
                     a = _edges.Last().b;

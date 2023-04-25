@@ -52,7 +52,7 @@ internal class MimiHair : ITrackerListener
 
             double w = amplitude/diff.Distance(Point.Zero);
 
-            var displacement = new Point(w*diff.X, w*diff.Y);
+            var displacement = new Point(-w*diff.X, -w*diff.Y);
 
             Displace(displacement);
         }
