@@ -36,8 +36,23 @@ public partial class MainPage : ContentPage
 
         StrongReferenceMessenger.Default.Register<TrackerUpdateMessage>(this, (s, e) =>
         {
-			//UpdateHeaderText();
-			UpdateFooterText(e.Value);			
+			PositionTrackerState state = e.Value;
+
+			UpdateFooterText(state);
+
+            double velocity = state.Velocity.Distance(Point.Zero);
+
+			//Debug.WriteLine($"velocity : {velocity}");
+
+			if (velocity < 0.05)
+            {
+                if (_kakiSEPlayer.IsPlaying)
+                {
+                    _kakiSEPlayer.Stop();
+                    Debug.WriteLine("Stopped.");
+                }
+                return;
+            }
         });
 
 		StrongReferenceMessenger.Default.Register<TrackerOnMimiMessage>(this, (s, e) =>
@@ -48,17 +63,31 @@ public partial class MainPage : ContentPage
 
 			double velocity = state.Velocity.Distance(Point.Zero);
 
-			//Debug.WriteLine($"velocity : {velocity}");
 
-			if (velocity < 0.01)
+			if (!_kakiSEPlayer.IsPlaying)
 			{
-				_kakiSEPlayer.Stop();
-				return;
-			} 
+                //var currentSESpeed = _kakiSEPlayer.Speed;
 
-			//if (!_kakiSEPlayer.IsPlaying) _kakiSEPlayer.Play();
+                const double highCutoffVelocity = 1.0;
+                const double lowCutoffVelocity = 0.2;
 
-			_kakiSEPlayer.Speed = velocity*25;
+                var newSESpeed = velocity switch
+                {
+                    (> highCutoffVelocity) => 1.1,
+                    (< lowCutoffVelocity) => 1.0,
+                    _ => 1.05
+                };
+
+                //Debug.WriteLine($"CanSetSpeed {_kakiSEPlayer.CanSetSpeed}");
+                _kakiSEPlayer.Speed = newSESpeed;
+
+
+                _kakiSEPlayer.Play();
+			}
+
+			//Debug.WriteLine($"Current SE Speed: {_kakiSEPlayer.Speed}");
+			//Debug.WriteLine($"IsPlaying {_kakiSEPlayer.IsPlaying}");
+
 		});
 	}
 

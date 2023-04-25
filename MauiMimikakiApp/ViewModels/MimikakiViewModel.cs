@@ -229,7 +229,7 @@ internal partial class MimikakiViewModel : ObservableObject
             var width = dirt.Size; // / ViewDisplayRatio;
             var height = dirt.Size; // / ViewDisplayRatio;
 
-            Rectangle rect = new Rectangle {Fill = Colors.Magenta, Stroke=Colors.Magenta, WidthRequest = width, HeightRequest = height};
+            Rectangle rect = new Rectangle {Fill = dirt.DirtColor, Stroke=dirt.DirtColor, WidthRequest = width, HeightRequest = height};
 
             //rect.AnchorX = 0.5;
             //rect.AnchorY = 0.5;

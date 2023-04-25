@@ -49,12 +49,13 @@ public class MimiRegionDrawable : IDrawable
             var y0 = origin.Y - _offsetY;
 
             canvas.FillColor = Colors.LightGray;
-            //canvas.Alpha = (float)(hair.Thinness - 2) * 3;
+            canvas.Alpha = 0.5f;
             canvas.FillCircle( (float)x0, (float)y0, (float)hair.Thinness);
 
             canvas.FillColor = hair.HairColor;
-            //canvas.Alpha = 1.0f;
-            canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.75f);
+            canvas.FillCircle( (float)x, (float)y, (float)hair.Thinness*0.5f);
+
+            canvas.Alpha = 1.0f;
         }
     }
 
@@ -62,7 +63,7 @@ public class MimiRegionDrawable : IDrawable
     {
         foreach (var dirt in _mimiRegion.Dirts)
         {
-            //if (dirt.IsRemoved) continue;
+            if (dirt.IsRemoved) continue;
 
             var position = dirt.Position;
 

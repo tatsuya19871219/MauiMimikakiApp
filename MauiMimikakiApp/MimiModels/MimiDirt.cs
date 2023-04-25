@@ -13,6 +13,8 @@ internal class MimiDirt : ITrackerListener
     readonly double _hardness;
     readonly internal Color DirtColor;
 
+    double _amountOfStimulus = 0;
+
     internal MimiDirt(Point position, MimiDirtConfig config)
     {
         Position = position;
@@ -32,7 +34,9 @@ internal class MimiDirt : ITrackerListener
     {
         if (position.Distance(Position) < Size)
         {
-            IsRemoved = true;
+            _amountOfStimulus += 250*velocity.Distance(Point.Zero)*dt;
+
+            if (_amountOfStimulus > _hardness) IsRemoved = true;
         }
     }
 }

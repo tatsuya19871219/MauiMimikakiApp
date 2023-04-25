@@ -38,12 +38,32 @@ internal class MimiHair : ITrackerListener
         HairColor = (Color) colorTypeConverter.ConvertFromString(_config.colorName);
     }
 
-    // public void Displace(Point displacement)
-    // {
-    //     _position = _position.Offset(displacement.X, displacement.Y);
+    
+    
+    public void OnMove(Point position, Point velocity, double dt)
+    {
+        var distance = position.Distance(_origin);
+        
+        if (distance < _config.thinness*3)
+        {
+            var diff = new Point(position.X-_origin.X, position.Y-_origin.Y);
+            
+            double amplitude = 5;
 
-    //     UpdatePosition();
-    // }
+            double w = amplitude/diff.Distance(Point.Zero);
+
+            var displacement = new Point(w*diff.X, w*diff.Y);
+
+            Displace(displacement);
+        }
+    }
+
+    void Displace(Point displacement)
+    {
+        _position = _position.Offset(displacement.X, displacement.Y);
+
+        UpdatePositionAsync();
+    }
 
     async void UpdatePositionAsync(int milliSec = 100, double cutoffDisplacement = 0.2, double cutoffVelocity = 0.2)
     {
@@ -68,18 +88,5 @@ internal class MimiHair : ITrackerListener
         }
 
         _position = _origin;
-    }
-
-    
-    public void OnMove(Point position, Point velocity, double dt)
-    {
-        if (position.Distance(_origin) < 5)
-        {
-            _thinness = 1.2 * _originalThinness;
-        }
-        else 
-        {
-            _thinness = _originalThinness;
-        }
     }
 }
