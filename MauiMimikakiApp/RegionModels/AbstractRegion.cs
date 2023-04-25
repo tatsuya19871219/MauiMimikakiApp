@@ -48,35 +48,4 @@ abstract class AbstractRegion
         maxPoint = new Point(maxX, maxY);
     }
 
-    // void GetMinAndMaxPoints(PathF pathF, out Point minPoint, out Point maxPoint)
-    // {
-    //     double minX = double.PositiveInfinity;
-	// 	double minY = double.PositiveInfinity;
-	// 	double maxX = double.NegativeInfinity;
-	// 	double maxY = double.NegativeInfinity;
-
-	// 	for (int i = 0; i < pathF.Count; i++)
-	// 	{
-	// 		var path = pathF[i];
-
-	// 		if (path.X < minX) minX = path.X;
-	// 		if (path.X > maxX) maxX = path.X;
-	// 		if (path.Y < minY) minY = path.Y;
-	// 		if (path.Y > maxY) maxY = path.Y;
-	// 	}
-
-    //     minPoint = new Point(minX, minY);
-    //     maxPoint = new Point(maxX, maxY);
-    // }
-
-    // internal bool IsOutOfBoundBox(Point point)
-    // {
-    //     var (x, y) = point;
-
-    //     if (x < Bounds.Left || x > Bounds.Right) return true;
-    //     if (y < Bounds.Top || y > Bounds.Bottom) return true;
-
-    //     return false;
-    // }
-
 }

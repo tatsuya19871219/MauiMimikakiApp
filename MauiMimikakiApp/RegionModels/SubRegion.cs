@@ -19,7 +19,6 @@ internal class SubRegion : AbstractRegion
 
     readonly List<Point> _boundaryList;
 
-    //public SubRegion(PathF pathF, List<PointF> sharedVertices, int dx = 5, int dy = 5) : base(pathF)
     public SubRegion(EdgeSet edgeSet, List<Edge> sharedEdges, int dx = 5, int dy = 5) : base(edgeSet)
     {
         _dx = dx;
@@ -52,7 +51,6 @@ internal class SubRegion : AbstractRegion
     }
 
     // Fill boundary by linear interpolation
-    //void FillBoundaryPoints(PathF pathF, List<PointF> sharedVertices)
     void FillBoundaryPoints(EdgeSet edges, List<Edge> sharedEdges)
     {
         foreach (var edge in edges)
@@ -108,75 +106,7 @@ internal class SubRegion : AbstractRegion
 
         }
     }
-
-    // {
-    //     var cnt = 0;
-
-    //     for (int i = 0; i < pathF.Count; i++)
-    //     {
-    //         Point pA = pathF[i];
-    //         Point pB = (i < pathF.Count - 1) ? pathF[i+1] : pathF[0];
-
-    //         if (pA.Equals(pB)) continue;
-
-    //         bool checkAsRegion = sharedVertices.Contains(pA) && sharedVertices.Contains(pB);
-
-    //         var markAsBoundary = (Point point) => 
-    //         {
-    //             var (idx_x, idx_y) = ConvertToRegionIndex(point);
-
-    //             //Debug.Assert(_isBoundary[idx_x, idx_y] == false);
-
-    //             _isBoundary[idx_x, idx_y] = true;
-
-    //             if (checkAsRegion) _isInner[idx_x, idx_y] = true;
-
-    //             cnt++;
-    //         };
-
-    //         double slope = (pB.Y - pA.Y) / (pB.X - pA.X);
-
-    //         Func<double, double> eqYLine = (x) => pB.Y + slope * (x - pB.X);
-    //         Func<double, double> eqXLine = (y) => 1/slope * (y - pB.Y) + pB.X;
-
-    //         double diffX = pB.X - pA.X;
-    //         double diffY = pB.Y - pA.Y;
-
-    //         //Debug.Assert(Math.Abs(diffX) > 0);
-    //         //Debug.Assert(Math.Abs(diffY) > 0);
-
-
-    //         if (Math.Abs(diffX) > Math.Abs(diffY))
-    //         {
-    //             var kmax = Math.Abs(diffX) / _dx;
-
-    //             for (int k = 0; k < kmax; k++)
-    //             {
-    //                 double x = pA.X + Math.Sign(diffX) * k * _dx;
-    //                 double y = eqYLine(x);
-
-    //                 markAsBoundary(new(x, y));
-    //             }
-    //         }
-    //         else
-    //         {
-    //             var kmax = Math.Abs(diffY) / _dy;
-
-    //             for (int k = 0; k < kmax; k++)
-    //             {
-    //                 double y = pA.Y + Math.Sign(diffY) * k * _dy;
-    //                 double x = eqXLine(y);
-
-    //                 markAsBoundary(new(x, y));
-    //             }
-    //         }
-
-    //     }
-
-    //     Debug.WriteLine($"Assigned # is {cnt}");
-    // }
-
-
+    
     // Fill internal region by scanning boundary (heuristic)
     // Note: This method assumes the boundary represents approximately-convex hull
     void FillInternalRegion()
@@ -216,7 +146,6 @@ internal class SubRegion : AbstractRegion
 
     override internal bool ContainsInRegion(Point point)
     {
-        //if (IsOutOfBoundBox(point)) return false;
         if (IsOutOfGrid(point)) return false;
 
         var (idx_x, idx_y) = ConvertToRegionIndex(point);
@@ -226,7 +155,6 @@ internal class SubRegion : AbstractRegion
 
     override internal bool OnBoundary(Point point)
     {
-        //if (IsOutOfBoundBox(point)) return false;
         if (IsOutOfGrid(point)) return false;
 
         var (idx_x, idx_y) = ConvertToRegionIndex(point);
@@ -242,37 +170,7 @@ internal class SubRegion : AbstractRegion
 
         return distanceList.Min();
     }
-
-    // internal override double DistanceFromBoundary(Point point)
-    // {
-
-    //     if (!ContainsInRegion(point)) return double.NaN;
-    //     if (OnBoundary(point)) return 0;
-
-    //     var (idx_x, idx_y) = ConvertToRegionIndex(point);
-
-    //     int idxFromBoundX = Math.Min(idx_x, _lenX-idx_x-1);
-    //     int idxFromBoundY = Math.Min(idx_y, _lenY-idx_y-1);    
-
-    //     double minDistance = double.PositiveInfinity;
-
-    //     for (int i = -idxFromBoundX; i < idxFromBoundX; i++)
-    //     {
-    //         for (int j = -idxFromBoundY; j < idxFromBoundY; j++)
-    //         {
-    //             if (_isBoundary[idx_x+i, idx_y+j])
-    //             {
-    //                 var p = new Point(_dx*i, _dy*j);
-    //                 double distance = p.Distance(Point.Zero);
-
-    //                 if (minDistance > distance) minDistance = distance;
-    //             }
-    //         }
-    //     }
-
-    //     return minDistance;
-    // }
-
+    
     bool IsOutOfGrid(Point point)
     {
         var (x, y) = point;
@@ -311,8 +209,6 @@ internal class SubRegion : AbstractRegion
         Debug.Assert(idx_x == idx_x_est);
         Debug.Assert(idx_y == idx_y_est);
 
-        //Debug.Assert(OnBoundary(x, y));
-
         return new Point(x,y);
     }
 
@@ -340,11 +236,8 @@ internal class SubRegion : AbstractRegion
             }
         }
 
-        //Debug.Assert(boundary.Count == cnt);
-
         Debug.WriteLine($"List count # is {cnt} / {cntRaw}");
 
         return boundary;
     }
-
 }
