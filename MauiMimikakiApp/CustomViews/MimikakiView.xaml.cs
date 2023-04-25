@@ -86,9 +86,6 @@ public partial class MimikakiView : ContentView
         var x = dirtObject.TranslationX;
         var y = dirtObject.TranslationY;
 
-        // dirtObject.Fill = Colors.Black;
-        // dirtObject.Opacity = 0.5;
-
         FloatingObjectsLayer.Add(dirtObject);
 
         uint animationTime = 2500;

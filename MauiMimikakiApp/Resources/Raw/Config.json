@@ -13,16 +13,16 @@
     {
       "thinness" : 2.0,
       "springConst" : 0.5,
-      "colorName" : "White"
+      "colorName" : "Black"
     },
     "MimiHairDensity" : 0.2,
     "MimiDirt" :
     {
       "size" : 5,
       "hardness" : 1,
-      "colorName" : "Magenta"
+      "colorName" : "Yellow"
     },
-    "MimiDirtGenerationRate" :
+    "MimiDirtGenerationProbs" :
     {
       "outer" : 0.8,
       "inner" : 0.9,

@@ -6,7 +6,7 @@ record ModelParams
     public MimiHairConfig MimiHair { get; init; }
     public double MimiHairDensity { get; init; }
     public MimiDirtConfig MimiDirt { get; init; }
-    public RegionProbabilities MimiDirtGenerationRate { get; init; }
+    public RegionProbabilities MimiDirtGenerationProbs { get; init; }
     public int TouchPointRadius { get; init; }
 }
 

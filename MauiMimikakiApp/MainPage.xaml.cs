@@ -44,16 +44,16 @@ public partial class MainPage : ContentPage
 
 			//Debug.WriteLine($"velocity : {velocity}");
 
-			if (velocity < 0.05)
-            {
-                if (_kakiSEPlayer.IsPlaying)
-                {
-                    _kakiSEPlayer.Stop();
-                    Debug.WriteLine("Stopped.");
-                }
-                return;
-            }
-        });
+			if (velocity < 0.02)
+			{
+				if (_kakiSEPlayer.IsPlaying && _kakiSEPlayer.CurrentPosition > _kakiSEPlayer.Duration*0.2)
+				{
+					_kakiSEPlayer.Stop();
+					Debug.WriteLine("Stopped.");
+				}
+				return;
+			}
+		});
 
 		StrongReferenceMessenger.Default.Register<TrackerOnMimiMessage>(this, (s, e) =>
 		{
@@ -62,6 +62,8 @@ public partial class MainPage : ContentPage
 			//Point position = state.Position;
 
 			double velocity = state.Velocity.Distance(Point.Zero);
+
+			if (velocity < 0.02) return;
 
 
 			if (!_kakiSEPlayer.IsPlaying)

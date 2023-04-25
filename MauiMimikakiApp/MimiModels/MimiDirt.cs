@@ -32,9 +32,14 @@ internal class MimiDirt : ITrackerListener
 
     public void OnMove(Point position, Point velocity, double dt)
     {
-        if (position.Distance(Position) < Size)
+        var speed = velocity.Distance(Point.Zero);
+
+        // set response radius regarding the speed
+        var responseSize = (2 + Math.Min(speed, 1)) * this.Size;
+
+        if (position.Distance(this.Position) < responseSize)
         {
-            _amountOfStimulus += 250*velocity.Distance(Point.Zero)*dt;
+            _amountOfStimulus += 100*speed*dt;
 
             if (_amountOfStimulus > _hardness) IsRemoved = true;
         }

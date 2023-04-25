@@ -90,13 +90,13 @@ internal partial class MimikakiViewModel : ObservableObject
 
         var modelParams = _config.Params;
 
-        Debug.WriteLine($"A : Elapsed {sw.ElapsedMilliseconds} [ms]");
+        // Debug.WriteLine($"A : Elapsed {sw.ElapsedMilliseconds} [ms]");
 
         _outerRegion = new(_outer.GetPath(), modelParams);
         _innerRegion = new(_inner.GetPath(), modelParams);
         _holeRegion = new(_hole.GetPath(), modelParams);
 
-        Debug.WriteLine($"B : Elapsed {sw.ElapsedMilliseconds} [ms]");
+        // Debug.WriteLine($"B : Elapsed {sw.ElapsedMilliseconds} [ms]");
 
         OuterViewBox = new(_outerRegion);
         InnerViewBox = new(_innerRegion);
@@ -161,12 +161,12 @@ internal partial class MimikakiViewModel : ObservableObject
 
         double dt = (double)trackerUpdateInterval/1000; //[sec]
 
-        var probs = _config.Params.MimiDirtGenerationRate;
+        var probs = _config.Params.MimiDirtGenerationProbs;
 
         // Dirt generation rate in dt
-        double rateOuter = probs.outer * dt;
-        double rateInner = probs.inner * dt;
-        double rateHole = probs.hole * dt;
+        double rateOuter = Math.Pow(probs.outer, dt);
+        double rateInner = Math.Pow(probs.inner, dt);
+        double rateHole = Math.Pow(probs.hole, dt);
 
         while (true)
         {
@@ -211,7 +211,7 @@ internal partial class MimikakiViewModel : ObservableObject
 
     void TryGenerateDirt(MimiRegion region, double rate)
     {
-        if (_rnd.NextDouble() < rate) region.GenerateMimiDirt();
+        if (_rnd.NextDouble() > rate) region.GenerateMimiDirt();
     }
 
     void CheckDirtRemoved(MimiRegion region)
@@ -226,16 +226,10 @@ internal partial class MimikakiViewModel : ObservableObject
         foreach (var dirt in removed)
         {
             // create floating dirt view (shape)
-            var width = dirt.Size; // / ViewDisplayRatio;
-            var height = dirt.Size; // / ViewDisplayRatio;
+            var width = dirt.Size;
+            var height = dirt.Size;
 
             Rectangle rect = new Rectangle {Fill = dirt.DirtColor, Stroke=dirt.DirtColor, WidthRequest = width, HeightRequest = height};
-
-            //rect.AnchorX = 0.5;
-            //rect.AnchorY = 0.5;
-
-            //rect.HorizontalOptions = LayoutOptions.Center;
-            //rect.VerticalOptions = LayoutOptions.Center;
 
             Point position = dirt.Position;
 
