@@ -31,7 +31,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources\Raw\KanjiMimiResourceDictionary.xaml"/>
+                <ResourceDictionary x:Name="MimiResourceDict"
+                                    Source="Resources\Raw\KanjiMimiResourceDictionary.xaml"/>
                 <ResourceDictionary>
                     <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
                 </ResourceDictionary>
@@ -53,7 +54,7 @@
                    Text="Mimikaki"/>
 
             <custom:MimiDirectionSwitch x:Name="DirectionSwitch"
-                                        RightInInit="{StaticResource IsRight}"
+                                        RightInInit="{StaticResource IsRight}"                                        
                                         HorizontalOptions="End"/>
         </Grid>
 

@@ -10,9 +10,7 @@ namespace MauiMimikakiApp;
 public partial class MainPage : ContentPage
 {
 	IAudioPlayer _kakiSEPlayer;
-
 	MimikakiConfig _config;
-
 	Stopwatch _stopwatch;
 
 	public MainPage(IAudioManager audioManager) 
@@ -22,11 +20,12 @@ public partial class MainPage : ContentPage
 		_config = MimikakiConfig.Load("Config.json");
 
 		RegisterTrackerMessages();
-		PrepareSEPlayer(audioManager);
+		PrepareSEPlayer(audioManager, (bool)MimiResourceDict["IsRight"]);
 
 		_stopwatch = new Stopwatch();
 		_stopwatch.Start();
 
+		DirectionSwitch.Tapped += DirectionSwitch_Tapped;
 	}
 
 	void RegisterTrackerMessages()
@@ -51,7 +50,7 @@ public partial class MainPage : ContentPage
 				if (_kakiSEPlayer.IsPlaying && _kakiSEPlayer.CurrentPosition > _kakiSEPlayer.Duration*0.2)
 				{
 					_kakiSEPlayer.Stop();
-					Debug.WriteLine("Stopped.");
+					//Debug.WriteLine("Stopped.");
 				}
 				return;
 			}
@@ -122,13 +121,25 @@ public partial class MainPage : ContentPage
 
 	}
 
-	async void PrepareSEPlayer(IAudioManager audioManager)
+	void DirectionSwitch_Tapped(bool isRight)
+	{
+		SetPlayerBalance(isRight);
+	}
+
+	void SetPlayerBalance(bool isRight)
+	{
+		_kakiSEPlayer.Balance = isRight ? 1 : -1;
+	}
+
+	async void PrepareSEPlayer(IAudioManager audioManager, bool rightInInit)
 	{
 		var filename = MimikakiConfig.Current.KakiSoundFilename;
 		
 		using var stream = await FileSystem.OpenAppPackageFileAsync(filename);
 		
 		_kakiSEPlayer = audioManager.CreatePlayer(stream);
+
+		SetPlayerBalance(rightInInit);
 	}
         
 }

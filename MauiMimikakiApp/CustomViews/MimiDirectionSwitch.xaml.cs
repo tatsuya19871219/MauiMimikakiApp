@@ -12,6 +12,8 @@ public partial class MimiDirectionSwitch : ContentView
 		set => SetValue(IsRightProperty, value);
 	}
 
+	public Action<bool> Tapped;
+
 	required public bool RightInInit
 	{
 		init => GoTo(value);
@@ -37,6 +39,8 @@ public partial class MimiDirectionSwitch : ContentView
 	private void SwitchTipTapped(object sender, TappedEventArgs e)
 	{
 		GoTo(!IsRight);
+
+		Tapped?.Invoke(IsRight);
 	}
 
 	void GoTo(bool isRight)
