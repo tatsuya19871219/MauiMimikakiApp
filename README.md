@@ -2,6 +2,10 @@
 
 A mimikaki (Ear cleaning) App.
 
+<div>
+<video controls src=></video>
+</div>
+
 ## Files editted
 
 <details>
