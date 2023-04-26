@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
-using MauiMimikakiApp.ViewModels;
 using Microsoft.Extensions.Logging;
 using Plugin.Maui.Audio;
 

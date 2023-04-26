@@ -24,7 +24,12 @@ public partial class MimikakiView : ContentView
 // #endif
         };
 
-        // Resister messages
+        RegisterMessages();
+        
+    }
+
+    void RegisterMessages()
+    {
         StrongReferenceMessenger.Default.Register<MimiViewInvalidateMessage>(this, (s, e) =>
         {
             switch (e.Value)
@@ -69,7 +74,6 @@ public partial class MimikakiView : ContentView
                 FloatingObjectsLayer.Add(ellipse);
             }
         });
-        
     }
 
     void InvalidateRegions()

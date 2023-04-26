@@ -6,13 +6,10 @@ internal class MimiDirt : ITrackerListener
 {
     internal bool IsRemoved { get; private set; } = false;
     readonly internal Point Position;
-
-    readonly MimiDirtConfig _config;
-
     readonly internal double Size;
-    readonly double _hardness;
     readonly internal Color DirtColor;
-
+    readonly double _hardness;
+    readonly MimiDirtConfig _config;
     double _amountOfStimulus = 0;
 
     internal MimiDirt(Point position, MimiDirtConfig config)

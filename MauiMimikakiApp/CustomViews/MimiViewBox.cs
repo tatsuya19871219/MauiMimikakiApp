@@ -1,4 +1,4 @@
-﻿namespace MauiMimikakiApp.Models;
+﻿namespace MauiMimikakiApp.CustomViews;
 
 public class MimiViewBox
 {

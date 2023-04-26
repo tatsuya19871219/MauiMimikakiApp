@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using MauiMimikakiApp.CustomViews;
 using MauiMimikakiApp.Drawables;
 using MauiMimikakiApp.Messages;
 using MauiMimikakiApp.Models;

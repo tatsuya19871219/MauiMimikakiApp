@@ -1,16 +1,4 @@
 @startuml Mimikaki
-class MimiViewBox
-{
-    + Bounds : Rect <<required>>
-    + GetBoundsAsync() : Task<Rect>
-}
-
-class MimiRegionViewBox
-{
-    + Bounds : Rect
-    ~ MimiRegionViewBox()
-}
-
 
 ' Views
 class MimikakiView <<V, HotPink>>
@@ -22,6 +10,11 @@ class MimikakiView <<V, HotPink>>
     - AddFloatingDirt(dirtObject : Shape) : void
 }
 
+class MimiViewBox
+{
+    + Bounds : Rect <<required>>
+    + GetBoundsAsync() : Task<Rect>
+}
 
 ' ViewModels
 class MimikakiViewModel
@@ -35,40 +28,63 @@ class MimikakiViewModel
     - bottomRegion : MimiRegion
     - tracker : PositionTracker
     ~ MimikakiViewModel(viewbox : MimiViewBox, outer : Path, inner : Path, hole : Path)
-    - Initialize();
-    - RunTrackerProcess(updateInterval : int) : void
-    ~ TargetImage_SizeChanged(sender : object, e : EventArgs) : void
+    - TargetSizeChanged(View target) : void
+    - InitializeModelAsync(condition : Func<bool>) : void
+    - PrepareDrawableAsync(condition : Func<bool>) : void
+    - InvokeMimikakiAsyn(condition : Func<bool>) : void
+    - RunGraphicsUpdateProcess(graphicsUpdateInterval : int) : void
+    - RunTrackerProcess(trackerUpdateInterval : int) : void
+    - TryGenerateDirt(region : MimiRegion, prob : double, dt : double) : void
+    - CheckDirtRemoved(region : MimiRegion) : void
+    - ScaleForDisplayRatio(point : Point) : Point
 }
 
-
-' Drawable
-class MimiRegionDrawable
+class MimiRegionViewBox <<Observable Object>>
 {
     + RegionWidthRequest : double
     + RegionHeightRequest : double
     + RegionOffsetX : double
     + RegionOffsetY : double
-    - mimiRegion : MimiRegion
-    + MimiRegionDrawable(mimiRegion : MimiRegion, padding : double)
-    + Draw(canvas : ICanvas, dirtyRect : RectF) : void
-    - VisualizeHairs(canvas : ICanvas, color : Color) : void
-    - VisualizeDirts(canvas : ICanvas, color : Color) : void
+    ~ MimiRegionViewBox(mimiRegion : MimiRegion)
 }
 
+' Drawable
+class MimiRegionDrawable
+{
+    - mimiRegion : MimiRegion
+    - viewBox : MimiRegionViewBox
+    + MimiRegionDrawable(mimiRegion : MimiRegion, padding : double)
+    + Draw(canvas : ICanvas, dirtyRect : RectF) : void
+    - VisualizeHairs(canvas : ICanvas) : void
+    - VisualizeDirts(canvas : ICanvas) : void
+}
 
 ' Page
 class MainPage <<(P, LimeGreen)>>
 {
-    + MainPage()
+    - kakiSEPlayer : IAudioPlayer
+    - config : MimikakiConfig
+    + MainPage(audioManager : IAudioManager)
     - RegisterTrackerMessages() : void
-    - PrepareSEPlayer(audioManager : IAudioManager) : void
+    - UpdateHeaderText() : void
+    - UpdateFooterTExt(state : PositionTrackerState) : void
+    - PrepareSEPlayer(audioManager : IAudioManager, rightInInit : bool) : void
 }
 
 ' Config
-' class MimikakiConfig
-' {
+class MimikakiConfig
+{
+    {static} - assambly : Assembly <<readonly>>
+    {static} + Current : MimikakiConfig
+    {static} - MimikakiConfig()
+    {static} ~ Load(filename : string) : MimikakiConfig
+}
 
-' }
+' record class for DTO (data transfer object)
+class ModelParams <<(R, LightGreen) record>>
+{
+
+}
 
 ' Library
 package TakeMauiEasy
@@ -78,19 +94,25 @@ package TakeMauiEasy
 }
 
 ' arrows
+MimikakiView .. MimiViewBox : <create>
 MimikakiViewModel -left-> MimiViewBox
-MimikakiViewModel --> PositionTracker
-MimikakiViewModel o- "3" MimiRegionDrawable
 
-MimikakiViewModel o-- "3" MimiRegionViewBox
+MimikakiViewModel -down-> PositionTracker
+MimikakiViewModel o-right- "3" MimiRegionDrawable
+
+MimikakiViewModel o-up- "3" MimiRegionViewBox
 MimikakiViewModel o- "3" MimiRegion
 
 MimikakiView ..> MimikakiViewModel : <create>
 
-MainPage -> MimikakiView
+MainPage --> MimikakiView
+
+MainPage .right.> MimikakiConfig : <<create>>
+MimikakiConfig -right-> ModelParams
 
 'MimiRegionDrawable --|> IDrawable
 MimiRegionDrawable --> MimiRegion
+MimiRegionDrawable --> MimiRegionViewBox
 
 @enduml
 
@@ -104,7 +126,8 @@ class MimiRegion
     - internalRegion : InternalRegion
     - hairList : List<MimiHair>
     - dirtList : List<MimiDirt>
-    + MimiRegion(pathF : PathF, dx : int, dy : int)
+    - modelParams : ModelParams
+    + MimiRegion(pathF : PathF, modelParams : ModelParams)
     - InitializeMimiHair(density : double)
     ~ GenerateMimiDirt() : void
     ~ RemoveMimiDirt() : void
@@ -118,19 +141,27 @@ interface ITrackerListener
 
 class MimiHair
 {
-    - origin : Point
-    - position : Point
+    ~ Origin : Point
+    ~ Pposition : Point
+    ~ Thinness : double
+    ~ HairColor : Color
     - springConst : double
-    + MimiHair(position : Point)
-    + GetPosition() : Point
-    + UpdatePosition(force : Point) : void
+    - config : MimiHairConfig
+    ~ MimiHair(origin : Point, config : MimiHairConfig)
+    - Displace(displacement : Point) : void
+    '- UpdatePositionAsync() : void
 }
 
 class MimiDirt
 {
-    - position : Point
+    ~ IsRemoved : bool
+    ~ Position : Point
+    ~ Size : double
+    ~ DirtColor : Color
     - hardness : double
-    + MimiDirt(position : Point, hardness : double)
+    - config : MimiDirtConfig
+    - amountOfStimulus : double
+    + MimiDirt(position : Point, config : MimiDirtConfig)
 }
 
 ' RegionModels
@@ -141,12 +172,12 @@ abstract AbstractRegion
     {abstract} ~ ContainsInRegion(point : Point) : bool
     {abstract} ~ OnBoundary(point : Point) : bool
     {abstract} ~ DistanceFromBoundary(point : Point) : double
-    - GetMinAndMaxPoints(points : List<Point>, minPoint : out Point, maxPoint : out Point) : void
+    - GetMinAndMaxPoints(edgeSet : EdgeSet, minPoint : out Point, maxPoint : out Point) : void
 }
 
 class InternalRegion
 {
-    ~ Bounds : Rect
+    + Bounds : Rect
     - subRegions : List<SubRegion>
     + InternalRegion(edgeSet : EdgeSet, dx : int, dy : int)
     + GeneratePointInRegion() : Point
@@ -161,7 +192,10 @@ class SubRegion
     + SubRegion(edgeSet : EdgeSet, sharedEdges : List<Edge>, dx : int, dy : int)
     - FillBoundaryPoints(edgeSet : EdgeSet, sharedEdges : List<Edges>) : void
     - FillInternalRegion() : void
-    '- ConvertToRegionIndex(x : double, y : double) : (int, int)
+    - IsOutOfGrid(point : Point) : bool
+    - ConvertToRegionIndex(point : Point) : (int, int)
+    - GetPositionOfIndex(idx_x, idx_y) : Point
+    - GetBoundaryPointList() : List<Point>
 }
 
 class EdgeSet <<IEnumerable>>
@@ -192,6 +226,8 @@ SubRegion --|> AbstractRegion
 
 MimiHair ..|> ITrackerListener
 MimiDirt ..|> ITrackerListener
+
+AbstractRegion -> EdgeSet
 
 EdgeSet *-- Edge
 
@@ -230,9 +266,10 @@ namespace Messages{
 
 }
 
-MainPage .> Messages.TrackerUpdateMessage : <register>
-MainPage .> Messages.TrackerOnMimiMessage : <register>
+MainPage .left.> Messages.TrackerUpdateMessage : <register>
+MainPage .left.> Messages.TrackerOnMimiMessage : <register>
 
+MimikakiView .left.> Messages.TrackerUpdateMessage : <register>
 MimikakiView .left.> Messages.MimiViewInvalidateMessage : <register>
 MimikakiView .left.> Messages.FloatingDirtGenerateMessage : <register>
 
