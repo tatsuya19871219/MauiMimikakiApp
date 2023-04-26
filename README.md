@@ -82,3 +82,30 @@ A mimikaki (Ear cleaning) App.
 - How to create a DTO (data transfer object) using record
 - How to deserialize nested JSON data
 - How to realize a loosely coupling using Message
+
+### Change VisualState depending on a boolean bindable property
+
+```xml
+<VisualStateManager.VisualStateGroups>
+        <VisualStateGroup Name="EarDirection">
+            <VisualState Name="Right">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
+                </VisualState.Setters>
+            </VisualState>
+            <VisualState Name="Left">
+                <VisualState.StateTriggers>
+                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                    <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+```
+
+### Execute command when a event is triggered
