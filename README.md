@@ -83,29 +83,74 @@ A mimikaki (Ear cleaning) App.
 - How to deserialize nested JSON data
 - How to realize a loosely coupling using Message
 
-### Change VisualState depending on a boolean bindable property
+<!-- ### Change VisualState depending on a boolean bindable property
 
 ```xml
 <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup Name="EarDirection">
-            <VisualState Name="Right">
-                <VisualState.StateTriggers>
-                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
-                </VisualState.Setters>
-            </VisualState>
-            <VisualState Name="Left">
-                <VisualState.StateTriggers>
-                    <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
-                </VisualState.StateTriggers>
-                <VisualState.Setters>
-                    <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
-                </VisualState.Setters>
-            </VisualState>
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
+    <VisualStateGroup Name="EarDirection">
+        <VisualState Name="Right">
+            <VisualState.StateTriggers>
+                <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}}"/>
+            </VisualState.StateTriggers>
+            <VisualState.Setters>
+                <Setter TargetName="MimiGrid" Property="RotationY" Value="180"/>                            
+            </VisualState.Setters>
+        </VisualState>
+        <VisualState Name="Left">
+            <VisualState.StateTriggers>
+                <StateTrigger IsActive="{Binding IsRight, Source={x:Reference DirectionSwitch}, Converter={StaticResource InvertedBoolConverter}}"/>                          
+            </VisualState.StateTriggers>
+            <VisualState.Setters>
+                <Setter TargetName="MimiGrid" Property="RotationY" Value="0"/>
+            </VisualState.Setters>
+        </VisualState>
+    </VisualStateGroup>
+</VisualStateManager.VisualStateGroups>
 ```
 
 ### Execute command when a event is triggered
+
+
+MimikakiView.xaml
+```xml
+<Image x:Name="TargetImage" Style="{StaticResource ContentStyle}"> 
+    <Image.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="SizeChanged"
+            Command="{Binding SizeChangedCommand}"
+            CommandParameter="{x:Reference TargetImage}"/>
+    </Image.Behaviors>
+</Image>
+```
+
+MimikakiViewModel.cs
+```csharp
+public ICommand SizeChangedCommand { get; private set; }
+...
+SizeChangedCommand = new Command<View>(TargetSizeChanged);
+...
+async void TargetSizeChanged(View target)
+{
+    await EasyTasks.WaitFor(() => !target.DesiredSize.IsZero);
+
+    ViewWidth = target.DesiredSize.Width;
+    ViewHeight = target.DesiredSize.Height;
+
+    ViewDisplayRatio = ViewHeight / _viewBox.GetBoundsAsync().Result.Height;
+
+    _targetImageInitialized = true;
+}
+```
+
+MauiProgram.cs
+```csharp
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+...
+var builder = MauiApp.CreateBuilder();
+		builder
+			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
+			.UseMauiCommunityToolkitCore()
+...
+``` -->
