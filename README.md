@@ -3,7 +3,7 @@
 A mimikaki (Ear cleaning) App.
 
 <div>
-<video controls src=></video>
+<video controls src="https://user-images.githubusercontent.com/7810461/234447658-5cbc2fbf-fb53-423a-ba6f-99357ddefd11.mp4"></video>
 </div>
 
 ## Files editted
@@ -152,8 +152,7 @@ using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 ...
 var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
+		builder.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
 			.UseMauiCommunityToolkitCore()
 ...
