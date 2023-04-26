@@ -73,3 +73,12 @@ A mimikaki (Ear cleaning) App.
 </details>
 
 ## What I learnt from this project
+
+- How to change VisualState by StateTrigger
+- How to do binding with RelativeSouce
+- How to use EventToCommandBehavior (toolkit)
+- How to use Plugin.Maui.Audio
+- How to reference a local library project
+- How to create a DTO (data transfer object) using record
+- How to deserialize nested JSON data
+- How to realize a loosely coupling using Message
