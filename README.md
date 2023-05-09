@@ -2,6 +2,8 @@
 
 A mimikaki (Ear cleaning) App.
 
+NOTE: This is **not** a self-contained project. The project depends on the local library, which is also on Github (coming soon...).
+
 <div>
 <video controls src="https://user-images.githubusercontent.com/7810461/234447658-5cbc2fbf-fb53-423a-ba6f-99357ddefd11.mp4"></video>
 </div>
@@ -87,7 +89,9 @@ A mimikaki (Ear cleaning) App.
 - How to deserialize nested JSON data
 - How to realize a loosely coupling using Message
 
-<!-- ### Change VisualState depending on a boolean bindable property
+### Change VisualState depending on a boolean bindable property
+
+Depending on a bindable boolean value, the appearance of controls can be set via VisualStateManager. In the following case, the rotation of MimiGrid is set depending on the IsRight property in the view model.
 
 ```xml
 <VisualStateManager.VisualStateGroups>
@@ -114,9 +118,10 @@ A mimikaki (Ear cleaning) App.
 
 ### Execute command when a event is triggered
 
+MauiCommunityToolkit provides the behavior to trigger an ICommand instance when a certain event is raised on the control. 
 
-MimikakiView.xaml
 ```xml
+<!--MimikakiView.xaml-->
 <Image x:Name="TargetImage" Style="{StaticResource ContentStyle}"> 
     <Image.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -127,8 +132,8 @@ MimikakiView.xaml
 </Image>
 ```
 
-MimikakiViewModel.cs
 ```csharp
+//MimikakiViewModel.cs
 public ICommand SizeChangedCommand { get; private set; }
 ...
 SizeChangedCommand = new Command<View>(TargetSizeChanged);
@@ -146,8 +151,8 @@ async void TargetSizeChanged(View target)
 }
 ```
 
-MauiProgram.cs
 ```csharp
+//MauiProgram.cs
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 ...
@@ -156,4 +161,6 @@ var builder = MauiApp.CreateBuilder();
 			.UseMauiCommunityToolkit()
 			.UseMauiCommunityToolkitCore()
 ...
-``` -->
+```
+
+### 
